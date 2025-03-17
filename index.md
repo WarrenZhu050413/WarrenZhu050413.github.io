@@ -1,7 +1,7 @@
 ---
 layout: home
-title: Posts
-list_title: Latest Articles
+title: Hi!
+list_title: Latest Posts
 show_excerpts: true
 post_class: card
 read_more_text: Continue reading →
