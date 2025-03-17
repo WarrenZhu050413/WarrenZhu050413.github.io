@@ -8,7 +8,7 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a junior at Harvard University pursuing a bachelor's degree in Computer Science and a master's degree in Statistics. Born and raised in Hong Kong and Shenzhen. Working on ML Systems right now.</p>
+    <p>I'm a junior at Harvard University pursuing a bachelor's degree in Computer Science and a master's degree in Statistics. Born and raised in Hong Kong and Shenzhen. I'm working on ML Systems right now and wish to use this site to host some of my <a href="www.warrenzhu.com/posts">learnings</a>.</p>
   </div>
 </div>
 <div style="clear: both;"></div>
@@ -55,5 +55,7 @@ GPA: 3.91
 ### Research
 I did Harvard's SPUDS during Summer 2024, sponsored by Prof. Xiao-Li Meng and under the wonderful mentorship of Prof. Connor Jerzak @ UT Austin. It ended up as a paper in <a href="https://www.cclear.cc" target="_blank">clear2025</a>.
 
-### Highschool
-I attended Harrow International School Hong Kong for 10 years. There 
+### Other Hobbies
+I went to Harrow International School Hong Kong, where I did not care too much about STEM and had very fond memories in History, Drama, English, Music, and playing Rugby.
+
+I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the <a href="https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/Trinity College Philosophy Essay Prize in 2021" target="_blank">Trinity College Philosophy Essay Prize</a> for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
