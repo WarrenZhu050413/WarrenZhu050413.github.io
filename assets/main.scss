@@ -1,0 +1,100 @@
+@import "minima";
+
+// Custom styling for the site
+
+// Header styles
+.site-header {
+  border-top: 5px solid #424242;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 15px 0;
+}
+
+.site-title {
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  font-size: 24px;
+}
+
+// Footer styles
+.site-footer {
+  padding: 20px 0;
+  border-top: 1px solid #e8e8e8;
+  background-color: #f9f9f9;
+}
+
+.footer-col a {
+  color: #0366d6;
+  &:hover {
+    color: #0056b3;
+    text-decoration: underline;
+  }
+}
+
+// General typography
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.7;
+  color: #333;
+}
+
+// Custom post list styling
+.post-list {
+  margin-top: 2em;
+  
+  li {
+    margin-bottom: 2em;
+    padding-bottom: 2em;
+    border-bottom: 1px solid #f1f1f1;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.post-link {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.post-excerpt {
+  margin-top: 0.5em;
+}
+
+.read-more {
+  display: inline-block;
+  margin-top: 0.5em;
+  font-weight: 500;
+}
+
+// Post item styles
+.post-item {
+  &.card {
+    background: #f9f9f9;
+    border-radius: 5px;
+    padding: 1.5em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  &.compact {
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+    
+    .post-link {
+      font-size: 1.2em;
+    }
+  }
+}
+
+// Pagination styles
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+  margin: 2em 0;
+  
+  li {
+    margin: 0 0.5em;
+  }
+} 

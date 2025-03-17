@@ -1,0 +1,26 @@
+# Jekyll site build files
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Bundler files
+.bundle/
+vendor/
+
+# Ruby environment
+.ruby-version
+.ruby-gemset
+
+# IDE/OS specific files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+.project
+.settings/
+.buildpath
+
+# Log files
+*.log 

@@ -1,0 +1,38 @@
+title: Warren Zhu 朱富橙
+email: wzhu@college.harvard.edu 
+description: >- 
+  Here to post as I learn about building large scale ML systems. May contain errors. Feedback welcome at wzhu@college.harvard.edu.
+baseurl: ""
+url: "https://www.warrenzhu.com"
+github_username: WarrenZhu050413
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+
+# Author information
+author:
+  name: Warren Zhu (朱富橙)
+  email: wzhu@college.harvard.edu
+
+# Minima theme settings
+minima:
+  skin: classic
+  date_format: "%b %-d, %Y"
+  social_links:
+    github: WarrenZhu050413
+
+# Pagination for blog
+paginate: 5
+paginate_path: "/page:num/"
+
+# Exclude from processing
+exclude:
+  - .git/
+  - .gitignore
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/ 
