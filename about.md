@@ -8,7 +8,7 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a junior at Harvard University pursuing a bachelor's degree in Computer Science and a master's degree in Statistics. Born and raised in Hong Kong and Shenzhen.</p>
+    <p>I'm a junior at Harvard University pursuing a bachelor's degree in Computer Science and a master's degree in Statistics. Born and raised in Hong Kong and Shenzhen. Working on ML Systems right now.</p>
   </div>
 </div>
 <div style="clear: both;"></div>
