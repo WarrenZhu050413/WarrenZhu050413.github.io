@@ -23,4 +23,7 @@ vendor/
 .buildpath
 
 # Log files
-*.log 
+*.log
+
+# Notes
+notes/
