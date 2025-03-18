@@ -2,7 +2,7 @@
 layout: post
 title: "Perftest GDRDMA Write_bw Walkthrough"
 date: 2025-03-17 12:00:00 -0400
-categories: test
+categories: rdma, gdr, networking, hpc, cuda
 ---
 
 # Goal
