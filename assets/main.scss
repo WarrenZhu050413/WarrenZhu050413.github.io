@@ -97,4 +97,56 @@ body {
   li {
     margin: 0 0.5em;
   }
+}
+
+// Citation styles
+.bibliography {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #eee;
+  
+  .bibliography-item {
+    margin-bottom: 1.5em;
+    padding-bottom: 1em;
+    border-bottom: 1px dotted #eee;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  span.citation {
+    background-color: #f5f5f5;
+    border-radius: 3px;
+    padding: 2px 5px;
+    font-size: 0.9em;
+    color: #1756a9;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #e8e8e8;
+    }
+  }
+}
+
+.citation-details {
+  margin-top: 1em;
+  padding: 1em;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  
+  h4 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    color: #555;
+  }
+  
+  pre {
+    font-size: 0.9em;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 3px;
+    overflow-x: auto;
+  }
 } 

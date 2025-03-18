@@ -1,17 +1,10 @@
----
-layout: post
-title: "Perftest GpuDirectRDMA `write_bw`"
-date: 2025-03-17 12:00:00 -0400
-categories: [rdma, gdr, networking, hpc, cuda]
----
-
 # Goal
 
-I want to look at `ib_write_bw` with `--use-cuda` flag and understand from a libibverbs level how the GDR transfer is setup and then executed in [perftest](https://www.google.com/search?client=firefox-b-1-d&q=perftest).
+We want to look at `ib_write_bw` with `--use-cuda` flag and come up with steps just like you guys did for a basic RDMA - how the GDR transfer is setup and then executed.
 
 # Overall Conclusion
 
-What perftest does for a standard `ib_write_bw` is similar to the example shown [here](https://github.com/animeshtrivedi/rdma-example). The main logic is in `perftest/src/write_bw.c`.
+I will outline the steps that perftest takes for a standard `ib_write_bw`. It is standard and very similar to what we did for the first minitask. The main logic is in `perftest/src/write_bw.c`.
 
 The main difference lies in the memory create step, where we use the function `cuda_memory_allocate_buffer` to allocate our buffer. The specific CUDA functions that it calls are:
 - `cuMemAllocHost` if we are using integrated memory

@@ -11,6 +11,13 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-paginate
+  - jekyll-scholar
+
+# Collections
+collections:
+  notes:
+    output: true
+    permalink: /notes/:path/
 
 # Author information
 author:
@@ -23,6 +30,38 @@ minima:
   date_format: "%b %-d, %Y"
   social_links:
     github: WarrenZhu050413
+
+# Scholar settings for citations
+scholar:
+  style: apa
+  locale: en
+  sort_by: year
+  order: descending
+  source: .
+  bibliography: _bibliography/references.bib
+  bibliography_template: "{{reference}}"
+  replace_strings: true
+  join_strings: true
+  details_dir: bibliography
+  details_layout: bibtex.html
+  details_link: Details
+  query: "@*"
+  cite_inline: true
+  cite_inline_template: "[@{{key}}]"
+  cite_inline_style: apa
+  cite_inline_link: true
+  cite_inline_link_style: apa
+  cite_inline_link_template: "[@{{key}}]"
+  cite_inline_link_prefix: ""
+  cite_inline_link_suffix: ""
+  cite_inline_reference: true
+  cite_inline_reference_template: "[@{{key}}]"
+  cite_inline_reference_style: apa
+  cite_inline_reference_link: true
+  cite_inline_reference_link_style: apa
+  cite_inline_reference_link_template: "[@{{key}}]"
+  cite_inline_reference_link_prefix: ""
+  cite_inline_reference_link_suffix: ""
 
 # Pagination for blog
 paginate: 5

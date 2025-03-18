@@ -1,0 +1,21 @@
+{{ reference }}
+
+<div class="citation-details">
+  {% if entry.abstract %}
+    <h4>Abstract</h4>
+    <p>{{ entry.abstract }}</p>
+  {% endif %}
+
+  {% if entry.doi %}
+    <h4>DOI</h4>
+    <p><a href="https://doi.org/{{ entry.doi }}">{{ entry.doi }}</a></p>
+  {% endif %}
+
+  {% if entry.url %}
+    <h4>URL</h4>
+    <p><a href="{{ entry.url }}">{{ entry.url }}</a></p>
+  {% endif %}
+
+  <h4>BibTeX</h4>
+  <pre>{{ entry.bibtex }}</pre>
+</div> 
