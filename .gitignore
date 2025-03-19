@@ -9,7 +9,6 @@ _site/
 vendor/
 
 # Ruby environment
-.ruby-version
 .ruby-gemset
 
 # IDE/OS specific files
@@ -31,5 +30,3 @@ _notes/
 
 # Hidden Pages
 /Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/papers.md
-/Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/now.md
-/Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/projects.md
