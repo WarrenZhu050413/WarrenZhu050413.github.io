@@ -26,9 +26,10 @@ vendor/
 *.log
 
 # Notes
-notes/
+_notes/
 /Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/_posts/2023-05-30-citation-test.md
 
 # Hidden Pages
 /Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/papers.md
 /Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/now.md
+/Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/projects.md
