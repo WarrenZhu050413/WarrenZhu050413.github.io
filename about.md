@@ -53,7 +53,11 @@ GPA: 3.91
 - Math123 (Algebra II: Groups and Rings)
 
 ### Research
-I did Harvard's SPUDS during Summer 2024, sponsored by Prof. Xiao-Li Meng and under the wonderful mentorship of Prof. Connor Jerzak @ UT Austin. It ended up as a paper in <a href="https://www.cclear.cc" target="_blank">clear2025</a>.
+I did Harvard's SPUDS during Summer 2024, sponsored by the great Prof. Xiao-Li Meng and under the incredible mentorship of Prof. Connor Jerzak @ UT Austin. It ended up as a paper in <a href="https://www.cclear.cc" target="_blank">clear2025</a>.
+
+### Teaching
+Fall 2024: Course Assisstant for Stat188 (Variations, Information, and Privacy) under Prof. Xiao-Li Meng, working with the wonderful Graduate Teaching Assistant Kyla Chasalow.
+Spring 2025: Course Assisstant for Stat111 under Prof. Joe Blitzstein.
 
 ### Other Hobbies
 I went to Harrow International School Hong Kong, where I did not care too much about STEM and had very fond memories in History, Drama, English, Music, and playing Rugby.
