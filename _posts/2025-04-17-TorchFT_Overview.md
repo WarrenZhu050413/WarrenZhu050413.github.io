@@ -227,7 +227,8 @@ ManagerClientn ->
                                                                                                 (Waits for join_time_out || All Healthy Replica Groups have joined) +
                                                                                                 live_recovery_assignment = live_recovery_computation(quorum_participants)
                                                                                                 store_assignments = load_balance_store() # Each replica group has one store
-                                                                                                                                        # So have to prevent all data parallel shards using the same store from a single replica group
+                                                                                                                                        # So have to prevent all data parallel 
+                                                                                                                                        # shards using the same store from a single replica group
 
                                                                                                 return (live_recovery_assignment, store_assignments)
                                                                                             }
@@ -372,5 +373,9 @@ Now, this is also why we spawn out a `_future_handler` thread to handle the `eve
 We do this so that the `_worker` subprocess dono't get blocked waiting for the wait. Here, our `_future_handler`'s setting of the returned future's result is actually the event that we are waiting for when we do `fut.wait()` in our main thread!
 
 (Note that when we do `work.wait()`, we don't need this. Here we directly call `event.wait()` in the main thread in `pg._wait`. The reason here is that waiting for the work is immediately blocking, whereas waiting for the future is more tricky since we can later on wait on this future at any time. So we have a background thread that waits on the cuda event to monitor the progress of that future.)
+
+#### Question 6: How does the checkpoint transport work?
+
+There are two types of checkpoint transport mechanism, using the TorchFT process group, and using HTTP transport.
 
 

@@ -26,12 +26,6 @@
             {%- endunless --%}
           {%- endif -%}
         {%- endfor -%}
-        
-        <!-- Add Now page last -->
-        {%- assign now_page = site.pages | where: "title", "Now" | first -%}
-        {%- if now_page -%}
-          <a class="page-link" href="{{ now_page.url | relative_url }}">{{ now_page.title | escape }}</a>
-        {%- endif -%}
       </div>
     </nav>
   </div>

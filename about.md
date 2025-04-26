@@ -8,14 +8,15 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a junior at Harvard University pursuing a bachelor's degree in Computer Science and a master's degree in Statistics. Born and raised in Hong Kong and Shenzhen. I'm working on ML Systems right now and wish to use this site to host some of my <a href="www.warrenzhu.com/posts">learnings</a>.</p>
+    <p>I'm a junior at Harvard University pursuing a bachelor's degree in Computer Science and a master's degree in Statistics. Born and raised in Hong Kong and Shenzhen. I'm primarily interested in Large Scale Machine Learning!
+    </p>
   </div>
 </div>
 <div style="clear: both;"></div>
 
 ## Education
 
-- **Harvard University** (Expected 2026)
+- **Harvard University** (Class of 2026)
   - B.A. in Computer Science
   - M.S. in Statistics
 
@@ -53,7 +54,7 @@ GPA: 3.91
 - Math123 (Algebra II: Groups and Rings)
 
 ### Research
-I did Harvard's SPUDS during Summer 2024, sponsored by the great Prof. Xiao-Li Meng and under the incredible mentorship of Prof. Connor Jerzak @ UT Austin. It ended up as a paper in <a href="https://www.cclear.cc" target="_blank">clear2025</a>.
+I did Harvard's SPUDS during Summer 2024, sponsored by the great Xiao-Li Meng and under the incredible mentorship of Connor Jerzak. <a href="https://arxiv.org/abs/2411.02134" target="_blank">It</a> is upcoming in <a href="https://www.cclear.cc" target="_blank">clear2025</a>.
 
 ### Teaching
 Fall 2024: Course Assisstant for Stat188 (Variations, Information, and Privacy) under Prof. Xiao-Li Meng, working with the wonderful Graduate Teaching Assistant Kyla Chasalow.
@@ -63,3 +64,5 @@ Spring 2025: Course Assisstant for Stat111 under Prof. Joe Blitzstein.
 I went to Harrow International School Hong Kong, where I did not care too much about STEM and had very fond memories in History, Drama, English, Music, and playing Rugby.
 
 I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the <a href="https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/Trinity College Philosophy Essay Prize in 2021" target="_blank">Trinity College Philosophy Essay Prize</a> for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
+
+I am a sucker for Wong Kar-wai movies and love Twin Peaks as well as Brideshead Revisited.
