@@ -20,34 +20,38 @@ permalink: /about/
   - B.A. in Computer Science
   - M.S. in Statistics
 
+## Projects
+- I'm interested in improving the fault tolerance of distributed ML to make it more scalable and cost-efficient. I'm a contributor to [torchFT](https://github.com/pytorch/torchft/).
+- I'm developing a framework on top of PyTorch called [torchLoom](https://github.com/WarrenZhu050413/torchLoom) that gives much more observability and control over ML training process.
+
 ## Courses Taken at Harvard
 
 Here are the technical courses I've taken at Harvard. Within each area listed in order of their influence on me. 200s are Graduate Coureses. Hopefully this is helpful for other students. Feel free to reach out about any of these courses.
 
 ### Bachelors in Computer Science
-GPA: 3.75
+GPA: 3.89
+- CS226 (Graduate: Distributed Systems): Only full mark Final project in the class on Fault Tolerance in Distributed ML
 - CS145 (Networking at Scale: Audited)
-- MIT6.S982 (Deep Learning: Audited)
+- MIT6.S982 (Graduate: Deep Learning: Audited)
 - CS143 (Computer Networks)
-- MIT 6.5930 (Hardware Architecture for Deep Learning)
+- MIT 6.5930 (Graduate: Hardware Architecture for Deep Learning)
 - CS61 (Systems Programming)
 - CS128 (Convex Optimization in Machine Learning)
-- CS226 (Distributed Systems)
-- CS2241 (Algorithms at the End of the Wire)
+- CS2241 (Graduate: Algorithms at the End of the Wire)
 - CS124 (Algo. and Data Structures)
 - CS136 (Economics and Computation)
-- MIT 6.S98s (Diffusion: Theory and Practice)
+- MIT 6.S98s (Graduate: Diffusion: Theory and Practice)
 
 ### Masters in Statistics
 GPA: 3.91
-- Stat220 (Bayesian Data Analysis)
-- Stat210 (Graduate Probability Theory I)
-- Stat212 (Graduate Probability Theory II)
-- Stat288 (Deep Learning and Earth Observation)
+- Stat220 (Graduate: Bayesian Data Analysis)
+- Stat210 (Graduate: Probability Theory I)
+- Stat212 (Graduate: Probability Theory II)
+- Stat288 (Graduate: Deep Learning and Earth Observation)
 - Stat188 (Differential Privacy)
 - Stat211 (Statistical Inference I)
-- Stat242 (Time Series)
-- Stat111 (Undergraduate Statistical Inference)
+- Stat242 (Graduate: Time Series)
+- Stat111 (Statistical Inference)
 
 ### Math
 - Math55a/b (Honors Real/Complex Analysis and Linear Algebra)
