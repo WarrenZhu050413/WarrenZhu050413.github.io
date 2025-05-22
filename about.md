@@ -29,7 +29,7 @@ permalink: /about/
 Here are the technical courses I've taken at Harvard. Within each area listed in order of their influence on me. 200s are Graduate Coureses. Hopefully this is helpful for other students. Feel free to reach out about any of these courses.
 
 ### Bachelors in Computer Science
-GPA: 3.89
+GPA: 3.92 <!-- 4 + 4 + 4 + 3.75 + 4 + 4 + 3.5 + 4 + 4-->
 - CS226 (Graduate: Distributed Systems): Only full mark Final project in the class on Fault Tolerance in Distributed ML
 - CS145 (Networking at Scale: Audited)
 - MIT6.S982 (Graduate: Deep Learning: Audited)
@@ -43,7 +43,7 @@ GPA: 3.89
 - MIT 6.S98s (Graduate: Diffusion: Theory and Practice)
 
 ### Masters in Statistics
-GPA: 3.91
+GPA: 3.91 <!-- 3.75 + 4 + 4 + 4 + 4 + 4 + 3.75 + 3.75-->
 - Stat220 (Graduate: Bayesian Data Analysis)
 - Stat210 (Graduate: Probability Theory I)
 - Stat212 (Graduate: Probability Theory II)
@@ -54,6 +54,7 @@ GPA: 3.91
 - Stat111 (Statistical Inference)
 
 ### Math
+GPA: 3.92 <!-- 4 + 4 + 3.75 -->
 - Math55a/b (Honors Real/Complex Analysis and Linear Algebra)
 - Math123 (Algebra II: Groups and Rings)
 
