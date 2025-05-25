@@ -22,7 +22,7 @@ permalink: /about/
 
 ## Projects
 - I'm interested in improving the fault tolerance of distributed ML to make it more scalable and cost-efficient. I'm a contributor to [torchFT](https://github.com/pytorch/torchft/).
-- I'm developing a framework on top of PyTorch called [torchLoom](https://github.com/WarrenZhu050413/torchLoom) that gives much more observability and control over ML training process.
+- I'm developing a controller for distributed ML on top of PyTorch called [torchLoom](https://github.com/WarrenZhu050413/torchLoom).
 
 ## Courses Taken at Harvard
 
