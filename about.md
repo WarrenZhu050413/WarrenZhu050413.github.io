@@ -8,7 +8,7 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a junior at Harvard University pursuing a bachelor's degree in Computer Science and a master's degree in Statistics. Born and raised in Hong Kong and Shenzhen. I'm primarily interested in Large Scale Machine Learning!
+    <p>I'm a senior at Harvard University. Born and raised in Hong Kong and Shenzhen. I am excited about building agentic systems that bring people joy. I have also been interested in Large Scale Machine Learning. For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
     </p>
   </div>
 </div>
@@ -18,11 +18,12 @@ permalink: /about/
 
 - **Harvard University** (Class of 2026)
   - B.A. in Computer Science
+  - B.A. in Statistics
   - M.S. in Statistics
 
 ## Projects
-- I'm interested in improving the fault tolerance of distributed ML to make it more scalable and cost-efficient. I'm a contributor to [torchFT](https://github.com/pytorch/torchft/).
-- I'm developing a controller for distributed ML on top of PyTorch called [torchLoom](https://github.com/WarrenZhu050413/torchLoom).
+- I'm exploring multi-agent systems through [14 Days of Agents](https://github.com/WarrenZhu050413/14_days_of_agents), a project focused on building and understanding agentic workflows.
+- I'm working on the standardization of fault tolerance protocols for distributed ML. In pursuit of this goal, I've experimented with a prototype through [torchLoom](https://github.com/WarrenZhu050413/torchLoom), a controller for distributed ML on top of PyTorch, while also contributing to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
 
 ## Courses Taken at Harvard
 
