@@ -8,7 +8,7 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a senior at Harvard University. Born and raised in Hong Kong and Shenzhen. I am excited about building agentic systems that bring people joy. I have also been interested in Large Scale Machine Learning. For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
+    <p>I'm a senior at Harvard University. Born and raised in Hong Kong and Shenzhen. I am excited about building agentic systems that make people happy :). I have also been interested in Large Scale Machine Learning. For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
     </p>
   </div>
 </div>
@@ -22,7 +22,8 @@ permalink: /about/
   - M.S. in Statistics
 
 ## Projects
-- I'm exploring multi-agent systems through [14 Days of Agents](https://github.com/WarrenZhu050413/14_days_of_agents), a project focused on building and understanding agentic workflows.
+- I'm developing [Coupling](https://github.com/WarrenZhu050413/coupling), trying to create the human-AI interface that I always wanted myself.
+- I've built [delightful-multilevel-tmux](https://github.com/WarrenZhu050413/delightful-multilevel-tmux), a tmux framework with native nested tmux and claude code support.
 - I'm working on the standardization of fault tolerance protocols for distributed ML. In pursuit of this goal, I've experimented with a prototype through [torchLoom](https://github.com/WarrenZhu050413/torchLoom), a controller for distributed ML on top of PyTorch, while also contributing to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
 
 ## Courses Taken at Harvard
@@ -64,7 +65,7 @@ I did Harvard's SPUDS during Summer 2024, sponsored by the great Xiao-Li Meng an
 
 ### Teaching
 Fall 2024: Course Assisstant for Stat188 (Variations, Information, and Privacy) under Prof. Xiao-Li Meng, working with the wonderful Graduate Teaching Assistant Kyla Chasalow.
-Spring 2025: Course Assisstant for Stat111 under Prof. Joe Blitzstein.
+Spring 2025: Course Assisstant for Stat111 under Prof. Joe Blitzstein, and Stat288 under Prof. Xiao-Li Meng.
 
 ### Other Hobbies
 I went to Harrow International School Hong Kong, where I did not care too much about STEM and had very fond memories in History, Drama, English, Music, and playing Rugby.
