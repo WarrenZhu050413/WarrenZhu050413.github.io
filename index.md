@@ -11,4 +11,6 @@ I'm a senior at Harvard University pursuing a bachelor's degree in Computer Scie
 
 My first intellectual love is philosophy, but have since explored art history, math, statistics, and computer systems, and now, human-computer interaction.
 
-See more about me <a href="www.warrenzhu.com/about">here</a>.
+Right now, I am spending all my time thinking and writing about Writing.
+
+To learn more about me, see <a href="www.warrenzhu.com/about">here</a>.
