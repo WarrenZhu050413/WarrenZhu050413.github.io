@@ -8,7 +8,7 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a senior at Harvard University. Born and raised in Hong Kong and Shenzhen. I am excited about building agentic systems that help people think :). I have also been interested in Large Scale Machine Learning. For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
+    <p>I'm a senior at Harvard University. Born and raised in Hong Kong and Shenzhen. I am excited about building systems that help people think, and I believe that writing is the best technology available for thinking through complicated issues. I also believe that writing is the best way to coordinate large numbers of autonomous agents. I have been interested in ML Systems. For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>. Please email me about whatever at wzhu@college.harvard.edu! You can title it "Hi" and write anything in the contents :).
     </p>
   </div>
 </div>
@@ -22,9 +22,12 @@ permalink: /about/
   - M.S. in Statistics
 
 ## Current Projects
-- I'm developing [Coupling](https://github.com/WarrenZhu050413/coupling), trying to create the human-AI interface that I always wanted myself.
-- I'm building useful primitives for agentic orchestration. I've built [delightful-multilevel-tmux](https://github.com/WarrenZhu050413/delightful-multilevel-tmux), a tmux framework for complex session management and with CC utilities. I am building [claude-branch](https://github.com/WarrenZhu050413/claude-branch) for git-like primitives for context management for agents.
-- I'm working on the standardization of fault tolerance protocols for distributed ML. Whilst doing this, I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
+- I am building LLM-based tools to help people think and articulate their thoughts. Towards this end, I am reading everything I can find about writing. I would also love to talk to anyone about their writing process! (Please email me about this if you have any thoughts!)
+- I'm building useful primitives for agentic orchestration. I've built [delightful-multilevel-tmux](https://github.com/WarrenZhu050413/delightful-multilevel-tmux), a tmux framework & bash utilities for multi-clauding. I am building [claude-branch](https://github.com/WarrenZhu050413/claude-branch) for git-like primitives for context management in CC.
+
+## ML Systems Projects (unfinished! Contact me if you are interested in taking these ideas!)
+- I've worked on on the standardization of fault tolerance protocols for distributed ML. Whilst doing this, I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
+- I've sketched out ways to improve pytorch's deviceMesh abstraction
 
 ## Courses Taken at Harvard
 
@@ -68,8 +71,8 @@ Fall 2024: Course Assisstant for Stat188 (Variations, Information, and Privacy) 
 Spring 2025: Course Assisstant for Stat111 under Prof. Joe Blitzstein, and Stat288 under Prof. Xiao-Li Meng.
 
 ### Other Hobbies
-I went to Harrow International School Hong Kong, where I did not care too much about STEM and had very fond memories in History, Drama, English, Music, and playing Badminton and Rugby.
+I went to Harrow International School Hong Kong, where I had very fond memories studying History, Drama, English, Music, and playing Badminton and Rugby.
 
 I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the <a href="https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/Trinity College Philosophy Essay Prize in 2021" target="_blank">Trinity College Philosophy Essay Prize</a> for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
 
-I am a sucker for Wong Kar-wai movies and love Twin Peaks, Brideshead Revisited, and Yes, (Prime)Minister!.
+I am a sucker for Wong Kar-wai movies and love Twin Peaks, Brideshead Revisited, and Yes, (Prime) Minister!.
