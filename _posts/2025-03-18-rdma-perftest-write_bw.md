@@ -2,8 +2,10 @@
 layout: post
 title: "Perftest GpuDirectRDMA `write_bw`"
 date: 2025-03-17 12:00:00 -0400
-categories: [rdma, gdr, networking, hpc, cuda, distributedml]
+categories: [MLSystems]
 ---
+
+Note: I am not thinking about MLSystems now. But keeping these posts here for anyone curious.
 
 # Goal
 

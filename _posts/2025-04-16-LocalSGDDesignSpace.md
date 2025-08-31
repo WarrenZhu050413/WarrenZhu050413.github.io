@@ -2,8 +2,10 @@
 layout: post
 title: "LocalSGD Design Space"
 date: 2025-04-16 12:00:00 -0400
-categories: [distributedsystems, hierarchicalml, distributedml, mlalgorithms]
+categories: [MLSystems]
 ---
+
+Note: I am not thinking about MLSystems now. But keeping these posts here for anyone curious.
 
 LocalSGD has been an area with a lot of exciting work. As OpenAI's GPT4.5 team recently [said](https://www.youtube.com/watch?v=6nJZopACRuQ&t=10s&ab_channel=OpenAI), "semi-synchronous" training may be how we do a collective million GPU run! So here's a small lit review that I hope is helpful.
 

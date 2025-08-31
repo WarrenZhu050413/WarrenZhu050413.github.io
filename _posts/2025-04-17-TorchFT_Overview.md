@@ -2,8 +2,10 @@
 layout: post
 title: "TorchFT Design Overview"
 date: 2025-04-17 12:00:00 -0400
-categories: [pytorch, torchFT, distributedsystems, hpc, distributedml]
+categories: [MLSystems]
 ---
+
+Note: I am not thinking about MLSystems now. But keeping these posts here for anyone curious.
 
 Sharing some of my learnings looking at a large portion of my past month looking at the TorchFT codebase. Hope it is useful! It is a roadmap to get you comfortable developing on top of the codebase. I also have to thank [Tristan Rice](https://github.com/d4l3k) for being really kind and helpful!
 
