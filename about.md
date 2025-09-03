@@ -28,8 +28,8 @@ For more formal details, you can view my <a href="https://docs.google.com/docume
 - I'm building useful primitives for agentic orchestration. I've built [delightful-multilevel-tmux](https://github.com/WarrenZhu050413/delightful-multilevel-tmux), a tmux framework & bash utilities for multi-clauding. I am building [claude-branch](https://github.com/WarrenZhu050413/claude-branch) for git-like primitives for context management in CC.
 
 ## ML Systems Projects (unfinished! Contact me if you are interested in taking these ideas!)
-- I've worked on on the standardization of fault tolerance protocols for distributed ML. Whilst doing this, I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
-- I've sketched out ways to improve pytorch's deviceMesh abstraction
+- I've worked on on the standardization of fault tolerance protocols for distributed ML. CRAFT: A Pytorch-based Protocol for Composing Fault Tolerance Techniques is accepted to Pytorch Conference 2025, and I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems. There is much more to do, and I would love to share my thoughts if anyone is interested in taking them on.
+- I have sketched out how to generalize the PyTorch grid-like DeviceMesh abstraction into a Tree for hierarchical SGD scenarios. I have not implemented it in PyTorch since the engineering work to get it compatible with everything is substantial, but would love to share my thoughts there also.
 
 ## Statistics Research
 I did Harvard's SPUDS during Summer 2024, sponsored by the great Xiao-Li Meng and under the incredible mentorship of Connor Jerzak. <a href="https://arxiv.org/abs/2411.02134" target="_blank">It</a> appeared in <a href="https://www.cclear.cc" target="_blank">clear2025</a>.
