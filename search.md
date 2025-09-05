@@ -273,7 +273,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="categories-page">
   {% assign sorted_categories = site.categories | sort %}
   {% for category in sorted_categories %}
-    <h3 id="{{ category[0] | slugify }}">{{ category[0] }}</h3>
+    {% assign category_name = category[0] %}
+    {% assign display_name = site.data.category_names[category_name] | default: category_name %}
+    <h3 id="{{ category_name | slugify }}">{{ display_name }}</h3>
     <ul class="category-list">
       {% for post in category[1] %}
         <li>
