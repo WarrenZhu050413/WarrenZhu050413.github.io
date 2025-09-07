@@ -31,3 +31,10 @@ _notes/
 # Hidden Pages
 /Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/papers.md
 _posts/pdf/
+
+# Claude-related files
+.claude/
+CLAUDE.md
+commands
+doc.md
+hooks

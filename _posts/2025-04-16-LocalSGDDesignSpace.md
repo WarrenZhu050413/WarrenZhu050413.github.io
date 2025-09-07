@@ -2,7 +2,7 @@
 layout: post
 title: "LocalSGD Design Space"
 date: 2025-04-16 12:00:00 -0400
-categories: [MLSystems]
+categories: [mlsystems]
 ---
 
 Note: I am not thinking about MLSystems now. But keeping these posts here for anyone curious.

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Perftest GpuDirectRDMA `write_bw`"
+title: "perftest gpudirectrdma `write_bw`"
 date: 2025-03-17 12:00:00 -0400
-categories: [MLSystems]
+categories: [mlsystems]
 ---
 
 Note: I am not thinking about MLSystems now. But keeping these posts here for anyone curious.
