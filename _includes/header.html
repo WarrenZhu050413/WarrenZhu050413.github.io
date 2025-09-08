@@ -1,6 +1,9 @@
 <header class="site-header">
   <div class="wrapper">
-    <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+    <a class="site-title" rel="author" href="{{ "/" | relative_url }}">
+      {{ site.title | escape }}
+      <img src="{{ "/assets/favicons/favicon-original.png" | relative_url }}" alt="Site favicon" class="site-title-icon">
+    </a>
     
     {%- assign page_paths = site.pages | map: "path" -%}
     <nav class="site-nav">

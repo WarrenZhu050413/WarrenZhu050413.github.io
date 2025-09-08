@@ -14,10 +14,18 @@
 }
 
 .site-title {
-  font-family: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 450;
   letter-spacing: -0.5px;
   font-size: 24px;
+  display: inline-flex;
+  align-items: center;
+  
+  .site-title-icon {
+    width: 60px;
+    height: 60px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
 }
 
 // Footer styles
@@ -44,13 +52,14 @@ body {
 
 // Custom post list styling
 .post-list {
-  margin-top: 2em;
-  
+  margin-top: 1em;
+  font-size: 0.85em;
+
   li {
-    margin-bottom: 2em;
-    padding-bottom: 2em;
+    margin-bottom: 0em;
+    padding-bottom: 0em;
     border-bottom: 1px solid #f1f1f1;
-    
+
     &:last-child {
       border-bottom: none;
     }

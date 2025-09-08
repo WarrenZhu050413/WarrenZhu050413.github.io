@@ -12,6 +12,7 @@ plugins:
   - jekyll-feed
   - jekyll-paginate
   - jekyll-scholar
+  - jekyll-seo-tag
 
 # Exclude files from build
 exclude:
