@@ -7,6 +7,11 @@ categories: [writing]
 
 # Trivial Minds, Complex Worlds
 
+<div style="float: right; max-width: 250px; margin: 0 0 15px 15px;">
+  <img src="/assets/pictures/HerbSimonAnt.png" alt="Ant tracing complex path" style="width: 100%;">
+  <p style="font-size: 0.8em; color: #666; margin-top: 5px; text-align: center; font-style: italic;">Image: 4o Image Gen</p>
+</div>
+
 Human cognition is trivially simple, Herbert Simon says.
 
 - We can only process one discrete idea at a time.
