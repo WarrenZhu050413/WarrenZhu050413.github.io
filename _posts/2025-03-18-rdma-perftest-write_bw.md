@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "perftest gpudirectrdma `write_bw`"
+description: "I want to look at `ib_write_bw` with `--use-cuda` flag and understand from a libibverbs level how the GDR transfer is setup and then executed in perftest."
 date: 2025-03-17 12:00:00 -0400
 categories: [mlsystems]
 ---

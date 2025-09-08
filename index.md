@@ -22,5 +22,4 @@ read_more_text: Continue reading →
   </div>
 </div>
 <div style="clear: both;"></div>
-
 ---

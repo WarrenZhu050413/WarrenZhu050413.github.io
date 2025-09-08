@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Trivial Minds, Complex Worlds"
+description: "Human cognition is trivially simple, Herbert Simon says. We can only process one discrete idea at a time."
 date: 2025-09-08 11:27:35 +0800
 categories: [writing]
 ---

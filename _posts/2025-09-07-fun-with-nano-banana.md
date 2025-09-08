@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Fun with Nano-Banana"
+description: "I believe in two things in AI models: The demos always oversell the capabilities of the models. The demos always undersell the possibilities with them."
 date: 2025-09-07 10:49:53 +0800
 categories: [ai-tricks]
 ---

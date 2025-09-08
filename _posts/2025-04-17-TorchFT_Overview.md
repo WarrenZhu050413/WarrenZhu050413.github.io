@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "TorchFT Design Overview"
+description: "Sharing some of my learnings looking at a large portion of my past month looking at the TorchFT codebase. Hope it is useful!"
 date: 2025-04-17 12:00:00 -0400
 categories: [mlsystems]
 ---

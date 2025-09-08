@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "LocalSGD Design Space"
+description: "LocalSGD has been an area with a lot of exciting work. As OpenAI's GPT4.5 team recently said, \"semi-synchronous\" training may be how we do a collective million GPU run!"
 date: 2025-04-16 12:00:00 -0400
 categories: [mlsystems]
 ---
