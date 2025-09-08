@@ -43,7 +43,7 @@ We can alter our environment through physical means (cleaning beaches, locking a
 
 The cognitive environment follows fewer laws. And writing is our way to change it. It is almost too easy, compared to how hard it is to get out of my room to exercise...
 
-## Implication 4: Software = Writing Changing the Physical World
+## Implication 4: Software = Writing + Physics
 
 And now, the crazy thing: Software is the rich interface for our writings to directly affect our physical environment, and computer infrastructure is the complex inner workings of that interface. This is why computers are revolutionary.
 

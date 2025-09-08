@@ -1,3 +1,6 @@
+---
+---
+
 @import "minima";
 
 // Custom styling for the site
@@ -149,4 +152,26 @@ body {
     border-radius: 3px;
     overflow-x: auto;
   }
+}
+
+// Post content styles (universal for all posts)
+.post-content {
+  font-size: 1.15em;
+  line-height: 1.7;
+  
+  h2 {
+    font-size: 1.5em;
+    margin-top: 1.5em;
+  }
+}
+
+// Commentary/quote styling
+.commentary {
+  display: block;
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  background: #f9f9f9;
+  border-left: 4px solid #ddd;
+  font-style: italic;
+  color: #666;
 } 
