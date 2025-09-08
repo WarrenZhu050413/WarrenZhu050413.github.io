@@ -5,26 +5,6 @@ date: 2025-09-07 10:49:53 +0800
 categories: [ai-tricks]
 ---
 
-<style>
-.post-content {
-  font-size: 1.15em;
-  line-height: 1.7;
-}
-.post-content h2 {
-  font-size: 1.5em;
-  margin-top: 1.5em;
-}
-.commentary {
-  display: block;
-  padding: 1em 1.5em;
-  margin: 1.5em 0;
-  background: #f9f9f9;
-  border-left: 4px solid #ddd;
-  font-style: italic;
-  color: #666;
-}
-</style>
-
 I believe in two things in AI models:
 
 1. The demos always oversell the capabilities of the models.
