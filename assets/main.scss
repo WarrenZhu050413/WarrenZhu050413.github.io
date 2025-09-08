@@ -21,11 +21,16 @@
   align-items: center;
   
   .site-title-icon {
-    width: 60px;
-    height: 60px;
+    width: 51px;
+    height: 51px;
     margin-left: 6px;
     vertical-align: middle;
   }
+}
+
+// Navigation link styles
+.site-nav .page-link {
+  font-size: 1.2em;
 }
 
 // Footer styles
