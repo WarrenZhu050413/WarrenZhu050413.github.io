@@ -15,11 +15,11 @@ Human cognition is trivially simple, Herbert Simon says.
 
 We're like ants who walk complex paths when traversing complex terrains, but simple ones when crossing simple terrains. What looks like complex behavior from the outside is:
 
-<span class="commentary">largely a reflection of the complexity of the environment in which we find ourselves.</span>
+> largely a reflection of the complexity of the environment in which we find ourselves.
 
 The environment includes everything external to us. They are physical objects that constrain our actions, tools that we use, systems of information representation and storage we rely on. Including, for example, our long-term memory: 
 
-<span class="commentary">a human being can store away in memory a great furniture of information that can be evoked by appropriate stimuli. Hence I would like to view this information-packed memory less as part of the organism than as part of the environment to which it adapts.</span>
+> a human being can store away in memory a great furniture of information that can be evoked by appropriate stimuli. Hence I would like to view this information-packed memory less as part of the organism than as part of the environment to which it adapts.
 
 We don't have to accept that Herb Simon got everything right. Indeed, I think our inner lives are far richer than the Turing Machine moving on a tape that he's imagining. Nonetheless, if we grant that this conceptualization explains some part of our behavior, especially the part of our inner life devoted to Thinking Logically, then there are interesting implications.
 
