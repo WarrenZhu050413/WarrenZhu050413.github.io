@@ -12,6 +12,7 @@ permalink: /about/
 
 For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
     </p>
+    <p><strong>→ <a href="/">Read my latest posts</a></strong></p>
   </div>
 </div>
 <div style="clear: both;"></div>
