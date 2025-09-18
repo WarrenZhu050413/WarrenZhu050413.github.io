@@ -104,3 +104,10 @@ GPA: 3.92 <!-- 4 + 4 + 3.75 -->
 
 - Math55a/b (Honors Real/Complex Analysis and Linear Algebra)
 - Math123 (Algebra II: Groups and Rings)
+
+### Bad Courses
+
+I have had the pleasure of attending courses (to complete graduation requirements) that I hated to my bones. They helped me appreciate how great my other courses were. Here is the thank you list:
+
+- CS1060 (Software Engineering with GenAI)
+- Expos20: Is it Okay To Be A Luddite (Compulsory Writing Course)
