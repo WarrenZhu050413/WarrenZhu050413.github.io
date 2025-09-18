@@ -9,9 +9,11 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a senior at Harvard University and grew up in Hong Kong and Shenzhen. I want to build tools that help us think through deep and complex problems. I believe this requires building a) adaptive informational interfaces for humans, b) self-organizing tools to manage our knowledge and prefereneces, c) cognitive environments that feels natural to use.
-            I love and hate the modern world, and I am especially skeptical (social) science. I split my time between playing with new technology, reading about old ideas, and being (technology free) with loved ones.
-            If anything in these webpages provoke any thought, email me about whatever at wzhu@college.harvard.edu! You can title it "Hi" and write anything in the contents :).
+    <p>I'm a senior at Harvard University and grew up in Hong Kong and Shenzhen. I want to build tools that help us think through deep and complex problems. I believe this requires building a) adaptive informational interfaces for humans, b) self-organizing tools to manage our knowledge and preferences, c) cognitive environments that feel natural to use.
+    <br><br>
+    I love and hate the modern world, and I am especially skeptical of (social) science. I split my time between playing with new technology, reading about old ideas, and being (technology free) with loved ones.
+    <br><br>
+    If anything in these webpages provokes any thought, email me about whatever at wzhu@college.harvard.edu! You can title it "Hi" and write anything in the contents :).
 
 For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
 
