@@ -34,10 +34,7 @@ For more formal details, you can view my <a href="https://docs.google.com/docume
 ## Current Projects
 
 - I am building LLM-based tools to help people think and articulate their thoughts. Towards this end, I am reading everything I can find about writing. I would also love to talk to anyone about their writing process! (Please email me about this if you have any thoughts or want to chat!)
-  - I believe that tools for writing should preserve the individual variation in the inputs in its outputs
-  - I believe in appropriable frameworks that help people match their cognitive environments to their goals
-  - I believe in treating Q&A pairs with agents as first class objects
-- I'm building useful primitives for agentic orchestration. I've built [delightful-multilevel-tmux](https://github.com/WarrenZhu050413/delightful-multilevel-tmux), a tmux framework & bash utilities for multi-clauding. I am building [claude-branch](https://github.com/WarrenZhu050413/claude-branch) for git-like primitives for context management in CC.
+- My most recent thoughts are in this [post](https://www.warrenzhu.com/hci/2025/09/22/homo-faber-or-what-i-want-to-do.html)
 
 ## ML Systems Projects (unfinished! Contact me if you are interested in taking these ideas!)
 

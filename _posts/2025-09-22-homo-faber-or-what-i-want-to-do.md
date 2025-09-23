@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Homo Faber: Or. What I want to do."
+title: "Homo Faber"
 description: "Hannah Arendt called us Homo Faber. We are tool-makers and tool-users. For me, the promise of current generation AI is the arrival of a new category of intelligent meta-tools"
 date: 2025-09-22 09:59:34 -0400
 categories: [hci]
@@ -51,3 +51,4 @@ With the abundance of tools, we need to innovate on how the output of tools is p
 For examination, we could view outputs at different resolutions (one-sentence summary → paragraph → full detail), sample multiple responses in parallel with slight perturbations to understand the idea distribution (e.g., [AlphaEvolve-style evolutions](https://github.com/WarrenZhu050413/openevolve-writing)), and trace reasoning paths beyond final outputs.
 
 For experience, we could explore adaptive interfaces beyond text: direct rendering as interactive HTML, data visualizations, PowerPoints, videos, movies, games, music, or, most excitingly, the combination of them for the maximum transmission of insight.
+
