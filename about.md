@@ -56,7 +56,7 @@ I have also been tutoring highschoolers after seeing how helpful I could be to m
 
 ### Other Hobbies
 
-I went to Harrow International School Hong Kong, where I had very fond memories studying History, Drama, English, Music, and playing Badminton and Rugby.
+I went to Harrow International School Hong Kong, where I had fond memories studying History, Drama, English, Music, and playing Badminton and Rugby, and many, many unhappy memories. I advise that any prospective parents/students to not be fooled by its marketing. From what I can see, it is horribly bureaucratic and unresponsive to student needs. It also appropriates the brand of a British Public School for economic means (which is legal, but I personally think quite unethical). I should note that I respect many great teachers in the school; I wrote the above paragraph out of quite a fit of dissatisfaction with the school.
 
 I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the <a href="https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/Trinity College Philosophy Essay Prize in 2021" target="_blank">Trinity College Philosophy Essay Prize</a> for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
 
