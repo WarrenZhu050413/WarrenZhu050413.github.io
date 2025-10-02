@@ -15,3 +15,5 @@ categories: [writing]
 7. Don't listen to advice given by people who a) Don't seem to seriously execute the advice, b) Does not walk the walk.
 8. Don't give advices that satisfy 4a.
 9. Don't believe findings in (social) science unless I've done my due diligence in reviewing its methodology.
+
+*From my 4th reading of Antifragile*
