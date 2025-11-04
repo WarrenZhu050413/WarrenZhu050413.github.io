@@ -15,12 +15,12 @@ read_more_text: Continue reading →
   
   <div style="float: left; width: calc(100% - 215px);">
     <p>Welcome! I'm Warren Zhu, a senior at Harvard studying Computer Science and Statistics.</p>
-    
-    <p>My first intellectual love is Philosophy. I have traveled through literature, art history, math, statistics, and computer systems, and now explore human-computer interaction.</p>
-    
+
+    <p>My first intellectual love is Philosophy. I have traveled through literature, art history, math, statistics, and computer systems. I'm now exploring human-computer interaction.</p>
+
     <p><strong>→ <a href="/about">Learn more about me</a></strong></p>
+
   </div>
 </div>
 <div style="clear: both;"></div>
 ---
-

@@ -9,16 +9,16 @@ permalink: /about/
   
   <div style="float: left; width: calc(100% - 165px);">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a senior at Harvard University and grew up in Hong Kong and Shenzhen. I want to build tools that help us think through deep and complex problems. I believe this requires building a) adaptive informational interfaces for humans, b) self-organizing tools to manage our knowledge and preferences, c) cognitive environments that feel natural to use.
+    <p>I'm a senior at Harvard University and grew up in Hong Kong and Shenzhen. I want to build tools that help us learn, think, and be happy.
     <br><br>
-    I love and hate the modern world, and I am especially skeptical of (social) science. I split my time between playing with new technology, reading about old ideas, and being (technology free) with loved ones.
+    I love and hate modern technology, and I am especially skeptical of (social) science. I split my time between playing with new technology, reading about old ideas, and being (technology free) with loved ones.
     <br><br>
-    If anything in these webpages provokes any thought, email me about whatever at wzhu@college.harvard.edu! You can title it "Hi" and write anything in the contents :).
+    If anything in these webpages provokes any thought, email me about whatever at wzhu@college.harvard.edu!
 
 For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
 
 </p>
-<p><strong>→ <a href="/">Read my latest posts</a></strong></p>
+<p><strong>→ <a href="/">Latest posts</a></strong></p>
 
   </div>
 </div>
@@ -33,13 +33,11 @@ For more formal details, you can view my <a href="https://docs.google.com/docume
 
 ## Current Projects
 
-- I am building LLM-based tools to help people think and articulate their thoughts. Towards this end, I am reading everything I can find about writing. I would also love to talk to anyone about their writing process! (Please email me about this if you have any thoughts or want to chat!)
-- My most recent thoughts are in this [post](https://www.warrenzhu.com/hci/2025/09/22/homo-faber-or-what-i-want-to-do.html)
+- I am building LLM-based tools to help people think, articulate their thoughts, and learn. I don't know what this would look like, but I
 
-## ML Systems Projects (unfinished! Contact me if you are interested in taking these ideas!)
+## ML Systems Projects
 
-- I've worked on on the standardization of fault tolerance protocols for distributed ML. "CRAFT: A Pytorch-based Protocol for Composing Fault Tolerance Techniques" is accepted to Pytorch Conference 2025, and I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems. I have left much undone, and I would love to share my thoughts if anyone is interested in taking them on.
-- I have sketched out how to generalize the PyTorch grid-like DeviceMesh abstraction into a Tree for hierarchical SGD scenarios. I have not implemented it in PyTorch since the engineering work to get it compatible with everything is substantial, but would love to share my thoughts there also.
+- I've worked on the standardization of fault tolerance protocols for distributed ML. I presented "CRAFT: A Pytorch-based Protocol for Composing Fault Tolerance Techniques" ([poster](/assets/posters/CRAFT_poster.pdf)) as a poster in Pytorch Conference 2025, and I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
 
 ## Statistics Research
 
@@ -56,7 +54,7 @@ I have also been tutoring highschoolers after seeing how helpful I could be to m
 
 ### Other Hobbies
 
-I went to Harrow International School Hong Kong, where I had fond memories studying History, Drama, English, Music, and playing Badminton and Rugby, and many, many unhappy memories. I advise that any prospective parents/students to not be fooled by its marketing. From what I can see, it is horribly bureaucratic and unresponsive to student needs. It also appropriates the brand of a British Public School for economic means (which is legal, but I personally think quite unethical). I should note that I respect many great teachers in the school; I wrote the above paragraph out of quite a fit of dissatisfaction with the school.
+I went to Harrow International School Hong Kong, where I had fond memories studying History, Drama, English, Music, and playing Badminton and Rugby. I am, however, concerned about how it appropriates the brand of a British Public School for economic means, and feel like the school can, at times, be horribly bureaucratic and unresponsive to student needs. I should note that I respect many great teachers in the school; I wrote the above paragraph out of quite a fit of dissatisfaction with the school.
 
 I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the <a href="https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/Trinity College Philosophy Essay Prize in 2021" target="_blank">Trinity College Philosophy Essay Prize</a> for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
 
@@ -104,7 +102,14 @@ GPA: 3.92 <!-- 4 + 4 + 3.75 -->
 
 ### Bad Courses
 
-I have had the pleasure of attending courses (to complete graduation requirements) that I hated to my bones. They helped me appreciate how great my other courses were. Here is the thank you list:
+I have had the pleasure of attending courses (to complete graduation requirements) that I very much disliked. Weirdly, they helped me understand myself more than the good courses, [via negativa](https://www.goodreads.com/quotes/12199316-via-negativa-the-principle-that-we-know-what-is-wrong). Here is a thank you list:
 
-- CS1060 (Software Engineering with GenAI)
 - Expos20: Is it Okay To Be A Luddite (Compulsory Writing Course)
+- CS1060: Software Engineering with GenAI (I love Christopher but I don't think Software Engineering should be teached. There were also so, so many tiny quizzes and attendance and homework it was dystopian.)
+
+### Unintuitively Great Courses
+
+- SLAVIC148: Strange Russian Writers (Has the best reading list ever and makes me want to goto all Soviet Bloc countries)
+- GENED1136: Power and Politics, China (Wow. Kirby and Bol are really, really knowledgeable. They helped me appreciate the greatness of true historians. It is also a refreshingly rigorous GENED.)
+- STAT288: Deep Statistics. (Xiao-Li is GOATED).
+- COMPSCI143: Computer Networking. (Networking is beautiful, and HT Kung is legendary.)

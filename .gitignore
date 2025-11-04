@@ -27,6 +27,7 @@ vendor/
 # Notes
 _notes/
 /Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/_posts/2023-05-30-citation-test.md
+.annotations/
 
 # Hidden Pages
 /Users/wz/Desktop/zPersonalProjects/WarrenZhu050413.github.io/papers.md
@@ -38,3 +39,4 @@ CLAUDE.md
 commands
 doc.md
 hooks
+claude_html
