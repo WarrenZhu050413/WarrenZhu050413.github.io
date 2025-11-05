@@ -37,8 +37,6 @@ jobs:
         with:
           bundler-cache: true
           cache-version: 0
-      - name: Install jekyll-scholar
-        run: gem install jekyll-scholar
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
