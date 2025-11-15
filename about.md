@@ -28,12 +28,12 @@ For more formal details, you can view my <a href="https://docs.google.com/docume
 
 - **Harvard University** (Class of 2026)
   - B.A. in Computer Science
-  - B.A. in Statistics
   - M.S. in Statistics
+  - Secondary in Educational Studies
 
 ## Current Projects
 
-- I am building LLM-based tools to help people think, articulate their thoughts, and learn. I don't know what this would look like, but I
+- I'm working on [Studio Ten Wu](https://studiotenwu.github.io) with [Matthew Kotzbauer](https://www.facebook.com/matthew.kotzbauer.50/). We want to reimagine K-12 education with Agentic AI, but to be completely frank, we do not know what we are doing and we are trying to learn as much as possible about K-12 and EdTech. We have ran a small experiment in [PokeCraft](https://github.com/StudioTenwu/PokeCraft).
 
 ## ML Systems Projects
 
@@ -54,7 +54,7 @@ I have also been tutoring highschoolers after seeing how helpful I could be to m
 
 ### Other Hobbies
 
-I went to Harrow International School Hong Kong, where I had fond memories studying History, Drama, English, Music, and playing Badminton and Rugby. I am, however, concerned about how it appropriates the brand of a British Public School for economic means, and feel like the school can, at times, be horribly bureaucratic and unresponsive to student needs. I should note that I respect many great teachers in the school; I wrote the above paragraph out of quite a fit of dissatisfaction with the school.
+I went to Harrow International School Hong Kong, where I had fond memories studying History, Drama, English, Music, and playing Badminton and Rugby. However, my experience with some of the bureaucracies there, as well as just being a child who was not suitable with the general educational system, left me deep scars and made me want to improve the educational experience of people for the better.
 
 I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the <a href="https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/Trinity College Philosophy Essay Prize in 2021" target="_blank">Trinity College Philosophy Essay Prize</a> for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
 
@@ -113,51 +113,3 @@ I have had the pleasure of attending courses (to complete graduation requirement
 - GENED1136: Power and Politics, China (Wow. Kirby and Bol are really, really knowledgeable. They helped me appreciate the greatness of true historians. It is also a refreshingly rigorous GENED.)
 - STAT288: Deep Statistics. (Xiao-Li is GOATED).
 - COMPSCI143: Computer Networking. (Networking is beautiful, and HT Kung is legendary.)
-
-### Senior Spring Craziness
-
-There is so much I want to understand, at least on a surface level, before I graduate. So much that I didn't do because I was too busy doing math or coding. So I went and gathered all the courses that I want to take this semester and did a codex based bin-packing + iterative search. I found 14 courses without conflict with each other that I actually want to take. Here are them, and putting this here would hopefully encourage others to do something similar (and encourage me to follow up on this plan :)).
-
-<div style="overflow-x:auto;">
-<table style="width:100%; border-collapse:collapse;">
-  <caption style="caption-side:top; font-weight:bold; padding:6px 0;">Spring 2026 Course Schedule</caption>
-  <colgroup>
-    <col style="width:15%;">
-    <col style="width:20%;">
-    <col style="width:65%;">
-  </colgroup>
-  <thead style="text-align:left; background:#f2f3f5;">
-    <tr>
-      <th scope="col" style="padding:6px 10px; border:1px solid #d0d5dd;">Day</th>
-      <th scope="col" style="padding:6px 10px; border:1px solid #d0d5dd;">Time</th>
-      <th scope="col" style="padding:6px 10px; border:1px solid #d0d5dd;">Course</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Mon</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">09:45–11:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 1480 — Design of VLSI Circuits and Systems <br><small>Gage Hills</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Mon</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">11:15–12:30</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 2640 — Modern Storage Systems <br><small>Juncheng Yang</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Mon</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">13:30–14:45</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">HIST 32A — The Ottoman Empire and the World, ca. 1000–1550 <br><small>Cemal Kafadar</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Mon</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">15:00–17:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPLIT 110X — What Is a Novel? <br><small>David Damrosch (auditing COMPLIT 156 — Gregory Nagy)</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Tue</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">09:00–10:15</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">NEC 120 — Jerusalem, a History: From Antiquity to the Present <br><small>Jessica Marglin</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Tue</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">11:15–12:30</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">ENG-SCI 159 — Introduction to Robotics <br><small>Robert D. Howe</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Tue</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">12:45–14:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 2824 — Foundations of Reinforcement Learning <br><small>Kiante Brantley</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Tue</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">15:00–17:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">RELIGION 1078 — The Prophet Muhammad in History, Devotion, and Polemic <br><small>Mohsen Goudarzi</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Wed</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">09:45–11:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 1480 — Design of VLSI Circuits and Systems <br><small>Gage Hills</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Wed</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">11:15–12:30</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 2640 — Modern Storage Systems <br><small>Juncheng Yang</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Wed</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">13:30–14:45</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">HIST 32A — The Ottoman Empire and the World, ca. 1000–1550 <br><small>Cemal Kafadar</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Wed</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">15:00–17:45</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">ISLAMCIV 158 — The Qur’an through the Ages: Transmission and Reception <br><small>Shady Nasser</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Thu</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">09:00–10:15</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">NEC 120 — Jerusalem, a History: From Antiquity to the Present <br><small>Jessica Marglin</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Thu</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">11:15–12:30</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">ENG-SCI 159 — Introduction to Robotics <br><small>Robert D. Howe</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Thu</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">12:45–14:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 2824 — Foundations of Reinforcement Learning <br><small>Kiante Brantley</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Thu</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">14:00–15:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 91R — Supervised Reading and Research (weekly check-in) <br><small>Stephen Chong</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Thu</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">15:00–17:45</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">HIST 1926 — Decolonization: An Unfinished History <br><small>Stuart Ward</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Thu</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">18:00–20:00</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">SLAVIC 192 — The Cinema of Stanley Kubrick <br><small>Justin Weir</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Fri</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">09:00–11:45</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">COMPSCI 1411 — Computer Architecture <br><small>David Brooks</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Fri</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">12:00–16:15</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">AFVS 11G — Exploring the Human Form: Introduction to Figure Drawing <br><small>Maria Gamboa</small></td></tr>
-    <tr><td style="padding:6px 10px; border:1px solid #e0e3eb;">Fri</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">13:30–15:30</td><td style="padding:6px 10px; border:1px solid #e0e3eb;">ENGLISH 172AD — American Democracy (audit; overlaps with AFVS 11G) <br><small>John Stauffer</small></td></tr>
-  </tbody>
-</table>
-</div>
-
-<p style="margin-top:6px;"><em>Credit load:</em> COMPSCI 1480/2640/2824/1411, COMPSCI 91R, HIST 32A, HIST 1926, RELIGION 1078, ISLAMCIV 158, NEC 120, ENG-SCI 159, SLAVIC 192.<br>
-<em>Audits/overloads:</em> COMPLIT 156, AFVS 11G, ENGLISH 172AD.</p>
