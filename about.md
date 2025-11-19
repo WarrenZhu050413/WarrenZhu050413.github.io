@@ -37,7 +37,7 @@ For more formal details, you can view my <a href="https://docs.google.com/docume
 
 ## ML Systems Projects
 
-- I've worked on the standardization of fault tolerance protocols for distributed ML. I presented "CRAFT: A Pytorch-based Protocol for Composing Fault Tolerance Techniques" ([poster](/assets/posters/CRAFT_poster.pdf)) as a poster in Pytorch Conference 2025, and I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
+- I've worked on the standardization of fault tolerance protocols for distributed ML. I presented "CRAFT: A Pytorch-based Protocol for Composing Fault Tolerance Techniques" ([poster](/assets/posters/CRAFT_poster.png)) as a poster in Pytorch Conference 2025, and I have contributed to [torchFT](https://github.com/pytorch/torchft/) to improve the fault tolerance of distributed ML systems.
 
 ## Statistics Research
 
