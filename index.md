@@ -2,7 +2,7 @@
 layout: home
 title: Fucheng Warren Zhu
 list_title: Latest Posts
-show_excerpts: true
+show_excerpts: false
 post_class: card
 read_more_text: Continue reading →
 ---
