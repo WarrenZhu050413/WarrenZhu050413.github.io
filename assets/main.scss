@@ -63,11 +63,6 @@ body {
   li {
     margin-bottom: 0em;
     padding-bottom: 0em;
-    border-bottom: 1px solid #f1f1f1;
-
-    &:last-child {
-      border-bottom: none;
-    }
   }
 }
 
@@ -88,17 +83,10 @@ body {
 
 // Post item styles
 .post-item {
-  &.card {
-    background: #f9f9f9;
-    border-radius: 5px;
-    padding: 1.5em;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
   &.compact {
     margin-bottom: 1em;
     padding-bottom: 1em;
-    
+
     .post-link {
       font-size: 1.2em;
     }
