@@ -28,6 +28,17 @@ collections:
   notes:
     output: true
     permalink: /notes/:path/
+  sentences:
+    output: true
+    permalink: /sentences/:slug/
+
+# Default layouts for collections
+defaults:
+  - scope:
+      path: ""
+      type: sentences
+    values:
+      layout: sentence
 
 # Author information
 author:

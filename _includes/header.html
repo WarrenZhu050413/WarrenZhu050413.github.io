@@ -20,10 +20,11 @@
         <a class="page-link" href="{{ '/about/' | relative_url }}">About</a>
         <a class="page-link" href="{{ '/' | relative_url }}">Posts</a>
         <a class="page-link" href="{{ '/search/' | relative_url }}">Categories</a>
+        <a class="page-link" href="{{ '/sentences/' | relative_url }}">Sentences</a>
         <!-- Add any other pages not explicitly listed above -->
         {%- for path in page_paths -%}
           {%- assign my_page = site.pages | where: "path", path | first -%}
-          {%- if my_page.title and my_page.title != "Search" and my_page.title != "About" and my_page.title != "Categories" and my_page.title != "Papers" and my_page.title != "Now" -%}
+          {%- if my_page.title and my_page.title != "Search" and my_page.title != "About" and my_page.title != "Categories" and my_page.title != "Papers" and my_page.title != "Now" and my_page.title != "One True Sentences" and my_page.title != "Archive" -%}
             {%- unless my_page.url == "/" -%}
               <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
             {%- endunless --%}

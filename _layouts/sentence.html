@@ -1,0 +1,60 @@
+---
+layout: default
+---
+<article class="sentence h-entry" itemscope itemtype="http://schema.org/Quotation">
+
+  <header class="sentence-header">
+    <h1 class="sentence-title p-name" itemprop="name">{{ page.title | escape }}</h1>
+    <p class="sentence-meta">
+      <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        {{ page.date | date: date_format }}
+      </time>
+      {% if page.source %}
+      <span class="sentence-source">
+        &mdash; {{ page.source }}
+      </span>
+      {% endif %}
+    </p>
+  </header>
+
+  {% assign content_length = content | strip_html | strip | size %}
+  {% if content_length > 0 %}
+  <div class="sentence-content e-content {% if content_length < 100 %}aphorism{% elsif content_length < 500 %}reflection{% endif %}" itemprop="text">
+    {{ content }}
+  </div>
+  {% endif %}
+
+  <nav class="sentence-navigation">
+    {% assign sorted_sentences = site.sentences | sort: 'date' %}
+    {% assign current_index = nil %}
+    {% for s in sorted_sentences %}
+      {% if s.url == page.url %}
+        {% assign current_index = forloop.index0 %}
+      {% endif %}
+    {% endfor %}
+
+    {% if current_index != nil %}
+      {% assign prev_index = current_index | minus: 1 %}
+      {% assign next_index = current_index | plus: 1 %}
+
+      <div class="nav-prev">
+        {% if prev_index >= 0 %}
+          {% assign prev_sentence = sorted_sentences[prev_index] %}
+          <a href="{{ prev_sentence.url | relative_url }}">&larr; {{ prev_sentence.title | truncate: 35 }}</a>
+        {% endif %}
+      </div>
+
+      <a class="nav-all" href="{{ '/sentences/' | relative_url }}">All</a>
+
+      <div class="nav-next">
+        {% if next_index < sorted_sentences.size %}
+          {% assign next_sentence = sorted_sentences[next_index] %}
+          <a href="{{ next_sentence.url | relative_url }}">{{ next_sentence.title | truncate: 35 }} &rarr;</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </nav>
+
+  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+</article>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Command Modification: Context-Aware Updates</title>
+    <style>
+        :root {
+            --chinese-red: #8b0000;
+            --chinese-gold: #ffd700;
+            --jade-green: #00a86b;
+            --ink-black: #2b2b2b;
+            --paper-beige: #f5f5dc;
+            --light-cream: #fafaf0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--paper-beige) 0%, var(--light-cream) 100%);
+            color: var(--ink-black);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 {
+            font-size: 32px;
+            font-weight: 900;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--chinese-red), #cd5c5c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 20px 0 12px 0;
+            padding: 12px;
+            border-left: 4px solid var(--chinese-red);
+            background: rgba(139, 0, 0, 0.03);
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 16px 0 8px 0;
+            color: var(--chinese-red);
+        }
+        .important-always-visible {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), white);
+            border: 2px solid var(--chinese-gold);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .command-section {
+            background: white;
+            border: 2px solid rgba(139, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .command-section h2 {
+            margin-top: 0;
+            border-left: 6px solid var(--jade-green);
+        }
+        .dense-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0 12px 20px;
+        }
+        .dense-list li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+            line-height: 1.5;
+        }
+        .dense-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--chinese-red);
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .key-feature {
+            background: rgba(0, 168, 107, 0.05);
+            border-left: 4px solid var(--jade-green);
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 4px;
+        }
+        .example-box {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 4px;
+            font-family: "SF Mono", Consolas, monospace;
+            font-size: 14px;
+        }
+        .scenario {
+            margin: 16px 0;
+            padding-left: 20px;
+        }
+        code {
+            background: rgba(245, 245, 220, 0.5);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "SF Mono", Consolas, monospace;
+            font-size: 13px;
+        }
+        .approval-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 255, 255, 0.9));
+            border: 3px solid var(--chinese-gold);
+            padding: 24px;
+            margin: 32px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .approval-section h2 {
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid var(--chinese-red);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-approve {
+            background: var(--jade-green);
+            color: white;
+            border-color: var(--jade-green);
+        }
+        .btn-approve:hover {
+            background: #008c59;
+        }
+        .btn-reject {
+            background: white;
+            color: var(--chinese-red);
+        }
+        .btn-reject:hover {
+            background: rgba(139, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Dual Command Modification: Context-Aware Intelligence</h1>
+
+        <div class="important-always-visible">
+            <h2>🎯 Core Enhancement</h2>
+            <p><strong>Both commands now analyze conversation context when modification instructions aren't provided.</strong></p>
+            <p>This means you can say "modify migrate-to-post" or "update-snippet POST" without explaining what to change, and the commands will intelligently propose updates based on what just happened in the conversation.</p>
+        </div>
+
+        <div class="command-section">
+            <h2>1️⃣ /global::utility::modify-command</h2>
+
+            <h3>✨ What's New:</h3>
+            <ul class="dense-list">
+                <li><strong>Phase 0: Context Analysis</strong> - Analyzes recent conversation before parsing arguments</li>
+                <li><strong>Smart Detection</strong> - Identifies issues, bugs, workarounds, and manual fixes from the session</li>
+                <li><strong>Automatic Inference</strong> - Proposes specific modifications based on discovered patterns</li>
+                <li><strong>Transparent Source</strong> - Shows whether changes came from conversation or explicit instructions</li>
+            </ul>
+
+            <h3>📝 How It Works:</h3>
+
+            <div class="key-feature">
+                <strong>With Instructions (existing behavior):</strong>
+                <div class="example-box">
+                    User: "modify migrate-to-post to add tags support"
+                    → Uses provided instructions directly
+                    → No conversation analysis needed
+                </div>
+            </div>
+
+            <div class="key-feature">
+                <strong>Without Instructions (NEW):</strong>
+                <div class="example-box">
+                    User: "modify migrate-to-post"
+                    → Analyzes: "We just ran it, had to manually remove duplicate title, server failed"
+                    → Proposes: "Update to automatically remove duplicate title and handle existing servers"
+                    → Shows source: 🔍 Inferred from recent conversation analysis
+                </div>
+            </div>
+
+            <h3>🔍 What It Looks For:</h3>
+            <ul class="dense-list">
+                <li>Commands that were just executed</li>
+                <li>Issues, bugs, or limitations discovered</li>
+                <li>Workarounds or fixes applied during the session</li>
+                <li>Patterns of user corrections or manual fixes</li>
+                <li>Edge cases that weren't handled</li>
+            </ul>
+        </div>
+
+        <div class="command-section">
+            <h2>2️⃣ /update-snippet (snippets plugin)</h2>
+
+            <h3>✨ What's New:</h3>
+            <ul class="dense-list">
+                <li><strong>Phase 0: Context Analysis</strong> - Analyzes conversation before CLI help check</li>
+                <li><strong>Pattern Intelligence</strong> - Detects when patterns failed to match keywords</li>
+                <li><strong>Content Inference</strong> - Identifies information that should be added to snippets</li>
+                <li><strong>Usage-Based Updates</strong> - Learns from actual snippet usage in the session</li>
+            </ul>
+
+            <h3>📝 How It Works:</h3>
+
+            <div class="key-feature">
+                <strong>With Instructions (existing behavior):</strong>
+                <div class="example-box">
+                    User: "update-snippet POST add the word 'email'"
+                    → Uses provided instructions directly
+                    → Adds 'email' to pattern as specified
+                </div>
+            </div>
+
+            <div class="key-feature">
+                <strong>Without Instructions (NEW):</strong>
+                <div class="example-box">
+                    User: "update-snippet POST"
+                    → Analyzes: "We used POST command, noticed filtering issues, discussed recipient logic"
+                    → Proposes: "Update pattern to include variations, add recipient filtering examples"
+                    → Shows source: 🔍 Inferred from recent conversation analysis
+                </div>
+            </div>
+
+            <h3>🔍 What It Looks For:</h3>
+            <ul class="dense-list">
+                <li>Snippets that were just used or mentioned</li>
+                <li>Issues with snippet injection or matching</li>
+                <li>Pattern mismatches discovered (e.g., "keyword didn't trigger snippet")</li>
+                <li>Content that should be added to snippets</li>
+                <li>User corrections or manual workarounds</li>
+                <li>Alternative terms mentioned that should match</li>
+            </ul>
+        </div>
+
+        <div class="important-always-visible">
+            <h2>💡 Real-World Example from This Session</h2>
+            <p><strong>What happened:</strong></p>
+            <ol style="padding-left: 24px;">
+                <li>We ran <code>/workflow::migrate-to-post</code></li>
+                <li>Post was created with duplicate H1 title</li>
+                <li>Jekyll server failed because port was already in use</li>
+                <li>We manually fixed both issues</li>
+                <li>You said: "modify the migrate-to-post command based on your learnings here"</li>
+            </ol>
+
+            <p><strong>What the modified command will do:</strong></p>
+            <div class="example-box">
+                🔍 Analyzing conversation...
+
+                Found issues:
+                - Duplicate title in markdown content
+                - Server startup failed on occupied port
+                - Manual Edit tool usage to remove title
+                - Manual handling of existing server
+
+                Proposing changes:
+                ✅ Add step to remove H1 title after front matter
+                ✅ Check if port 4000 in use before starting server
+                ✅ Use run_in_background parameter properly
+                ✅ Handle "Address already in use" gracefully
+
+                Source: 🔍 Inferred from recent conversation analysis
+            </div>
+        </div>
+
+        <div class="approval-section">
+            <h2>🚦 Ready to Apply Changes?</h2>
+            <p>Both commands will be updated with intelligent context analysis capabilities.</p>
+            <p><strong>Files to be modified:</strong></p>
+            <ul class="dense-list" style="text-align: left; max-width: 600px; margin: 16px auto;">
+                <li><code>~/.claude/commands/global/utility/modify-command.md</code></li>
+                <li><code>~/.claude/plugins/.../claude-code-snippets-plugin/commands/update-snippet.md</code></li>
+            </ul>
+            <p style="margin-top: 20px;"><strong>Type your choice below:</strong></p>
+            <p><strong>approve</strong> - Apply both modifications</p>
+            <p><strong>reject</strong> - Keep original versions</p>
+            <p><strong>show-modify-command-diff</strong> - See detailed modify-command changes</p>
+            <p><strong>show-update-snippet-diff</strong> - See detailed update-snippet changes</p>
+        </div>
+
+        <div class="command-section">
+            <h2>📊 Impact Summary</h2>
+            <h3>Benefits:</h3>
+            <ul class="dense-list">
+                <li><strong>Reduced Friction:</strong> No need to explain what to change when it's obvious from context</li>
+                <li><strong>Learning from Usage:</strong> Commands improve based on actual usage patterns</li>
+                <li><strong>Faster Iteration:</strong> Quickly update commands/snippets right after discovering issues</li>
+                <li><strong>Transparency:</strong> Always shows whether changes were inferred or explicit</li>
+                <li><strong>Backwards Compatible:</strong> Existing workflows with explicit instructions still work</li>
+            </ul>
+
+            <h3>Safety:</h3>
+            <ul class="dense-list">
+                <li>Always shows proposed changes before applying</li>
+                <li>Requires explicit approval (yes/no/show-diff)</li>
+                <li>Clearly indicates source of modifications</li>
+                <li>Falls back to asking if no context available</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
