@@ -4,6 +4,7 @@ title: "Formatting Your Syllabus in Another Way"
 description: "Most course reading schedules are broken. They have two pieces of information: the week + the reading of that week."
 date: 2025-09-05 14:06:54 +0800
 categories: [ai-tricks]
+relegated: true
 ---
 
 # Formatting Your Syllabus in Another Way

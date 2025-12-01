@@ -201,23 +201,27 @@ body {
 
 // Intro text
 .sentences-intro {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #666;
-  margin-bottom: 1rem;
-  font-style: italic;
+  margin-bottom: 0.5rem;
 }
 
-// Feed container - Tight Feed + Inter styling
+// Feed container
 .sentences-feed {
   max-width: 650px;
-  font-family: 'Inter', -apple-system, sans-serif;
 }
 
 // Individual sentence entry in feed
 .sentence-entry {
-  padding: 0.7rem 0;
-  margin-bottom: 0;
-  border-bottom: 1px solid #f3f3f3;
+  padding: 0.1rem 0.5rem 0.2rem;
+  margin: 0 -0.5rem;
+  border-bottom: 1px solid #f5f5f5;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: #fafafa;
+  }
 
   &:last-child {
     border-bottom: none;
@@ -225,10 +229,9 @@ body {
 }
 
 .sentence-entry-title {
-  font-size: 0.95rem;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.4;
+  font-size: 0.6rem;
+  font-weight: 500;
+  line-height: 1.35;
   margin: 0;
   color: #1a1a1a;
 }
@@ -244,11 +247,11 @@ body {
 
 // Full content shown inline
 .sentence-entry-content {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.5;
   color: #666;
-  margin-top: 0.3rem;
+  margin-top: 0.2rem;
 
   p {
     margin: 0 0 0.5rem 0;
@@ -442,7 +445,7 @@ body {
 
 // Inline filter on pages
 .inline-filter {
-  margin: 1rem 0 1.5rem 0;
+  margin: 0.25rem 0 0.5rem 0;
 }
 
 .filter-input {
