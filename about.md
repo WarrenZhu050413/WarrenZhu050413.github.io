@@ -31,9 +31,9 @@ For more formal details, you can view my <a href="https://docs.google.com/docume
   - M.S. in Statistics
   - Secondary in Educational Studies
 
-## Current Projects
+## Currently
 
-- I'm working on [Studio Tenwu](https://studiotenwu.github.io) with [Matthew Kotzbauer](https://www.facebook.com/matthew.kotzbauer.50/). We want to reimagine K-12 education with Agentic AI, but to be completely frank, we do not know what we are doing and we are trying to learn as much as possible about K-12 and EdTech. We have ran a small experiment in [PokeCraft](https://github.com/StudioTenwu/PokeCraft).
+- I'm working on [Studio Tenwu](https://studiotenwu.github.io) with [Matthew Kotzbauer](https://www.facebook.com/matthew.kotzbauer.50/).
 
 ## ML Systems Projects
 
