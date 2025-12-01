@@ -1,0 +1,31 @@
+<!-- Inline Filter Component -->
+<div class="inline-filter">
+  <input type="text"
+         class="filter-input"
+         placeholder="Filter {{ include.placeholder | default: 'items' }}..."
+         data-target="{{ include.target }}"
+         id="filter-{{ include.id }}">
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const input = document.getElementById('filter-{{ include.id }}');
+  if (!input) return;
+
+  const targetSelector = input.dataset.target;
+
+  input.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    const items = document.querySelectorAll(targetSelector);
+
+    items.forEach(function(item) {
+      const text = item.textContent.toLowerCase();
+      if (query === '' || text.includes(query)) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+});
+</script>

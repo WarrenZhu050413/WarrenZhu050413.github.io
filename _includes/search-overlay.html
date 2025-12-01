@@ -1,0 +1,195 @@
+<!-- Global Search Overlay (Cmd+K) -->
+<div class="search-overlay" id="search-overlay">
+  <div class="search-box">
+    <input type="text"
+           id="global-search-input"
+           placeholder="Search posts and sentences..."
+           autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+
+<script src="{{ '/assets/js/lunr.min.js' | relative_url }}"></script>
+<script>
+(function() {
+  let searchIndex = null;
+  let searchData = [];
+  let selectedIndex = -1;
+
+  const overlay = document.getElementById('search-overlay');
+  const input = document.getElementById('global-search-input');
+  const resultsContainer = document.getElementById('search-results');
+
+  // Open search
+  function openSearch() {
+    overlay.classList.add('active');
+    input.focus();
+    input.value = '';
+    if (!searchIndex) loadSearchIndex();
+    else showRecent();
+  }
+
+  // Close search
+  function closeSearch() {
+    overlay.classList.remove('active');
+    resultsContainer.innerHTML = '';
+    selectedIndex = -1;
+  }
+
+  // Load search index
+  async function loadSearchIndex() {
+    try {
+      const response = await fetch('{{ "/search.json" | relative_url }}');
+      searchData = await response.json();
+
+      searchIndex = lunr(function() {
+        this.ref('url');
+        this.field('title', { boost: 10 });
+        this.field('content');
+
+        searchData.forEach(doc => {
+          this.add(doc);
+        });
+      });
+
+      showRecent();
+    } catch (e) {
+      resultsContainer.innerHTML = '<div class="search-error">Failed to load search</div>';
+    }
+  }
+
+  // Show recent items when no query
+  function showRecent() {
+    const recent = searchData.slice(0, 6);
+    displayResults(recent, true);
+  }
+
+  // Perform search
+  function performSearch(query) {
+    if (!query.trim()) {
+      showRecent();
+      return;
+    }
+
+    if (!searchIndex) return;
+
+    // Lunr search
+    let results = searchIndex.search(query + '*');
+
+    // Also do simple substring match for short queries
+    const queryLower = query.toLowerCase();
+    const substringMatches = searchData.filter(doc =>
+      doc.title.toLowerCase().includes(queryLower) ||
+      (doc.content && doc.content.toLowerCase().includes(queryLower))
+    );
+
+    // Merge results (Lunr first, then substring matches not already included)
+    const resultUrls = new Set(results.map(r => r.ref));
+    const mergedResults = results.map(r => searchData.find(d => d.url === r.ref));
+
+    substringMatches.forEach(doc => {
+      if (!resultUrls.has(doc.url)) {
+        mergedResults.push(doc);
+      }
+    });
+
+    displayResults(mergedResults.slice(0, 8), false);
+  }
+
+  // Display results
+  function displayResults(results, isRecent) {
+    selectedIndex = -1;
+
+    if (results.length === 0) {
+      resultsContainer.innerHTML = '<div class="search-empty">No results found</div>';
+      return;
+    }
+
+    const html = results.map((item, idx) => `
+      <a href="${item.url}" class="search-result" data-index="${idx}">
+        <span class="result-type">${item.type}</span>
+        <span class="result-title">${escapeHtml(item.title)}</span>
+        <div class="result-date">${item.date}</div>
+      </a>
+    `).join('');
+
+    resultsContainer.innerHTML = html;
+  }
+
+  // Escape HTML
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Keyboard navigation
+  function navigate(direction) {
+    const results = resultsContainer.querySelectorAll('.search-result');
+    if (results.length === 0) return;
+
+    results.forEach(r => r.classList.remove('selected'));
+
+    if (direction === 'down') {
+      selectedIndex = (selectedIndex + 1) % results.length;
+    } else {
+      selectedIndex = selectedIndex <= 0 ? results.length - 1 : selectedIndex - 1;
+    }
+
+    results[selectedIndex].classList.add('selected');
+    results[selectedIndex].scrollIntoView({ block: 'nearest' });
+  }
+
+  // Select current result
+  function selectResult() {
+    const results = resultsContainer.querySelectorAll('.search-result');
+    if (selectedIndex >= 0 && selectedIndex < results.length) {
+      window.location.href = results[selectedIndex].href;
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('keydown', function(e) {
+    // Cmd+K / Ctrl+K to open
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      if (overlay.classList.contains('active')) {
+        closeSearch();
+      } else {
+        openSearch();
+      }
+    }
+
+    // ESC to close
+    if (e.key === 'Escape' && overlay.classList.contains('active')) {
+      closeSearch();
+    }
+
+    // Arrow navigation when overlay is open
+    if (overlay.classList.contains('active')) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        navigate('down');
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        navigate('up');
+      } else if (e.key === 'Enter' && selectedIndex >= 0) {
+        e.preventDefault();
+        selectResult();
+      }
+    }
+  });
+
+  // Click backdrop to close
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      closeSearch();
+    }
+  });
+
+  // Search on input
+  input.addEventListener('input', function() {
+    performSearch(this.value);
+  });
+})();
+</script>

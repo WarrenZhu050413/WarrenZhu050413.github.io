@@ -5,8 +5,14 @@ permalink: /sentences/
 ---
 
 <p class="sentences-intro">
-  Sentences worth remembering. Each one a small truth, a sharp observation, or a beautiful way of putting something.
+
+The best writing advice I've ever gotten. You can guess, or search up who said this.
+
+"I would stand and look out over the roofs of Paris and think, 'Do not worry. You have always written before and you will write now. All you have to do is write one true sentence. Write the truest sentence that you know.' So finally I would write one true sentence, and then go on from there. It was easy then because there was always one true sentence that I knew or had seen or had heard someone say."
+
 </p>
+
+{% include inline-filter.html placeholder="sentences" target=".sentence-entry" id="sentences" %}
 
 <div class="sentences-feed">
   {% assign sorted_sentences = site.sentences | sort: 'date' | reverse %}
@@ -34,5 +40,6 @@ permalink: /sentences/
 </div>
 
 {% if site.sentences.size == 0 %}
+
 <p class="no-sentences">No sentences yet. The first one is always the hardest.</p>
 {% endif %}
