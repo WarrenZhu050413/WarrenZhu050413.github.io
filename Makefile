@@ -1,16 +1,22 @@
-.PHONY: help install preview build clean lint check serve doctor
+.PHONY: help install preview build clean lint check serve doctor sentences sentences-editable sentences-clean
 
 # Default target
 help:
 	@echo "Available targets:"
+	@echo ""
+	@echo "Jekyll:"
 	@echo "  make install   - Install dependencies (bundle install)"
 	@echo "  make preview   - Start Jekyll development server with live reload"
 	@echo "  make serve     - Alias for preview"
 	@echo "  make build     - Build the site for production"
 	@echo "  make clean     - Clean generated files"
 	@echo "  make lint      - Run Jekyll doctor and check site health"
-	@echo "  make check     - Alias for lint"
 	@echo "  make doctor    - Run Jekyll doctor diagnostics"
+	@echo ""
+	@echo "Sentences CLI:"
+	@echo "  make sentences          - Install sentences CLI globally"
+	@echo "  make sentences-editable - Install sentences CLI (editable mode)"
+	@echo "  make sentences-clean    - Clean sentences CLI build artifacts"
 
 # Install dependencies
 install:
@@ -59,3 +65,25 @@ update:
 # Show Jekyll version
 version:
 	bundle exec jekyll --version
+
+# ============ Sentences CLI ============
+
+# Install sentences CLI globally
+sentences: sentences-clean
+	@echo "Installing sentences-cli globally..."
+	@uv cache clean 2>/dev/null || true
+	uv tool install --force .
+	@echo "Done! Run 'sentences' to use."
+
+# Install sentences CLI in editable mode (no cache clean needed - changes are instant)
+sentences-editable: sentences-clean
+	@echo "Installing sentences-cli globally (editable)..."
+	uv tool install --force --editable .
+	@echo "Done! Changes take effect immediately."
+
+# Clean sentences CLI build artifacts
+sentences-clean:
+	@echo "Cleaning sentences-cli artifacts..."
+	rm -rf build/ dist/ *.egg-info sentences_cli.egg-info
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	@echo "Done"

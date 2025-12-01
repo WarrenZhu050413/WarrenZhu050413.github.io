@@ -20,7 +20,7 @@ layout: default
 
   {% assign content_length = content | strip_html | strip | size %}
   {% if content_length > 0 %}
-  <div class="sentence-content e-content {% if content_length < 100 %}aphorism{% elsif content_length < 500 %}reflection{% endif %}" itemprop="text">
+  <div class="sentence-content e-content" itemprop="text">
     {{ content }}
   </div>
   {% endif %}

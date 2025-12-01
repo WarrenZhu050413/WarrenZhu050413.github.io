@@ -40,3 +40,15 @@ CLAUDE.md
 doc.md
 hooks
 claude_html
+claude_files/
+
+# Python/CLI development files
+.coverage
+build/
+*.egg-info/
+sentences_cli/
+tests/
+pyproject.toml
+
+# Poster files
+CRAFT_poster*
