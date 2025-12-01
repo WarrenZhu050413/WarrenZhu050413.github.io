@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentences-cli"
+version = "0.2.0"
+description = "CLI for managing One True Sentences collection"
+requires-python = ">=3.10"
+authors = [
+    {name = "Warren Zhu", email = "wzhu@college.harvard.edu"}
+]
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+sentences = "sentences_cli.cli:main"
+
+[tool.setuptools]
+packages = ["sentences_cli"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=sentences_cli --cov-report=term-missing --cov-report=html"
+
+[tool.coverage.run]
+source = ["sentences_cli"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
