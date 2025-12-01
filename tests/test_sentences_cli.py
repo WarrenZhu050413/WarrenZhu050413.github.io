@@ -327,37 +327,37 @@ class TestCreateCommand:
         # Invoke create and enter reflection mode (not 'q')
         result = runner.invoke(app, ["create", "Test Cursor"], input="\ntest-cursor\n")
 
-        # Check that vim was called with +5 flag
+        # Check that vim was called with +6 flag (below comments + blank line)
         if mock_run.called:
             call_args = mock_run.call_args[0][0]
             assert call_args[0] == "vim"
-            assert "+5" in call_args
+            assert "+6" in call_args
 
     @patch("subprocess.run")
     def test_create_nvim_cursor_position(self, mock_run, runner, mock_sentences_dir, monkeypatch):
-        """Test that nvim opens with cursor at line 5 (below comments)."""
+        """Test that nvim opens with cursor at line 6 (below comments + blank line)."""
         monkeypatch.setenv("EDITOR", "nvim")
 
         result = runner.invoke(app, ["create", "Test Nvim"], input="\ntest-nvim\n")
 
-        # Check that nvim was called with +5 flag
+        # Check that nvim was called with +6 flag
         if mock_run.called:
             call_args = mock_run.call_args[0][0]
             assert call_args[0] == "nvim"
-            assert "+5" in call_args
+            assert "+6" in call_args
 
     @patch("subprocess.run")
     def test_create_nano_no_cursor_position(self, mock_run, runner, mock_sentences_dir, monkeypatch):
-        """Test that non-vim editors don't get +5 flag."""
+        """Test that non-vim editors don't get +6 flag."""
         monkeypatch.setenv("EDITOR", "nano")
 
         result = runner.invoke(app, ["create", "Test Nano"], input="\ntest-nano\n")
 
-        # Check that nano was called without +5 flag
+        # Check that nano was called without +6 flag
         if mock_run.called:
             call_args = mock_run.call_args[0][0]
             assert call_args[0] == "nano"
-            assert "+5" not in call_args
+            assert "+6" not in call_args
 
     def test_create_sets_correct_metadata(self, runner, mock_sentences_dir):
         """Test that created file has correct YAML frontmatter."""
@@ -769,10 +769,11 @@ class TestPushCommand:
 
         result = runner.invoke(app, ["push"])
 
-        # Verify stream-json format is used
+        # Verify stream-json format is used with --verbose (required by claude)
         call_args = mock_popen.call_args[0][0]
         assert "--output-format" in call_args
         assert "stream-json" in call_args
+        assert "--verbose" in call_args  # Required when using stream-json with -p
 
     @patch("subprocess.Popen")
     @patch("subprocess.run")

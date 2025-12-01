@@ -153,12 +153,12 @@ def create(
         editor = os.environ.get("EDITOR", "vim")
         with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
             f.write(f"# Reflection on: {title}\n\n")
-            f.write("# Write your reflection below. Lines starting with # will be removed.\n\n")
+            f.write("# Write your reflection below. Lines starting with # will be removed.\n\n\n")
             temp_path = f.name
 
-        # Position cursor below comments (line 5) if using vim
+        # Position cursor below comments (line 6) if using vim
         if "vim" in editor:
-            subprocess.run([editor, "+5", temp_path])
+            subprocess.run([editor, "+6", temp_path])
         else:
             subprocess.run([editor, temp_path])
 
@@ -388,10 +388,9 @@ def push(
     console.print("\n[cyan]Asking Claude to push...[/cyan]")
 
     # Run claude with stream-json output to capture session_id
+    # Note: --verbose is required when using stream-json with -p
     try:
-        cmd = ["claude", "-p", prompt, "--output-format", "stream-json"]
-        if verbose:
-            cmd.append("--verbose")
+        cmd = ["claude", "-p", prompt, "--output-format", "stream-json", "--verbose"]
 
         proc = subprocess.Popen(
             cmd,
