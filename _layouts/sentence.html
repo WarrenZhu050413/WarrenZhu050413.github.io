@@ -1,31 +1,27 @@
 ---
 layout: default
 ---
-<article class="sentence h-entry" itemscope itemtype="http://schema.org/Quotation">
-
+<article class="sentence">
   <header class="sentence-header">
-    <h1 class="sentence-title p-name" itemprop="name">{{ page.title | escape }}</h1>
-    <p class="sentence-meta">
-      <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
-        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-        {{ page.date | date: date_format }}
+    <h1 class="sentence-title">{{ page.title | escape }}</h1>
+    <div class="sentence-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        {{ page.date | date: "%B %-d, %Y" }}
       </time>
       {% if page.source %}
-      <span class="sentence-source">
-        &mdash; {{ page.source }}
-      </span>
+      <span class="sentence-source">&mdash; {{ page.source }}</span>
       {% endif %}
-    </p>
+    </div>
   </header>
 
   {% assign content_length = content | strip_html | strip | size %}
   {% if content_length > 0 %}
-  <div class="sentence-content e-content" itemprop="text">
+  <div class="sentence-content">
     {{ content }}
   </div>
   {% endif %}
 
-  <nav class="sentence-navigation">
+  <nav class="sentence-nav">
     {% assign sorted_sentences = site.sentences | sort: 'date' %}
     {% assign current_index = nil %}
     {% for s in sorted_sentences %}
@@ -41,20 +37,18 @@ layout: default
       <div class="nav-prev">
         {% if prev_index >= 0 %}
           {% assign prev_sentence = sorted_sentences[prev_index] %}
-          <a href="{{ prev_sentence.url | relative_url }}">&larr; {{ prev_sentence.title | truncate: 35 }}</a>
+          <a href="{{ prev_sentence.url | relative_url }}">&larr; {{ prev_sentence.title | truncate: 30 }}</a>
         {% endif %}
       </div>
 
-      <a class="nav-all" href="{{ '/sentences/' | relative_url }}">All</a>
+      <a class="nav-all" href="{{ '/sentences/' | relative_url }}">All Sentences</a>
 
       <div class="nav-next">
         {% if next_index < sorted_sentences.size %}
           {% assign next_sentence = sorted_sentences[next_index] %}
-          <a href="{{ next_sentence.url | relative_url }}">{{ next_sentence.title | truncate: 35 }} &rarr;</a>
+          <a href="{{ next_sentence.url | relative_url }}">{{ next_sentence.title | truncate: 30 }} &rarr;</a>
         {% endif %}
       </div>
     {% endif %}
   </nav>
-
-  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>

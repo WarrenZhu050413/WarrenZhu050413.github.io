@@ -1,28 +1,19 @@
 ---
-layout: home
+layout: page
 title: About
 permalink: /about/
 ---
 
-<div style="overflow: auto;">
-  <img src="/assets/pictures/profile.png" alt="Warren Zhu" class="profile-image" style="max-width: 150px; border-radius: 0; float: left; margin: 0 15px 15px 0;">
-  
-  <div style="float: left; width: calc(100% - 165px);">
+<div class="about-header">
+  <img src="/assets/pictures/profile.png" alt="Warren Zhu" class="about-photo">
+  <div class="about-intro">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a senior at Harvard University and grew up in Hong Kong and Shenzhen. I want to build tools that help us learn, think, and be happy.
-    <br><br>
-    I love and hate modern technology, and I am especially skeptical of (social) science. I split my time between playing with new technology, reading about old ideas, and being (technology free) with loved ones.
-    <br><br>
-If anything in these webpages provokes any thought, email me about whatever at wzhu@college.harvard.edu!
-
-For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.
-
-</p>
-<p><strong>→ <a href="/">Latest posts</a></strong></p>
-
+    <p>I'm a senior at Harvard University and grew up in Hong Kong and Shenzhen. I want to build tools that help us learn, think, and be happy.</p>
+    <p>I love and hate modern technology, and I am especially skeptical of (social) science. I split my time between playing with new technology, reading about old ideas, and being (technology free) with loved ones.</p>
+    <p>If anything in these webpages provokes any thought, email me about whatever at wzhu@college.harvard.edu! For more formal details, you can view my <a href="https://docs.google.com/document/d/1cP97u4_QKsB99DvwkSqs7xFsAhpwXLV7yUZSt7-IAVg/edit?tab=t.0" target="_blank">resume</a>.</p>
+    <p><strong><a href="/">Latest posts →</a></strong></p>
   </div>
 </div>
-<div style="clear: both;"></div>
 
 ## Education
 
