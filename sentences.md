@@ -2,6 +2,7 @@
 layout: page
 title: One True Sentences
 permalink: /sentences/
+wide: true
 ---
 
 <p class="sentences-intro">

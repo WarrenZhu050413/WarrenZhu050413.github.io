@@ -2,30 +2,40 @@
 <div class="inline-filter">
   <input type="text"
          class="filter-input"
-         placeholder="Filter {{ include.placeholder | default: 'items' }}..."
+         placeholder="Filter..."
          data-target="{{ include.target }}"
          id="filter-{{ include.id }}">
+  <span class="filter-count" id="count-{{ include.id }}"></span>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const input = document.getElementById('filter-{{ include.id }}');
+  var input = document.getElementById('filter-{{ include.id }}');
+  var countEl = document.getElementById('count-{{ include.id }}');
   if (!input) return;
 
-  const targetSelector = input.dataset.target;
+  var targetSelector = input.dataset.target;
 
   input.addEventListener('input', function() {
-    const query = this.value.toLowerCase().trim();
-    const items = document.querySelectorAll(targetSelector);
+    var query = this.value.toLowerCase().trim();
+    var items = document.querySelectorAll(targetSelector);
+    var visible = 0;
 
     items.forEach(function(item) {
-      const text = item.textContent.toLowerCase();
-      if (query === '' || text.includes(query)) {
-        item.style.display = '';
+      var text = item.textContent.toLowerCase();
+      if (query === '' || text.indexOf(query) !== -1) {
+        item.classList.remove('hidden');
+        visible++;
       } else {
-        item.style.display = 'none';
+        item.classList.add('hidden');
       }
     });
+
+    if (query && countEl) {
+      countEl.textContent = visible + ' of ' + items.length;
+    } else if (countEl) {
+      countEl.textContent = '';
+    }
   });
 });
 </script>

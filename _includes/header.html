@@ -1,24 +1,20 @@
-<header class="site-header">
-  <div class="header-inner">
-    <a class="site-title" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
-
-    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-      <span class="hamburger"></span>
-    </button>
-
-    <nav class="site-nav">
-      <a class="nav-link{% if page.url == '/' %} active{% endif %}" href="{{ '/' | relative_url }}">Posts</a>
-      <a class="nav-link{% if page.url == '/about/' %} active{% endif %}" href="{{ '/about/' | relative_url }}">About</a>
-      <a class="nav-link{% if page.url contains '/sentences' %} active{% endif %}" href="{{ '/sentences/' | relative_url }}">Sentences</a>
-    </nav>
+<header>
+  <div class="header-content">
+    <div class="header-top">
+      <div class="site-identity">
+        <a href="{{ "/" | relative_url }}" class="site-title">Warren Zhu</a>
+        <div class="chinese-name-row">
+          <span class="seal">朱</span>
+          <span class="chinese-name">朱富橙</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <nav>
+          <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>About</a>
+          <a href="{{ '/writing/' | relative_url }}"{% if page.url == '/writing/' %} class="active"{% endif %}>Writing</a>
+          <a href="{{ '/sentences/' | relative_url }}"{% if page.url contains '/sentences' %} class="active"{% endif %}>Sentences</a>
+        </nav>
+      </div>
+    </div>
   </div>
 </header>
-
-<script>
-  document.querySelector('.nav-toggle').addEventListener('click', function() {
-    const nav = document.querySelector('.site-nav');
-    const expanded = this.getAttribute('aria-expanded') === 'true';
-    this.setAttribute('aria-expanded', !expanded);
-    nav.classList.toggle('open');
-  });
-</script>

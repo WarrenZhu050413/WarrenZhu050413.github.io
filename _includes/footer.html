@@ -1,10 +1,3 @@
-<footer class="site-footer">
-  <div class="footer-inner">
-    <p class="footer-text">{{ site.description | escape }}</p>
-    <div class="footer-links">
-      <a href="mailto:{{ site.email }}">Email</a>
-      <a href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener">GitHub</a>
-      <a href="{{ "/feed.xml" | relative_url }}">RSS</a>
-    </div>
-  </div>
+<footer>
+  <p>&copy; {{ site.time | date: '%Y' }} Warren Zhu. Built with intention.</p>
 </footer>
