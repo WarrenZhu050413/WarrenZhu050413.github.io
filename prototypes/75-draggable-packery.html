@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype 75C: Draggable Sentences - Packery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/packery@2/dist/packery.pkgd.min.js"></script>
+  <script src="https://unpkg.com/draggabilly@3/dist/draggabilly.pkgd.min.js"></script>
+  <style>
+    :root {
+      --kala-sea: #7BA3A3;
+      --kala-rust: #A67B5B;
+      --kala-mountain: #8B7B7B;
+      --vermillion: #C8442E;
+      --paper: #F5F1E8;
+      --ink: #141414;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Source Serif 4', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 2rem;
+    }
+
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--kala-mountain);
+      font-style: italic;
+    }
+
+    .sentences-feed {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sentence-entry {
+      width: calc(25% - 12px);
+      margin-bottom: 1rem;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 3px;
+      padding: 0.5rem 1rem 1rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      cursor: grab;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+    @media (max-width: 900px) {
+      .sentence-entry { width: calc(50% - 8px); }
+    }
+
+    @media (max-width: 500px) {
+      .sentence-entry { width: 100%; }
+    }
+
+    .sentence-entry:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .sentence-entry.is-dragging {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      cursor: grabbing;
+    }
+
+    .sentence-entry.is-positioning-post-drag {
+      transition: transform 0.3s ease-out;
+    }
+
+    .sentence-entry-date {
+      font-size: 0.64rem;
+      color: var(--kala-mountain);
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .sentence-entry-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0 0 0.5rem;
+      line-height: 1.3;
+    }
+
+    .sentence-entry-content {
+      font-size: 0.8rem;
+      color: var(--kala-mountain);
+      line-height: 1.6;
+    }
+
+    /* Border colors */
+    .sentence-entry:nth-child(5n + 1) { border-top: 3px solid var(--kala-sea); }
+    .sentence-entry:nth-child(5n + 2) { border-top: 3px solid var(--ink); }
+    .sentence-entry:nth-child(5n + 3) { border-top: 3px solid var(--kala-rust); }
+    .sentence-entry:nth-child(5n + 4) { border-top: 3px solid var(--vermillion); }
+    .sentence-entry:nth-child(5n + 5) { border-top: 3px solid var(--kala-mountain); }
+
+    .tech-note {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    /* Packery gutter sizer */
+    .gutter-sizer { width: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>One True Sentences</h1>
+    <p>Variant C: Packery + Draggabilly — Bin-packing masonry with drag repack</p>
+  </div>
+
+  <div class="sentences-feed" id="grid">
+    <div class="gutter-sizer"></div>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 8</time>
+      <h2 class="sentence-entry-title">The Finger Protocol</h2>
+      <div class="sentence-entry-content">There used to be a protocol called "finger" that let you check on friends.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 7</time>
+      <h2 class="sentence-entry-title">Productivity Tool Strangeness</h2>
+      <div class="sentence-entry-content">The strangest thing about productivity tools is that they make you feel productive without actually producing.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 6</time>
+      <h2 class="sentence-entry-title">Ephemerality</h2>
+      <div class="sentence-entry-content">The best things in life disappear.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 5</time>
+      <h2 class="sentence-entry-title">EdTech Made Up</h2>
+      <div class="sentence-entry-content">Most educational technology solves problems that don't exist.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 4</time>
+      <h2 class="sentence-entry-title">Consistency as Vice</h2>
+      <div class="sentence-entry-content">A foolish consistency is the hobgoblin of little minds.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 3</time>
+      <h2 class="sentence-entry-title">Xiaohongshu is Powerful</h2>
+      <div class="sentence-entry-content">The algorithm knows what you want before you do.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 2</time>
+      <h2 class="sentence-entry-title">Wouldn't It Be Nice</h2>
+      <div class="sentence-entry-content">If we were older, then we wouldn't have to wait so long.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Dec 1</time>
+      <h2 class="sentence-entry-title">Quantity</h2>
+      <div class="sentence-entry-content">Quality comes from quantity. Ship more.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Nov 30</time>
+      <h2 class="sentence-entry-title">2 Rules for Happiness</h2>
+      <div class="sentence-entry-content">1. Don't sweat the small stuff. 2. It's all small stuff.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Nov 29</time>
+      <h2 class="sentence-entry-title">Doing Good</h2>
+      <div class="sentence-entry-content">The best way to do good is to be good at what you do.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Nov 28</time>
+      <h2 class="sentence-entry-title">Winning in Stupid Games</h2>
+      <div class="sentence-entry-content">Play stupid games, win stupid prizes.</div>
+    </article>
+
+    <article class="sentence-entry">
+      <time class="sentence-entry-date">Nov 27</time>
+      <h2 class="sentence-entry-title">What I Do vs What I Say</h2>
+      <div class="sentence-entry-content">What I do is who I am. What I say is who I want to be.</div>
+    </article>
+  </div>
+
+  <div class="tech-note">Packery + Draggabilly</div>
+
+  <script>
+    // Apply random rotation to each card (1-10 degrees, positive or negative)
+    const cards = document.querySelectorAll('.sentence-entry');
+    cards.forEach(card => {
+      const rotation = (Math.random() * 9 + 1) * (Math.random() < 0.5 ? -1 : 1);
+      card.style.transform = `rotate(${rotation}deg)`;
+      card.dataset.rotation = rotation;
+    });
+
+    // Initialize Packery
+    const pckry = new Packery('#grid', {
+      itemSelector: '.sentence-entry',
+      gutter: '.gutter-sizer',
+      percentPosition: true,
+      transitionDuration: '0.3s'
+    });
+
+    // Make each item draggable with Draggabilly
+    pckry.getItemElements().forEach(function(itemElem) {
+      const draggie = new Draggabilly(itemElem);
+      pckry.bindDraggabillyEvents(draggie);
+
+      // Reset rotation on drag start
+      draggie.on('dragStart', function() {
+        itemElem.style.transform = 'rotate(0deg) scale(1.02)';
+      });
+
+      // Restore rotation on drag end
+      draggie.on('dragEnd', function() {
+        const rotation = itemElem.dataset.rotation;
+        setTimeout(() => {
+          itemElem.style.transform = `rotate(${rotation}deg)`;
+        }, 300);
+      });
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      pckry.layout();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search UI Variations - Masonry Cards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #F5F1E8;
+            --ink: #2C2C2C;
+            --ink-light: #666;
+            --vermillion: #C8442E;
+            --sea: #4A9B9B;
+            --rust: #A67B5B;
+            --mountain: #8B7B7B;
+            --ochre: #D4A574;
+            --olive: #6B7B5B;
+            --plum: #8B6B8B;
+            --slate: #5B6B7B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--paper);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            z-index: 1000;
+            padding: 0 24px;
+            gap: 0;
+        }
+        .nav-tab {
+            padding: 14px 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--ink-light);
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-tab:hover { color: var(--ink); }
+        .nav-tab.active { color: var(--vermillion); border-bottom-color: var(--vermillion); }
+
+        .variation { display: none; padding-top: 60px; min-height: 100vh; }
+        .variation.active { display: block; }
+
+        /* Card styles */
+        .masonry {
+            max-width: 1100px;
+            margin: 0 auto;
+            columns: 4;
+            column-gap: 16px;
+            padding: 0 24px;
+        }
+        .card {
+            break-inside: avoid;
+            margin-bottom: 16px;
+            background: white;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            transition: box-shadow 0.2s, opacity 0.3s, transform 0.3s;
+            animation: float 6s ease-in-out infinite;
+        }
+        .card.hidden {
+            display: none;
+        }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
+        /* Subtle rotations */
+        .card:nth-child(6n+1) { --rot: -0.4deg; animation-delay: 0s; }
+        .card:nth-child(6n+2) { --rot: 0.27deg; animation-delay: -1s; }
+        .card:nth-child(6n+3) { --rot: -0.17deg; animation-delay: -2s; }
+        .card:nth-child(6n+4) { --rot: 0.37deg; animation-delay: -3s; }
+        .card:nth-child(6n+5) { --rot: -0.3deg; animation-delay: -4s; }
+        .card:nth-child(6n+6) { --rot: 0.2deg; animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(var(--rot, 0)); }
+            50% { transform: translateY(-3px) rotate(calc(var(--rot, 0) + 0.1deg)); }
+        }
+
+        .card-border { height: 3px; }
+        .card-content { padding: 12px 14px; }
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+        .card-body {
+            font-size: 0.82rem;
+            color: var(--ink-light);
+            line-height: 1.45;
+        }
+        .card-meta {
+            font-size: 0.7rem;
+            color: var(--mountain);
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .card-media { margin-top: 10px; }
+        .card-media img { width: 100%; border-radius: 2px; }
+
+        /* ============================================
+           VARIATION 1: INLINE BAR
+           ============================================ */
+        #v1 .search-area {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 24px 20px;
+        }
+        #v1 .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px 16px;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.95rem;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 4px;
+            background: white;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        #v1 .search-input:focus {
+            border-color: var(--sea);
+            box-shadow: 0 0 0 3px rgba(74, 155, 155, 0.1);
+        }
+        #v1 .search-input::placeholder { color: var(--mountain); }
+        #v1 .result-count {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--rust);
+        }
+
+        /* ============================================
+           VARIATION 2: FLOATING PILL
+           ============================================ */
+        #v2 .masonry { padding-top: 24px; padding-bottom: 80px; }
+        #v2 .floating-search {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 100;
+        }
+        #v2 .floating-search input {
+            border: none;
+            outline: none;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.9rem;
+            width: 200px;
+            background: transparent;
+        }
+        #v2 .floating-search .icon {
+            color: var(--mountain);
+            font-size: 1.1rem;
+        }
+        #v2 .floating-search .count {
+            font-size: 0.75rem;
+            color: var(--rust);
+            padding-left: 8px;
+            border-left: 1px solid rgba(0,0,0,0.1);
+        }
+
+        /* ============================================
+           VARIATION 3: SIDE PANEL
+           ============================================ */
+        #v3 { display: flex; }
+        #v3 .sidebar {
+            position: fixed;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+            width: 240px;
+            background: white;
+            border-right: 1px solid rgba(0,0,0,0.08);
+            padding: 24px 20px;
+            z-index: 50;
+        }
+        #v3 .sidebar h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--ink);
+        }
+        #v3 .sidebar input {
+            width: 100%;
+            padding: 10px 12px;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 4px;
+            outline: none;
+        }
+        #v3 .sidebar input:focus { border-color: var(--sea); }
+        #v3 .sidebar .count {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--rust);
+        }
+        #v3 .sidebar .tags {
+            margin-top: 24px;
+        }
+        #v3 .sidebar .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            margin: 4px 4px 4px 0;
+            font-size: 0.75rem;
+            background: var(--paper);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #v3 .sidebar .tag:hover { background: rgba(74, 155, 155, 0.15); }
+        #v3 .main-content {
+            margin-left: 240px;
+            flex: 1;
+            padding: 24px;
+        }
+        #v3 .masonry { padding: 0; max-width: 900px; columns: 3; }
+
+        /* ============================================
+           VARIATION 4: HEADER INTEGRATED
+           ============================================ */
+        #v4 .page-header {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 24px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 24px;
+        }
+        #v4 .page-header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 500;
+        }
+        #v4 .page-header .subtitle {
+            font-size: 0.9rem;
+            color: var(--rust);
+            margin-top: 4px;
+        }
+        #v4 .header-search {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        #v4 .header-search input {
+            padding: 8px 14px;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 4px;
+            width: 220px;
+            outline: none;
+        }
+        #v4 .header-search input:focus { border-color: var(--sea); }
+        #v4 .header-search .count {
+            font-size: 0.8rem;
+            color: var(--mountain);
+        }
+
+        /* ============================================
+           VARIATION 5: EXPANDABLE ICON
+           ============================================ */
+        #v5 .masonry { padding-top: 24px; }
+        #v5 .search-icon-container {
+            position: fixed;
+            top: 72px;
+            right: 24px;
+            z-index: 100;
+        }
+        #v5 .search-trigger {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--ink-light);
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        #v5 .search-trigger:hover {
+            background: var(--sea);
+            color: white;
+            border-color: var(--sea);
+        }
+        #v5 .search-expanded {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: white;
+            border-radius: 24px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(20px);
+            transition: all 0.3s;
+        }
+        #v5 .search-expanded.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+        #v5 .search-expanded input {
+            border: none;
+            outline: none;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+        #v5 .search-expanded .close {
+            cursor: pointer;
+            color: var(--mountain);
+            font-size: 1.2rem;
+        }
+        #v5 .search-expanded .count {
+            font-size: 0.75rem;
+            color: var(--rust);
+            white-space: nowrap;
+        }
+
+        /* View toggle */
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .view-btn {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-family: 'Source Serif 4', serif;
+            border: 1px solid rgba(0,0,0,0.15);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .view-btn.active {
+            background: var(--ink);
+            color: white;
+            border-color: var(--ink);
+        }
+
+        @media (max-width: 900px) {
+            .masonry { columns: 2; }
+            #v3 .sidebar { width: 200px; }
+            #v3 .main-content { margin-left: 200px; }
+            #v3 .masonry { columns: 2; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-var="1">1. Inline Bar</button>
+        <button class="nav-tab" data-var="2">2. Floating Pill</button>
+        <button class="nav-tab" data-var="3">3. Side Panel</button>
+        <button class="nav-tab" data-var="4">4. Header Integrated</button>
+        <button class="nav-tab" data-var="5">5. Expandable Icon</button>
+    </nav>
+
+    <!-- VARIATION 1: Inline Bar -->
+    <section class="variation active" id="v1">
+        <div class="search-area">
+            <input type="text" class="search-input" placeholder="Filter..." data-target="v1">
+            <div class="result-count" id="count-v1"></div>
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="masonry">Masonry</button>
+                <button class="view-btn" data-view="chrono">Chronological</button>
+            </div>
+        </div>
+        <div class="masonry" id="cards-v1"></div>
+    </section>
+
+    <!-- VARIATION 2: Floating Pill -->
+    <section class="variation" id="v2">
+        <div class="masonry" id="cards-v2"></div>
+        <div class="floating-search">
+            <span class="icon">&#128269;</span>
+            <input type="text" placeholder="Search..." data-target="v2">
+            <span class="count" id="count-v2"></span>
+        </div>
+    </section>
+
+    <!-- VARIATION 3: Side Panel -->
+    <section class="variation" id="v3">
+        <aside class="sidebar">
+            <h3>Filter</h3>
+            <input type="text" placeholder="Search sentences..." data-target="v3">
+            <div class="count" id="count-v3"></div>
+            <div class="tags">
+                <span class="tag" data-filter="Taleb">Taleb</span>
+                <span class="tag" data-filter="happy">Happiness</span>
+                <span class="tag" data-filter="life">Life</span>
+                <span class="tag" data-filter="build">Building</span>
+            </div>
+        </aside>
+        <div class="main-content">
+            <div class="masonry" id="cards-v3"></div>
+        </div>
+    </section>
+
+    <!-- VARIATION 4: Header Integrated -->
+    <section class="variation" id="v4">
+        <div class="page-header">
+            <div>
+                <h1>One True Sentences</h1>
+                <p class="subtitle">A collection of thoughts</p>
+            </div>
+            <div class="header-search">
+                <input type="text" placeholder="Filter..." data-target="v4">
+                <span class="count" id="count-v4"></span>
+            </div>
+        </div>
+        <div class="masonry" id="cards-v4"></div>
+    </section>
+
+    <!-- VARIATION 5: Expandable Icon -->
+    <section class="variation" id="v5">
+        <div class="search-icon-container">
+            <button class="search-trigger" id="search-trigger-v5">&#128269;</button>
+            <div class="search-expanded" id="search-panel-v5">
+                <input type="text" placeholder="Filter sentences..." data-target="v5">
+                <span class="count" id="count-v5"></span>
+                <span class="close" id="close-v5">&times;</span>
+            </div>
+        </div>
+        <div class="masonry" id="cards-v5" style="padding-top: 24px;"></div>
+    </section>
+
+    <script>
+        var colors = [
+            '#C8442E', '#4A9B9B', '#A67B5B', '#D4A574',
+            '#6B7B5B', '#8B6B8B', '#5B6B7B', '#8B7B7B'
+        ];
+
+        var sentences = [
+            { id: 1, title: "Convincing Other People", body: "I have learned that it is easier to build what I am thinking in my mind out than to tell it to someone so we can build it together.", date: "Dec 7" },
+            { id: 2, title: "Finger Protocol", body: null, date: "Dec 7" },
+            { id: 3, title: "You have a calibrated life if most of what you fear has the titillating prospect of adventure.", body: "Nassim Taleb", date: "Dec 5" },
+            { id: 4, title: "What I do is who I am. What I say is who I want to be.", body: null, date: "Dec 5" },
+            { id: 5, title: "Ephemerality", body: "I have always found it difficult to store and organize things - knowledges, possessions, rules. I have come to believe that an artificial effort at preservation is evil.", date: "Dec 1" },
+            { id: 6, title: "Happiness", body: "To be happy, do not do anything that makes me unhappy. Then do things that make me happy.", date: "Dec 3" },
+            { id: 7, title: "Xiaohongshu is Powerful", body: null, date: "Nov 28" },
+            { id: 8, title: "Would not It Be Nice If We Were Older", body: null, date: "Nov 25" },
+            { id: 9, title: "A YouTube Discovery", body: "Sometimes the internet surfaces something that changes how you think.", date: "Dec 7", youtube: "bIQs8B7IlpA" },
+            { id: 10, title: "Visual Inspiration", body: "Found this and could not stop looking at it.", date: "Dec 7", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop" }
+        ];
+
+        sentences.forEach(function(s) {
+            s.color = colors[Math.floor(Math.random() * colors.length)];
+        });
+
+        function createCard(s) {
+            var mediaHtml = '';
+            if (s.youtube) {
+                mediaHtml = '<div class="card-media"><img src="https://img.youtube.com/vi/' + s.youtube + '/hqdefault.jpg" alt="Video"></div>';
+            } else if (s.image) {
+                mediaHtml = '<div class="card-media"><img src="' + s.image + '" alt="Visual"></div>';
+            }
+
+            return '<article class="card" data-id="' + s.id + '" data-text="' + (s.title + ' ' + (s.body || '')).toLowerCase() + '">' +
+                '<div class="card-border" style="background:' + s.color + '"></div>' +
+                '<div class="card-content">' +
+                '<h3 class="card-title">' + s.title + '</h3>' +
+                (s.body ? '<p class="card-body">' + s.body + '</p>' : '') +
+                mediaHtml +
+                '<div class="card-meta"><span>' + s.date + '</span></div>' +
+                '</div></article>';
+        }
+
+        function renderCards(containerId) {
+            var html = '';
+            sentences.forEach(function(s) { html += createCard(s); });
+            document.getElementById(containerId).innerHTML = html;
+        }
+
+        function filterCards(query, containerId, countId) {
+            var container = document.getElementById(containerId);
+            var cards = container.querySelectorAll('.card');
+            var count = 0;
+            var q = query.toLowerCase().trim();
+
+            cards.forEach(function(card) {
+                var text = card.dataset.text;
+                if (!q || text.indexOf(q) !== -1) {
+                    card.classList.remove('hidden');
+                    count++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            var countEl = document.getElementById(countId);
+            if (countEl) {
+                countEl.textContent = q ? count + ' of ' + cards.length : '';
+            }
+        }
+
+        // Render all variations
+        ['v1', 'v2', 'v3', 'v4', 'v5'].forEach(function(v) {
+            renderCards('cards-' + v);
+        });
+
+        // Tab switching
+        document.querySelectorAll('.nav-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+                document.querySelectorAll('.variation').forEach(function(v) { v.classList.remove('active'); });
+                tab.classList.add('active');
+                document.getElementById('v' + tab.dataset.var).classList.add('active');
+            });
+        });
+
+        // Search inputs
+        document.querySelectorAll('input[data-target]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                var target = input.dataset.target;
+                filterCards(input.value, 'cards-' + target, 'count-' + target);
+            });
+        });
+
+        // Tag filters (v3)
+        document.querySelectorAll('.tag[data-filter]').forEach(function(tag) {
+            tag.addEventListener('click', function() {
+                var input = document.querySelector('input[data-target="v3"]');
+                input.value = tag.dataset.filter;
+                filterCards(tag.dataset.filter, 'cards-v3', 'count-v3');
+            });
+        });
+
+        // Expandable search (v5)
+        document.getElementById('search-trigger-v5').addEventListener('click', function() {
+            document.getElementById('search-panel-v5').classList.add('active');
+            document.querySelector('#search-panel-v5 input').focus();
+        });
+        document.getElementById('close-v5').addEventListener('click', function() {
+            document.getElementById('search-panel-v5').classList.remove('active');
+        });
+
+        // View toggle (v1)
+        document.querySelectorAll('.view-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                // Could implement different sort orders here
+            });
+        });
+    </script>
+</body>
+</html>

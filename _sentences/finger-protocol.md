@@ -1,4 +1,6 @@
 ---
-title: "[Finger](https://en.wikipedia.org/wiki/Finger_(protocol))"
-date: 2025-12-07 10:28:16 -0500
+title: "Finger Protocol"
+date: 2025-12-08 09:46:13 -0500
 ---
+
+[Finger](<https://en.wikipedia.org/wiki/Finger_(protocol)>)

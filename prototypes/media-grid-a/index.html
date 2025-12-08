@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Grid - Masonry Layout</title>
+    <style>
+        :root {
+            --vermillion: #C8442E;
+            --kala-sea: #7BA3A3;
+            --paper: #F5F1E8;
+            --ink: #141414;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--ink);
+            font-size: 2.5rem;
+        }
+
+        .masonry-grid {
+            column-count: 3;
+            column-gap: 20px;
+        }
+
+        .media-card {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .media-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .media-card-thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #999;
+        }
+
+        .media-card-content {
+            padding: 16px;
+        }
+
+        .media-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .media-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+            flex: 1;
+        }
+
+        .media-card-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        .type-video {
+            background-color: #ff4444;
+            color: white;
+        }
+
+        .type-paper {
+            background-color: var(--kala-sea);
+            color: white;
+        }
+
+        .type-podcast {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .type-link {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .media-card-creator {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .media-card-note {
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90%;
+            width: 1000px;
+            overflow: hidden;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-title-section {
+            flex: 1;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .modal-creator {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background-color: #f0f0f0;
+            color: var(--ink);
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: calc(90vh - 200px);
+            overflow-y: auto;
+        }
+
+        .modal-embed {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 8px;
+            background-color: #000;
+        }
+
+        .modal-note {
+            margin-top: 20px;
+            padding: 16px;
+            background-color: var(--paper);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--ink);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+
+            .modal-content {
+                max-width: 95%;
+                max-height: 95%;
+            }
+
+            .modal-embed {
+                height: 300px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Icon styles */
+        .thumbnail-icon {
+            font-size: 64px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Media Collection</h1>
+        <div class="masonry-grid" id="masonryGrid"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <div class="modal-title" id="modalTitle"></div>
+                    <div class="modal-creator" id="modalCreator"></div>
+                </div>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalEmbed"></div>
+                <div class="modal-note" id="modalNote"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mediaItems = [
+            { title: "Inventing on Principle", type: "video", creator: "Bret Victor", youtubeId: "PUv66718DII", note: "The talk that changed how I think about tools" },
+            { title: "The Future of Programming", type: "video", creator: "Bret Victor", youtubeId: "8pTEmbeENF4", note: "1973-themed talk about forgotten ideas" },
+            { title: "The Mother of All Demos", type: "video", creator: "Douglas Engelbart", youtubeId: "yJDv-zdhzMY", note: "1968 demo that introduced the mouse" },
+            { title: "Attention Is All You Need", type: "paper", creator: "Vaswani et al.", pdfUrl: "https://arxiv.org/pdf/1706.03762.pdf", note: "The transformer paper" },
+            { title: "Hammock Driven Development", type: "video", creator: "Rich Hickey", youtubeId: "f84n5oFoZBc", note: "Importance of thinking away from the computer" },
+            { title: "Simple Made Easy", type: "video", creator: "Rich Hickey", youtubeId: "SxdOUGdseq4", note: "The difference between simple and easy" },
+            { title: "Media for Thinking the Unthinkable", type: "video", creator: "Bret Victor", vimeoId: "67076984", note: "Designing new representations" },
+            { title: "Scaling Laws for Neural Language Models", type: "paper", creator: "Kaplan et al.", pdfUrl: "https://arxiv.org/pdf/2001.08361.pdf", note: "How LLM performance scales" },
+            { title: "Lex Fridman #367: Sam Altman", type: "podcast", creator: "Lex Fridman", youtubeId: "L_Guz73e6fw", note: "OpenAI and the future of AI" },
+            { title: "The Real Computer Revolution", type: "paper", creator: "Alan Kay", pdfUrl: "https://tinlizzie.org/VPRIPapers/m2007007a_revolution.pdf", note: "What computing could become" },
+            { title: "Learnable Programming", type: "link", creator: "Bret Victor", url: "http://worrydream.com/LearnableProgramming/", note: "Programming system for understanding" },
+            { title: "As We May Think", type: "paper", creator: "Vannevar Bush", url: "https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/", note: "1945 essay envisioning hypertext" }
+        ];
+
+        function getThumbnail(item) {
+            if (item.youtubeId) {
+                return `<img src="https://img.youtube.com/vi/${item.youtubeId}/mqdefault.jpg" alt="${item.title}" class="media-card-thumbnail">`;
+            } else if (item.vimeoId) {
+                return `<div class="media-card-thumbnail"><span class="thumbnail-icon">▶</span></div>`;
+            } else if (item.type === 'paper') {
+                return `<div class="media-card-thumbnail"><span class="thumbnail-icon">📄</span></div>`;
+            } else if (item.type === 'link') {
+                return `<div class="media-card-thumbnail"><span class="thumbnail-icon">🔗</span></div>`;
+            }
+            return `<div class="media-card-thumbnail"><span class="thumbnail-icon">📁</span></div>`;
+        }
+
+        function createCard(item, index) {
+            const card = document.createElement('div');
+            card.className = 'media-card';
+            card.innerHTML = `
+                ${getThumbnail(item)}
+                <div class="media-card-content">
+                    <div class="media-card-header">
+                        <div class="media-card-title">${item.title}</div>
+                        <span class="media-card-type type-${item.type}">${item.type}</span>
+                    </div>
+                    <div class="media-card-creator">${item.creator}</div>
+                    <div class="media-card-note">${item.note}</div>
+                </div>
+            `;
+            card.addEventListener('dblclick', () => openModal(item));
+            return card;
+        }
+
+        function getEmbedHtml(item) {
+            if (item.youtubeId) {
+                return `<iframe class="modal-embed" src="https://www.youtube.com/embed/${item.youtubeId}" allowfullscreen></iframe>`;
+            } else if (item.vimeoId) {
+                return `<iframe class="modal-embed" src="https://player.vimeo.com/video/${item.vimeoId}" allowfullscreen></iframe>`;
+            } else if (item.pdfUrl) {
+                return `<iframe class="modal-embed" src="${item.pdfUrl}"></iframe>`;
+            } else if (item.url) {
+                return `<iframe class="modal-embed" src="${item.url}"></iframe>`;
+            }
+            return '<p>No embed available</p>';
+        }
+
+        function openModal(item) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalCreator = document.getElementById('modalCreator');
+            const modalEmbed = document.getElementById('modalEmbed');
+            const modalNote = document.getElementById('modalNote');
+
+            modalTitle.textContent = item.title;
+            modalCreator.textContent = item.creator;
+            modalEmbed.innerHTML = getEmbedHtml(item);
+            modalNote.textContent = item.note;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+
+            // Clear embed to stop videos from playing
+            setTimeout(() => {
+                document.getElementById('modalEmbed').innerHTML = '';
+            }, 300);
+        }
+
+        // Initialize grid
+        const grid = document.getElementById('masonryGrid');
+        mediaItems.forEach((item, index) => {
+            grid.appendChild(createCard(item, index));
+        });
+
+        // Modal controls
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

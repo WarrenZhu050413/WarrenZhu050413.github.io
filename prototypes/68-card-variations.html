@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Card Variations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #F5F1E8;
+            --ink: #2C2C2C;
+            --ink-light: #666;
+            --vermillion: #C8442E;
+            --sea: #4A9B9B;
+            --rust: #A67B5B;
+            --mountain: #8B7B7B;
+            --ochre: #D4A574;
+            --olive: #6B7B5B;
+            --plum: #8B6B8B;
+            --slate: #5B6B7B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        .nav-tabs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--paper);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            z-index: 1000;
+            padding: 0 24px;
+        }
+
+        .nav-tab {
+            padding: 16px 24px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--ink-light);
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-tab:hover { color: var(--ink); }
+        .nav-tab.active { color: var(--vermillion); border-bottom-color: var(--vermillion); }
+
+        .variation {
+            display: none;
+            padding: 80px 24px 40px;
+            min-height: 100vh;
+        }
+        .variation.active { display: block; }
+
+        .variation-header {
+            max-width: 800px;
+            margin: 0 auto 32px;
+        }
+        .variation-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .variation-header p {
+            color: var(--rust);
+            font-size: 0.9rem;
+        }
+
+        /* Card base */
+        .card {
+            background: white;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
+        .card-border { height: 3px; width: 100%; }
+        .card-content { padding: 12px 14px; }
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.35;
+            margin-bottom: 6px;
+            color: var(--ink);
+        }
+        .card-title a { color: inherit; text-decoration: none; }
+        .card-title a:hover { text-decoration: underline; }
+        .card-body {
+            font-size: 0.82rem;
+            color: var(--ink-light);
+            line-height: 1.45;
+        }
+        .card-meta {
+            font-size: 0.7rem;
+            color: var(--mountain);
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .color-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .color-dot:hover { transform: scale(1.3); }
+
+        .card-media { margin-top: 10px; }
+        .card-media img { width: 100%; height: auto; border-radius: 2px; }
+        .youtube-thumb { position: relative; cursor: pointer; }
+        .youtube-thumb::after {
+            content: '\25B6';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            padding-left: 4px;
+        }
+
+        /* 1. MASONRY - Organic floating feel (JS-powered for chronological order) */
+        .masonry-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .masonry-container .card {
+            position: absolute;
+            width: calc(25% - 12px);
+            animation: float 6s ease-in-out infinite;
+            transform-origin: center center;
+        }
+        /* Staggered rotations and animations - subtle */
+        .masonry-container .card:nth-child(6n+1) { transform: rotate(-0.4deg); animation-delay: 0s; }
+        .masonry-container .card:nth-child(6n+2) { transform: rotate(0.27deg); animation-delay: -1s; }
+        .masonry-container .card:nth-child(6n+3) { transform: rotate(-0.17deg); animation-delay: -2s; }
+        .masonry-container .card:nth-child(6n+4) { transform: rotate(0.37deg); animation-delay: -3s; }
+        .masonry-container .card:nth-child(6n+5) { transform: rotate(-0.3deg); animation-delay: -4s; }
+        .masonry-container .card:nth-child(6n+6) { transform: rotate(0.2deg); animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(var(--rot, -0.27deg));
+            }
+            50% {
+                transform: translateY(-3px) rotate(calc(var(--rot, -0.27deg) + 0.1deg));
+            }
+        }
+        .masonry-container .card:nth-child(6n+1) { --rot: -0.4deg; }
+        .masonry-container .card:nth-child(6n+2) { --rot: 0.27deg; }
+        .masonry-container .card:nth-child(6n+3) { --rot: -0.17deg; }
+        .masonry-container .card:nth-child(6n+4) { --rot: 0.37deg; }
+        .masonry-container .card:nth-child(6n+5) { --rot: -0.3deg; }
+        .masonry-container .card:nth-child(6n+6) { --rot: 0.2deg; }
+
+        .masonry-container .card:hover {
+            animation-play-state: paused;
+            transform: rotate(0deg) scale(1.02) !important;
+        }
+
+        /* 2. FREEFORM CANVAS */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 140px);
+            overflow: hidden;
+            background: radial-gradient(circle at 20% 30%, rgba(74, 155, 155, 0.03) 0%, transparent 50%);
+        }
+        .canvas-container .card {
+            position: absolute;
+            cursor: grab;
+            max-width: 280px;
+            user-select: none;
+        }
+        .canvas-container .card:active { cursor: grabbing; }
+        .canvas-container .card.dragging {
+            opacity: 0.9;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            transform: rotate(2deg);
+            z-index: 100;
+        }
+
+        /* 3. COLLAGE */
+        .collage-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 800px;
+        }
+        .collage-container .card {
+            position: absolute;
+            max-width: 260px;
+            transition: transform 0.3s;
+        }
+        .collage-container .card:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 50;
+        }
+
+        /* 4. STACKED DECK */
+        .deck-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .deck-container .card {
+            flex: 0 0 calc(33% - 20px);
+            max-width: 280px;
+            position: relative;
+        }
+        .deck-container .card::before {
+            content: '';
+            position: absolute;
+            left: 4px; right: 4px; bottom: -4px;
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            z-index: -1;
+            transform: rotate(1deg);
+        }
+
+        /* 5. ORGANIC SCATTER */
+        .scatter-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: 20px;
+            gap: 8px;
+        }
+        .scatter-container .card { align-self: start; }
+        .scatter-container .card.span-3 { grid-column: span 3; }
+        .scatter-container .card.span-4 { grid-column: span 4; }
+        .scatter-container .card.span-5 { grid-column: span 5; }
+        .scatter-container .card.span-6 { grid-column: span 6; }
+        .scatter-container .card.row-2 { grid-row: span 2; }
+        .scatter-container .card.row-3 { grid-row: span 3; }
+        .scatter-container .card.row-4 { grid-row: span 4; }
+        .scatter-container .card.row-5 { grid-row: span 5; }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 0.75rem;
+            color: var(--ink-light);
+            max-width: 280px;
+            z-index: 500;
+        }
+        .instructions strong { color: var(--ink); }
+
+        @media (max-width: 900px) {
+            .masonry-container { columns: 2; }
+            .deck-container .card { flex: 0 0 calc(50% - 20px); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-variation="1">1. Masonry</button>
+        <button class="nav-tab" data-variation="2">2. Freeform Canvas</button>
+        <button class="nav-tab" data-variation="3">3. Collage Overlap</button>
+        <button class="nav-tab" data-variation="4">4. Stacked Deck</button>
+        <button class="nav-tab" data-variation="5">5. Organic Scatter</button>
+    </nav>
+
+    <section class="variation active" id="variation-1">
+        <div class="variation-header">
+            <h2>1. Masonry Flow</h2>
+            <p>CSS columns-based tight packing. Cards naturally flow to fill space.</p>
+        </div>
+        <div class="masonry-container" id="masonry-cards"></div>
+    </section>
+
+    <section class="variation" id="variation-2">
+        <div class="variation-header">
+            <h2>2. Freeform Canvas</h2>
+            <p>Drag cards anywhere. Overlapping allowed. Complete spatial freedom.</p>
+        </div>
+        <div class="canvas-container" id="canvas-cards"></div>
+    </section>
+
+    <section class="variation" id="variation-3">
+        <div class="variation-header">
+            <h2>3. Collage Overlap</h2>
+            <p>Artistic overlapping with subtle rotations. Hover to bring to front.</p>
+        </div>
+        <div class="collage-container" id="collage-cards"></div>
+    </section>
+
+    <section class="variation" id="variation-4">
+        <div class="variation-header">
+            <h2>4. Stacked Deck</h2>
+            <p>Cards in rows with staggered depth effect.</p>
+        </div>
+        <div class="deck-container" id="deck-cards"></div>
+    </section>
+
+    <section class="variation" id="variation-5">
+        <div class="variation-header">
+            <h2>5. Organic Scatter</h2>
+            <p>Grid-based bin-packing with varied spans based on content length.</p>
+        </div>
+        <div class="scatter-container" id="scatter-cards"></div>
+    </section>
+
+    <div class="instructions">
+        <strong>Controls:</strong><br>
+        - Click color dot to change card color<br>
+        - Drag cards in Freeform Canvas mode<br>
+        - Hover cards in Collage mode to bring to front
+    </div>
+
+    <script>
+        var colors = [
+            { name: 'vermillion', value: '#C8442E' },
+            { name: 'sea', value: '#4A9B9B' },
+            { name: 'rust', value: '#A67B5B' },
+            { name: 'ochre', value: '#D4A574' },
+            { name: 'olive', value: '#6B7B5B' },
+            { name: 'plum', value: '#8B6B8B' },
+            { name: 'slate', value: '#5B6B7B' },
+            { name: 'mountain', value: '#8B7B7B' }
+        ];
+
+        var sentences = [
+            {
+                id: 1,
+                title: "Convincing Other People",
+                body: "I have learned that it is easier to build what I am thinking in my mind out than to tell it to someone so we can build it together.",
+                date: "Dec 7"
+            },
+            {
+                id: 2,
+                title: "Finger Protocol",
+                link: "https://en.wikipedia.org/wiki/Finger_(protocol)",
+                body: null,
+                date: "Dec 7"
+            },
+            {
+                id: 3,
+                title: "You have a calibrated life if most of what you fear has the titillating prospect of adventure.",
+                body: "Nassim Taleb",
+                date: "Dec 5"
+            },
+            {
+                id: 4,
+                title: "What I do is who I am. What I say is who I want to be.",
+                body: null,
+                date: "Dec 5"
+            },
+            {
+                id: 5,
+                title: "Ephemerality",
+                body: "I have always found it difficult to store and organize things - knowledges, possessions, rules. I have come to believe that an artificial effort at preservation is evil.",
+                date: "Dec 1"
+            },
+            {
+                id: 6,
+                title: "Happiness",
+                body: "To be happy, do not do anything that makes me unhappy. Then do things that make me happy.",
+                date: "Dec 3"
+            },
+            {
+                id: 7,
+                title: "Xiaohongshu is Powerful",
+                body: null,
+                date: "Nov 28"
+            },
+            {
+                id: 8,
+                title: "Would not It Be Nice If We Were Older",
+                body: null,
+                date: "Nov 25"
+            },
+            {
+                id: 9,
+                title: "A YouTube Discovery",
+                body: "Sometimes the internet surfaces something that changes how you think.",
+                date: "Dec 7",
+                youtube: "bIQs8B7IlpA"
+            },
+            {
+                id: 10,
+                title: "Visual Inspiration",
+                body: "Found this and could not stop looking at it.",
+                date: "Dec 7",
+                image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+            }
+        ];
+
+        // Assign random colors
+        sentences.forEach(function(s) {
+            s.color = colors[Math.floor(Math.random() * colors.length)].value;
+        });
+
+        function createCard(s) {
+            var titleHtml = s.link
+                ? '<a href="' + s.link + '" target="_blank">' + s.title + '</a>'
+                : s.title;
+
+            var mediaHtml = '';
+            if (s.youtube) {
+                mediaHtml = '<div class="card-media youtube-thumb" data-video="' + s.youtube + '">' +
+                    '<img src="https://img.youtube.com/vi/' + s.youtube + '/hqdefault.jpg" alt="Video">' +
+                    '</div>';
+            } else if (s.image) {
+                mediaHtml = '<div class="card-media"><img src="' + s.image + '" alt="Visual"></div>';
+            }
+
+            return '<article class="card" data-id="' + s.id + '" data-color="' + s.color + '">' +
+                '<div class="card-border" style="background:' + s.color + '"></div>' +
+                '<div class="card-content">' +
+                '<h3 class="card-title">' + titleHtml + '</h3>' +
+                (s.body ? '<p class="card-body">' + s.body + '</p>' : '') +
+                mediaHtml +
+                '<div class="card-meta">' +
+                '<span class="card-date">' + s.date + '</span>' +
+                '<span class="color-dot" style="background:' + s.color + '" title="Click to change color"></span>' +
+                '</div></div></article>';
+        }
+
+        function renderMasonry() {
+            var container = document.getElementById('masonry-cards');
+            var html = '';
+            sentences.forEach(function(s) { html += createCard(s); });
+            container.innerHTML = html;
+
+            // JS Masonry: place each card in shortest column (chronological left-to-right)
+            var numCols = 4;
+            var gap = 16;
+            var colWidth = (container.offsetWidth - gap * (numCols - 1)) / numCols;
+            var colHeights = [0, 0, 0, 0];
+
+            var cards = container.querySelectorAll('.card');
+            cards.forEach(function(card, index) {
+                // Find shortest column
+                var minHeight = Math.min.apply(null, colHeights);
+                var colIndex = colHeights.indexOf(minHeight);
+
+                // Position card
+                var x = colIndex * (colWidth + gap);
+                var y = colHeights[colIndex];
+                card.style.left = x + 'px';
+                card.style.top = y + 'px';
+                card.style.width = colWidth + 'px';
+
+                // Update column height
+                colHeights[colIndex] += card.offsetHeight + gap;
+            });
+
+            // Set container height
+            container.style.height = Math.max.apply(null, colHeights) + 'px';
+        }
+
+        function renderCanvas() {
+            var positions = [
+                { x: 50, y: 30 }, { x: 320, y: 60 }, { x: 580, y: 20 },
+                { x: 150, y: 280 }, { x: 420, y: 320 }, { x: 700, y: 250 },
+                { x: 80, y: 480 }, { x: 350, y: 440 }, { x: 620, y: 500 },
+                { x: 250, y: 180 }
+            ];
+
+            var html = '';
+            sentences.forEach(function(s, i) {
+                var pos = positions[i % positions.length];
+                var card = createCard(s);
+                card = card.replace('<article class="card"',
+                    '<article class="card" style="left:' + pos.x + 'px;top:' + pos.y + 'px"');
+                html += card;
+            });
+
+            var container = document.getElementById('canvas-cards');
+            container.innerHTML = html;
+
+            // Drag functionality
+            container.querySelectorAll('.card').forEach(function(card) {
+                var isDragging = false;
+                var startX, startY, initialX, initialY;
+
+                card.addEventListener('mousedown', function(e) {
+                    if (e.target.classList.contains('color-dot')) return;
+                    isDragging = true;
+                    card.classList.add('dragging');
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    initialX = card.offsetLeft;
+                    initialY = card.offsetTop;
+                });
+
+                document.addEventListener('mousemove', function(e) {
+                    if (!isDragging) return;
+                    card.style.left = (initialX + e.clientX - startX) + 'px';
+                    card.style.top = (initialY + e.clientY - startY) + 'px';
+                });
+
+                document.addEventListener('mouseup', function() {
+                    isDragging = false;
+                    card.classList.remove('dragging');
+                });
+            });
+        }
+
+        function renderCollage() {
+            var placements = [
+                { x: 0, y: 0, r: -2 }, { x: 240, y: 30, r: 3 },
+                { x: 480, y: -10, r: -1 }, { x: 720, y: 40, r: 2 },
+                { x: 60, y: 220, r: 1 }, { x: 300, y: 260, r: -3 },
+                { x: 540, y: 200, r: 2 }, { x: 120, y: 450, r: -1 },
+                { x: 380, y: 480, r: 3 }, { x: 640, y: 420, r: -2 }
+            ];
+
+            var html = '';
+            sentences.forEach(function(s, i) {
+                var p = placements[i % placements.length];
+                var card = createCard(s);
+                card = card.replace('<article class="card"',
+                    '<article class="card" style="left:' + p.x + 'px;top:' + p.y + 'px;transform:rotate(' + p.r + 'deg)"');
+                html += card;
+            });
+            document.getElementById('collage-cards').innerHTML = html;
+        }
+
+        function renderDeck() {
+            var html = '';
+            sentences.forEach(function(s) { html += createCard(s); });
+            document.getElementById('deck-cards').innerHTML = html;
+        }
+
+        function renderScatter() {
+            var html = '';
+            sentences.forEach(function(s) {
+                var textLen = (s.title ? s.title.length : 0) + (s.body ? s.body.length : 0);
+                var hasMedia = s.youtube || s.image;
+
+                var colSpan, rowSpan;
+                if (hasMedia) {
+                    colSpan = 'span-5'; rowSpan = 'row-5';
+                } else if (textLen > 200) {
+                    colSpan = 'span-6'; rowSpan = 'row-4';
+                } else if (textLen > 100) {
+                    colSpan = 'span-4'; rowSpan = 'row-3';
+                } else if (textLen > 50) {
+                    colSpan = 'span-4'; rowSpan = 'row-2';
+                } else {
+                    colSpan = 'span-3'; rowSpan = 'row-2';
+                }
+
+                var card = createCard(s);
+                card = card.replace('<article class="card"',
+                    '<article class="card ' + colSpan + ' ' + rowSpan + '"');
+                html += card;
+            });
+            document.getElementById('scatter-cards').innerHTML = html;
+        }
+
+        // Tab switching
+        document.querySelectorAll('.nav-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(function(t) {
+                    t.classList.remove('active');
+                });
+                document.querySelectorAll('.variation').forEach(function(v) {
+                    v.classList.remove('active');
+                });
+                tab.classList.add('active');
+                document.getElementById('variation-' + tab.dataset.variation).classList.add('active');
+            });
+        });
+
+        // Color cycling
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('color-dot')) {
+                var card = e.target.closest('.card');
+                var currentColor = card.dataset.color;
+                var currentIndex = -1;
+                colors.forEach(function(c, i) {
+                    if (c.value === currentColor) currentIndex = i;
+                });
+                var nextColor = colors[(currentIndex + 1) % colors.length];
+                card.dataset.color = nextColor.value;
+                card.querySelector('.card-border').style.background = nextColor.value;
+                e.target.style.background = nextColor.value;
+            }
+        });
+
+        // YouTube click
+        document.addEventListener('click', function(e) {
+            var thumb = e.target.closest('.youtube-thumb');
+            if (thumb) {
+                var videoId = thumb.dataset.video;
+                thumb.outerHTML = '<div class="card-media">' +
+                    '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1" ' +
+                    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
+                    'allowfullscreen style="width:100%;aspect-ratio:16/9;border:none;border-radius:2px"></iframe></div>';
+            }
+        });
+
+        // Render all
+        renderMasonry();
+        renderCanvas();
+        renderCollage();
+        renderDeck();
+        renderScatter();
+    </script>
+</body>
+</html>

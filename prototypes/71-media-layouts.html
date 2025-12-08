@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Layout Prototypes</title>
+  <style>
+    :root {
+      --vermillion: #C8442E;
+      --kala-sea: #7BA3A3;
+      --bg: #FAFAFA;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e0e0e0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Layout Switcher */
+    .switcher {
+      position: sticky;
+      top: 0;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      z-index: 100;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .switcher-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-right: 8px;
+    }
+
+    .switcher button {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s;
+    }
+
+    .switcher button:hover {
+      border-color: var(--kala-sea);
+    }
+
+    .switcher button.active {
+      background: var(--vermillion);
+      color: white;
+      border-color: var(--vermillion);
+    }
+
+    .prototype {
+      display: none;
+      padding: 32px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .prototype.active { display: block; }
+
+    .proto-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Type badges */
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 2px;
+      background: #f0f0f0;
+    }
+    .badge-paper { background: #E8F4F4; color: #4A7C7C; }
+    .badge-video { background: #FDE8E8; color: #C8442E; }
+    .badge-podcast { background: #F3E8FD; color: #7C4A9C; }
+    .badge-book { background: #FDF8E8; color: #9C7C4A; }
+    .badge-link { background: #f0f0f0; color: #666; }
+
+    /* ===================== */
+    /* LAYOUT 1: MASONRY     */
+    /* ===================== */
+    .masonry-grid {
+      columns: 3;
+      column-gap: 20px;
+    }
+
+    @media (max-width: 900px) { .masonry-grid { columns: 2; } }
+    @media (max-width: 600px) { .masonry-grid { columns: 1; } }
+
+    .masonry-card {
+      break-inside: avoid;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 20px;
+      transition: box-shadow 0.15s;
+    }
+
+    .masonry-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .masonry-card .badge { margin-bottom: 8px; }
+
+    .masonry-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .masonry-card h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .masonry-card h3 a:hover { color: var(--vermillion); }
+
+    .masonry-card .creator {
+      font-size: 13px;
+      color: var(--kala-sea);
+      margin-bottom: 8px;
+    }
+
+    .masonry-card .note {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .masonry-card .date {
+      font-size: 11px;
+      color: #999;
+      margin-top: 10px;
+    }
+
+    /* ===================== */
+    /* LAYOUT 2: TIMELINE    */
+    /* ===================== */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 28px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--kala-sea);
+    }
+
+    .timeline-item.type-paper::before { border-color: #4A7C7C; }
+    .timeline-item.type-video::before { border-color: var(--vermillion); }
+    .timeline-item.type-podcast::before { border-color: #7C4A9C; }
+    .timeline-item.type-book::before { border-color: #9C7C4A; }
+
+    .timeline-date {
+      font-size: 11px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .timeline-title a:hover { color: var(--vermillion); }
+
+    .timeline-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .timeline-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      padding-left: 0;
+    }
+
+    /* ===================== */
+    /* LAYOUT 3: GROUPED     */
+    /* ===================== */
+    .grouped-section {
+      margin-bottom: 40px;
+    }
+
+    .grouped-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grouped-header .count {
+      background: #f0f0f0;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .grouped-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grouped-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .grouped-item:last-child { border-bottom: none; }
+
+    .grouped-item-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .grouped-item-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .grouped-item-title a:hover { color: var(--vermillion); }
+
+    .grouped-item-creator {
+      font-size: 13px;
+      color: var(--kala-sea);
+    }
+
+    .grouped-item-date {
+      font-size: 12px;
+      color: #999;
+      white-space: nowrap;
+    }
+
+    /* ===================== */
+    /* LAYOUT 4: MINIMAL     */
+    /* ===================== */
+    .minimal-list {
+      border-top: 1px solid var(--border);
+    }
+
+    .minimal-item {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+
+    .minimal-item:hover { background: #fafafa; margin: 0 -8px; padding: 10px 8px; }
+
+    .minimal-item .badge {
+      flex-shrink: 0;
+      font-size: 9px;
+      padding: 2px 6px;
+    }
+
+    .minimal-item a {
+      color: inherit;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .minimal-item a:hover { color: var(--vermillion); }
+
+    .minimal-item .creator {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .minimal-item .date {
+      color: #999;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    /* ===================== */
+    /* LAYOUT 5: CARDS       */
+    /* ===================== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.15s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .card-accent {
+      height: 4px;
+      background: var(--kala-sea);
+    }
+
+    .card.type-paper .card-accent { background: #4A7C7C; }
+    .card.type-video .card-accent { background: var(--vermillion); }
+    .card.type-podcast .card-accent { background: #7C4A9C; }
+    .card.type-book .card-accent { background: #9C7C4A; }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .card h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .card h3 a:hover { color: var(--vermillion); }
+
+    .card .creator {
+      font-size: 13px;
+      color: var(--kala-sea);
+      margin-bottom: 8px;
+    }
+
+    .card .note {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .card .date {
+      font-size: 11px;
+      color: #999;
+    }
+
+    /* ===================== */
+    /* LAYOUT 6: COMPACT     */
+    /* ===================== */
+    .compact-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .compact-table th {
+      text-align: left;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--border);
+      font-weight: 500;
+    }
+
+    .compact-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+
+    .compact-table tr:hover td { background: #fafafa; }
+
+    .compact-table a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .compact-table a:hover { color: var(--vermillion); }
+
+    .compact-table .title-cell { font-weight: 500; }
+    .compact-table .creator-cell { color: var(--kala-sea); }
+    .compact-table .date-cell { color: #999; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<div class="switcher">
+  <span class="switcher-label">Layout:</span>
+  <button class="active" data-target="masonry">Masonry</button>
+  <button data-target="timeline">Timeline</button>
+  <button data-target="grouped">Grouped</button>
+  <button data-target="minimal">Minimal List</button>
+  <button data-target="cards">Cards</button>
+  <button data-target="compact">Compact Table</button>
+</div>
+
+<!-- MASONRY LAYOUT -->
+<div class="prototype active" id="masonry">
+  <div class="proto-title">Masonry / Pinterest Style</div>
+  <div class="masonry-grid">
+    <div class="masonry-card">
+      <span class="badge badge-paper">Paper</span>
+      <h3><a href="#">The Real Computer Revolution Hasn't Happened Yet</a></h3>
+      <div class="creator">Alan Kay</div>
+      <div class="note">Alan Kay's vision of what computing could become. The revolution isn't the computer itself, but the new ways of thinking it enables.</div>
+      <div class="date">Dec 8</div>
+    </div>
+    <div class="masonry-card">
+      <span class="badge badge-video">Video</span>
+      <h3><a href="#">The Mother of All Demos</a></h3>
+      <div class="creator">Douglas Engelbart</div>
+      <div class="date">Dec 7</div>
+    </div>
+    <div class="masonry-card">
+      <span class="badge badge-paper">Paper</span>
+      <h3><a href="#">A Mathematical Theory of Communication</a></h3>
+      <div class="creator">Claude Shannon</div>
+      <div class="note">The foundational paper that created information theory. Introduces the concept of entropy in communication.</div>
+      <div class="date">Dec 5</div>
+    </div>
+    <div class="masonry-card">
+      <span class="badge badge-podcast">Podcast</span>
+      <h3><a href="#">Lex Fridman #400: Elon Musk</a></h3>
+      <div class="creator">Lex Fridman</div>
+      <div class="note">Wide-ranging conversation on AI, space, and the future of humanity.</div>
+      <div class="date">Dec 4</div>
+    </div>
+    <div class="masonry-card">
+      <span class="badge badge-book">Book</span>
+      <h3><a href="#">The Dream Machine</a></h3>
+      <div class="creator">M. Mitchell Waldrop</div>
+      <div class="note">Biography of J.C.R. Licklider and the history of personal computing.</div>
+      <div class="date">Dec 3</div>
+    </div>
+    <div class="masonry-card">
+      <span class="badge badge-link">Link</span>
+      <h3><a href="#">Bret Victor's Website</a></h3>
+      <div class="date">Dec 2</div>
+    </div>
+    <div class="masonry-card">
+      <span class="badge badge-video">Video</span>
+      <h3><a href="#">Inventing on Principle</a></h3>
+      <div class="creator">Bret Victor</div>
+      <div class="note">The talk that changed how I think about tools and creation.</div>
+      <div class="date">Dec 1</div>
+    </div>
+    <div class="masonry-card">
+      <span class="badge badge-paper">Paper</span>
+      <h3><a href="#">As We May Think</a></h3>
+      <div class="creator">Vannevar Bush</div>
+      <div class="date">Nov 30</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE LAYOUT -->
+<div class="prototype" id="timeline">
+  <div class="proto-title">Timeline View</div>
+  <div class="timeline">
+    <div class="timeline-item type-paper">
+      <div class="timeline-date">December 8, 2025</div>
+      <div class="timeline-title"><a href="#">The Real Computer Revolution Hasn't Happened Yet</a></div>
+      <div class="timeline-meta">
+        <span class="badge badge-paper">Paper</span>
+        <span>Alan Kay</span>
+      </div>
+      <div class="timeline-note">Alan Kay's vision of what computing could become.</div>
+    </div>
+    <div class="timeline-item type-video">
+      <div class="timeline-date">December 7, 2025</div>
+      <div class="timeline-title"><a href="#">The Mother of All Demos</a></div>
+      <div class="timeline-meta">
+        <span class="badge badge-video">Video</span>
+        <span>Douglas Engelbart</span>
+      </div>
+    </div>
+    <div class="timeline-item type-paper">
+      <div class="timeline-date">December 5, 2025</div>
+      <div class="timeline-title"><a href="#">A Mathematical Theory of Communication</a></div>
+      <div class="timeline-meta">
+        <span class="badge badge-paper">Paper</span>
+        <span>Claude Shannon</span>
+      </div>
+      <div class="timeline-note">The foundational paper that created information theory.</div>
+    </div>
+    <div class="timeline-item type-podcast">
+      <div class="timeline-date">December 4, 2025</div>
+      <div class="timeline-title"><a href="#">Lex Fridman #400: Elon Musk</a></div>
+      <div class="timeline-meta">
+        <span class="badge badge-podcast">Podcast</span>
+        <span>Lex Fridman</span>
+      </div>
+    </div>
+    <div class="timeline-item type-book">
+      <div class="timeline-date">December 3, 2025</div>
+      <div class="timeline-title"><a href="#">The Dream Machine</a></div>
+      <div class="timeline-meta">
+        <span class="badge badge-book">Book</span>
+        <span>M. Mitchell Waldrop</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GROUPED LAYOUT -->
+<div class="prototype" id="grouped">
+  <div class="proto-title">Grouped by Type</div>
+
+  <div class="grouped-section">
+    <div class="grouped-header">
+      <span>Papers</span>
+      <span class="count">3</span>
+    </div>
+    <div class="grouped-list">
+      <div class="grouped-item">
+        <div>
+          <div class="grouped-item-title"><a href="#">The Real Computer Revolution Hasn't Happened Yet</a></div>
+          <div class="grouped-item-creator">Alan Kay</div>
+        </div>
+        <div class="grouped-item-date">Dec 8</div>
+      </div>
+      <div class="grouped-item">
+        <div>
+          <div class="grouped-item-title"><a href="#">A Mathematical Theory of Communication</a></div>
+          <div class="grouped-item-creator">Claude Shannon</div>
+        </div>
+        <div class="grouped-item-date">Dec 5</div>
+      </div>
+      <div class="grouped-item">
+        <div>
+          <div class="grouped-item-title"><a href="#">As We May Think</a></div>
+          <div class="grouped-item-creator">Vannevar Bush</div>
+        </div>
+        <div class="grouped-item-date">Nov 30</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grouped-section">
+    <div class="grouped-header">
+      <span>Videos</span>
+      <span class="count">2</span>
+    </div>
+    <div class="grouped-list">
+      <div class="grouped-item">
+        <div>
+          <div class="grouped-item-title"><a href="#">The Mother of All Demos</a></div>
+          <div class="grouped-item-creator">Douglas Engelbart</div>
+        </div>
+        <div class="grouped-item-date">Dec 7</div>
+      </div>
+      <div class="grouped-item">
+        <div>
+          <div class="grouped-item-title"><a href="#">Inventing on Principle</a></div>
+          <div class="grouped-item-creator">Bret Victor</div>
+        </div>
+        <div class="grouped-item-date">Dec 1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grouped-section">
+    <div class="grouped-header">
+      <span>Books</span>
+      <span class="count">1</span>
+    </div>
+    <div class="grouped-list">
+      <div class="grouped-item">
+        <div>
+          <div class="grouped-item-title"><a href="#">The Dream Machine</a></div>
+          <div class="grouped-item-creator">M. Mitchell Waldrop</div>
+        </div>
+        <div class="grouped-item-date">Dec 3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grouped-section">
+    <div class="grouped-header">
+      <span>Podcasts</span>
+      <span class="count">1</span>
+    </div>
+    <div class="grouped-list">
+      <div class="grouped-item">
+        <div>
+          <div class="grouped-item-title"><a href="#">Lex Fridman #400: Elon Musk</a></div>
+          <div class="grouped-item-creator">Lex Fridman</div>
+        </div>
+        <div class="grouped-item-date">Dec 4</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MINIMAL LIST -->
+<div class="prototype" id="minimal">
+  <div class="proto-title">Minimal List</div>
+  <div class="minimal-list">
+    <div class="minimal-item">
+      <span class="badge badge-paper">Paper</span>
+      <a href="#">The Real Computer Revolution Hasn't Happened Yet</a>
+      <span class="creator">Alan Kay</span>
+      <span class="date">Dec 8</span>
+    </div>
+    <div class="minimal-item">
+      <span class="badge badge-video">Video</span>
+      <a href="#">The Mother of All Demos</a>
+      <span class="creator">Douglas Engelbart</span>
+      <span class="date">Dec 7</span>
+    </div>
+    <div class="minimal-item">
+      <span class="badge badge-paper">Paper</span>
+      <a href="#">A Mathematical Theory of Communication</a>
+      <span class="creator">Claude Shannon</span>
+      <span class="date">Dec 5</span>
+    </div>
+    <div class="minimal-item">
+      <span class="badge badge-podcast">Podcast</span>
+      <a href="#">Lex Fridman #400: Elon Musk</a>
+      <span class="creator">Lex Fridman</span>
+      <span class="date">Dec 4</span>
+    </div>
+    <div class="minimal-item">
+      <span class="badge badge-book">Book</span>
+      <a href="#">The Dream Machine</a>
+      <span class="creator">M. Mitchell Waldrop</span>
+      <span class="date">Dec 3</span>
+    </div>
+    <div class="minimal-item">
+      <span class="badge badge-link">Link</span>
+      <a href="#">Bret Victor's Website</a>
+      <span class="creator"></span>
+      <span class="date">Dec 2</span>
+    </div>
+    <div class="minimal-item">
+      <span class="badge badge-video">Video</span>
+      <a href="#">Inventing on Principle</a>
+      <span class="creator">Bret Victor</span>
+      <span class="date">Dec 1</span>
+    </div>
+    <div class="minimal-item">
+      <span class="badge badge-paper">Paper</span>
+      <a href="#">As We May Think</a>
+      <span class="creator">Vannevar Bush</span>
+      <span class="date">Nov 30</span>
+    </div>
+  </div>
+</div>
+
+<!-- CARDS -->
+<div class="prototype" id="cards">
+  <div class="proto-title">Cards Grid</div>
+  <div class="cards-grid">
+    <div class="card type-paper">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <h3><a href="#">The Real Computer Revolution Hasn't Happened Yet</a></h3>
+        </div>
+        <div class="creator">Alan Kay</div>
+        <div class="note">Alan Kay's vision of what computing could become. The revolution isn't the computer itself.</div>
+        <div class="card-footer">
+          <span class="badge badge-paper">Paper</span>
+          <span class="date">Dec 8</span>
+        </div>
+      </div>
+    </div>
+    <div class="card type-video">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <h3><a href="#">The Mother of All Demos</a></h3>
+        </div>
+        <div class="creator">Douglas Engelbart</div>
+        <div class="card-footer">
+          <span class="badge badge-video">Video</span>
+          <span class="date">Dec 7</span>
+        </div>
+      </div>
+    </div>
+    <div class="card type-paper">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <h3><a href="#">A Mathematical Theory of Communication</a></h3>
+        </div>
+        <div class="creator">Claude Shannon</div>
+        <div class="note">The foundational paper that created information theory.</div>
+        <div class="card-footer">
+          <span class="badge badge-paper">Paper</span>
+          <span class="date">Dec 5</span>
+        </div>
+      </div>
+    </div>
+    <div class="card type-podcast">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <h3><a href="#">Lex Fridman #400: Elon Musk</a></h3>
+        </div>
+        <div class="creator">Lex Fridman</div>
+        <div class="note">Wide-ranging conversation on AI, space, and the future.</div>
+        <div class="card-footer">
+          <span class="badge badge-podcast">Podcast</span>
+          <span class="date">Dec 4</span>
+        </div>
+      </div>
+    </div>
+    <div class="card type-book">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <h3><a href="#">The Dream Machine</a></h3>
+        </div>
+        <div class="creator">M. Mitchell Waldrop</div>
+        <div class="note">Biography of J.C.R. Licklider and the history of personal computing.</div>
+        <div class="card-footer">
+          <span class="badge badge-book">Book</span>
+          <span class="date">Dec 3</span>
+        </div>
+      </div>
+    </div>
+    <div class="card type-video">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <h3><a href="#">Inventing on Principle</a></h3>
+        </div>
+        <div class="creator">Bret Victor</div>
+        <div class="note">The talk that changed how I think about tools and creation.</div>
+        <div class="card-footer">
+          <span class="badge badge-video">Video</span>
+          <span class="date">Dec 1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPACT TABLE -->
+<div class="prototype" id="compact">
+  <div class="proto-title">Compact Table</div>
+  <table class="compact-table">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Title</th>
+        <th>Creator</th>
+        <th>Added</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-paper">Paper</span></td>
+        <td class="title-cell"><a href="#">The Real Computer Revolution Hasn't Happened Yet</a></td>
+        <td class="creator-cell">Alan Kay</td>
+        <td class="date-cell">Dec 8</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-video">Video</span></td>
+        <td class="title-cell"><a href="#">The Mother of All Demos</a></td>
+        <td class="creator-cell">Douglas Engelbart</td>
+        <td class="date-cell">Dec 7</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-paper">Paper</span></td>
+        <td class="title-cell"><a href="#">A Mathematical Theory of Communication</a></td>
+        <td class="creator-cell">Claude Shannon</td>
+        <td class="date-cell">Dec 5</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-podcast">Podcast</span></td>
+        <td class="title-cell"><a href="#">Lex Fridman #400: Elon Musk</a></td>
+        <td class="creator-cell">Lex Fridman</td>
+        <td class="date-cell">Dec 4</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-book">Book</span></td>
+        <td class="title-cell"><a href="#">The Dream Machine</a></td>
+        <td class="creator-cell">M. Mitchell Waldrop</td>
+        <td class="date-cell">Dec 3</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-link">Link</span></td>
+        <td class="title-cell"><a href="#">Bret Victor's Website</a></td>
+        <td class="creator-cell"></td>
+        <td class="date-cell">Dec 2</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-video">Video</span></td>
+        <td class="title-cell"><a href="#">Inventing on Principle</a></td>
+        <td class="creator-cell">Bret Victor</td>
+        <td class="date-cell">Dec 1</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-paper">Paper</span></td>
+        <td class="title-cell"><a href="#">As We May Think</a></td>
+        <td class="creator-cell">Vannevar Bush</td>
+        <td class="date-cell">Nov 30</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.switcher button');
+  const prototypes = document.querySelectorAll('.prototype');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      prototypes.forEach(p => {
+        p.classList.remove('active');
+        if (p.id === target) p.classList.add('active');
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

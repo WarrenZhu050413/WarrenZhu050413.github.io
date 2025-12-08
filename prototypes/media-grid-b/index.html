@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Grid B - Uniform Grid</title>
+  <style>
+    :root {
+      --vermillion: #C8442E;
+      --kala-sea: #7BA3A3;
+      --paper: #F5F1E8;
+      --ink: #141414;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    header {
+      max-width: 1400px;
+      margin: 0 auto 32px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--kala-sea);
+      font-size: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      aspect-ratio: 16 / 9;
+      background: var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(20, 20, 20, 0.15);
+    }
+
+    .card-thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-gradient {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(20, 20, 20, 0.9), transparent);
+      pointer-events: none;
+    }
+
+    .card-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      color: white;
+      z-index: 2;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .card-creator {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(20, 20, 20, 0.85);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 2;
+      backdrop-filter: blur(4px);
+    }
+
+    .card-badge.video {
+      background: rgba(200, 68, 46, 0.9);
+    }
+
+    .card-badge.podcast {
+      background: rgba(123, 163, 163, 0.9);
+    }
+
+    .card-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      color: white;
+      opacity: 0.9;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Modal / Fullscreen Overlay */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      padding: 32px;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      width: 90vw;
+      height: 90vh;
+      max-width: 1400px;
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      color: white;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .modal-info {
+      flex: 1;
+    }
+
+    .modal-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .modal-creator {
+      font-size: 16px;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
+
+    .modal-note {
+      font-size: 14px;
+      color: var(--kala-sea);
+      font-style: italic;
+    }
+
+    .modal-close {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-embed {
+      flex: 1;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .modal-embed.link-content {
+      background: white;
+    }
+
+    /* Navigation buttons */
+    .modal-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      z-index: 1001;
+    }
+
+    .modal-nav:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-nav.prev {
+      left: 16px;
+    }
+
+    .modal-nav.next {
+      right: 16px;
+    }
+
+    /* Placeholder backgrounds for non-video items */
+    .card.type-paper .card-thumbnail {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .card.type-link .card-thumbnail {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .card.type-podcast .card-thumbnail {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modal-title {
+        font-size: 20px;
+      }
+
+      .modal-creator {
+        font-size: 14px;
+      }
+
+      .modal-note {
+        font-size: 12px;
+      }
+
+      .modal-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      body {
+        padding: 16px;
+      }
+
+      .card-title {
+        font-size: 14px;
+      }
+
+      .card-creator {
+        font-size: 12px;
+      }
+
+      .modal {
+        padding: 16px;
+      }
+
+      .modal-content {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Media Grid B: Uniform Grid</h1>
+    <p class="subtitle">Double-click any item to view fullscreen. Use arrow keys to navigate.</p>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="modal" id="modal">
+    <button class="modal-nav prev" id="prevBtn">‹</button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-info">
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-creator" id="modalCreator"></div>
+          <div class="modal-note" id="modalNote"></div>
+        </div>
+        <button class="modal-close" id="closeBtn">×</button>
+      </div>
+      <div class="modal-embed" id="modalEmbed"></div>
+    </div>
+    <button class="modal-nav next" id="nextBtn">›</button>
+  </div>
+
+  <script>
+    const mediaItems = [
+      { title: "Inventing on Principle", type: "video", creator: "Bret Victor", youtubeId: "PUv66718DII", note: "The talk that changed how I think about tools" },
+      { title: "The Future of Programming", type: "video", creator: "Bret Victor", youtubeId: "8pTEmbeENF4", note: "1973-themed talk about forgotten ideas" },
+      { title: "The Mother of All Demos", type: "video", creator: "Douglas Engelbart", youtubeId: "yJDv-zdhzMY", note: "1968 demo that introduced the mouse" },
+      { title: "Attention Is All You Need", type: "paper", creator: "Vaswani et al.", pdfUrl: "https://arxiv.org/pdf/1706.03762.pdf", note: "The transformer paper" },
+      { title: "Hammock Driven Development", type: "video", creator: "Rich Hickey", youtubeId: "f84n5oFoZBc", note: "Importance of thinking away from the computer" },
+      { title: "Simple Made Easy", type: "video", creator: "Rich Hickey", youtubeId: "SxdOUGdseq4", note: "The difference between simple and easy" },
+      { title: "Media for Thinking the Unthinkable", type: "video", creator: "Bret Victor", vimeoId: "67076984", note: "Designing new representations" },
+      { title: "Scaling Laws for Neural Language Models", type: "paper", creator: "Kaplan et al.", pdfUrl: "https://arxiv.org/pdf/2001.08361.pdf", note: "How LLM performance scales" },
+      { title: "Lex Fridman #367: Sam Altman", type: "podcast", creator: "Lex Fridman", youtubeId: "L_Guz73e6fw", note: "OpenAI and the future of AI" },
+      { title: "The Real Computer Revolution", type: "paper", creator: "Alan Kay", pdfUrl: "https://tinlizzie.org/VPRIPapers/m2007007a_revolution.pdf", note: "What computing could become" },
+      { title: "Learnable Programming", type: "link", creator: "Bret Victor", url: "http://worrydream.com/LearnableProgramming/", note: "Programming system for understanding" },
+      { title: "As We May Think", type: "paper", creator: "Vannevar Bush", url: "https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/", note: "1945 essay envisioning hypertext" }
+    ];
+
+    let currentIndex = -1;
+
+    // Render grid
+    const grid = document.getElementById('grid');
+    mediaItems.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = `card type-${item.type}`;
+      card.dataset.index = index;
+
+      let thumbnail = '';
+      let icon = '';
+
+      if (item.youtubeId) {
+        thumbnail = `<img class="card-thumbnail" src="https://img.youtube.com/vi/${item.youtubeId}/maxresdefault.jpg" alt="${item.title}">`;
+        if (item.type === 'video') {
+          icon = '<div class="card-icon">▶</div>';
+        }
+      } else if (item.vimeoId) {
+        thumbnail = '<div class="card-thumbnail" style="background: linear-gradient(135deg, #1ab7ea 0%, #4f5bd5 100%);"></div>';
+        icon = '<div class="card-icon">▶</div>';
+      } else if (item.type === 'paper') {
+        thumbnail = '<div class="card-thumbnail"></div>';
+        icon = '<div class="card-icon">📄</div>';
+      } else if (item.type === 'link') {
+        thumbnail = '<div class="card-thumbnail"></div>';
+        icon = '<div class="card-icon">🔗</div>';
+      }
+
+      card.innerHTML = `
+        ${thumbnail}
+        ${icon}
+        <div class="card-gradient"></div>
+        <div class="card-badge ${item.type}">${item.type}</div>
+        <div class="card-content">
+          <div class="card-title">${item.title}</div>
+          <div class="card-creator">${item.creator}</div>
+        </div>
+      `;
+
+      card.addEventListener('dblclick', () => openModal(index));
+      grid.appendChild(card);
+    });
+
+    // Modal functionality
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalCreator = document.getElementById('modalCreator');
+    const modalNote = document.getElementById('modalNote');
+    const modalEmbed = document.getElementById('modalEmbed');
+    const closeBtn = document.getElementById('closeBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function openModal(index) {
+      currentIndex = index;
+      const item = mediaItems[index];
+
+      modalTitle.textContent = item.title;
+      modalCreator.textContent = item.creator;
+      modalNote.textContent = item.note;
+
+      // Clear previous embed
+      modalEmbed.innerHTML = '';
+      modalEmbed.className = 'modal-embed';
+
+      // Create embed based on type
+      if (item.youtubeId) {
+        modalEmbed.innerHTML = `<iframe src="https://www.youtube.com/embed/${item.youtubeId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      } else if (item.vimeoId) {
+        modalEmbed.innerHTML = `<iframe src="https://player.vimeo.com/video/${item.vimeoId}?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+      } else if (item.pdfUrl) {
+        modalEmbed.innerHTML = `<iframe src="${item.pdfUrl}"></iframe>`;
+      } else if (item.url) {
+        modalEmbed.classList.add('link-content');
+        modalEmbed.innerHTML = `<iframe src="${item.url}"></iframe>`;
+      }
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      currentIndex = -1;
+    }
+
+    function navigate(direction) {
+      if (currentIndex === -1) return;
+
+      let newIndex = currentIndex + direction;
+      if (newIndex < 0) newIndex = mediaItems.length - 1;
+      if (newIndex >= mediaItems.length) newIndex = 0;
+
+      openModal(newIndex);
+    }
+
+    // Event listeners
+    closeBtn.addEventListener('click', closeModal);
+    prevBtn.addEventListener('click', () => navigate(-1));
+    nextBtn.addEventListener('click', () => navigate(1));
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('active')) return;
+
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'ArrowLeft') {
+        navigate(-1);
+      } else if (e.key === 'ArrowRight') {
+        navigate(1);
+      }
+    });
+  </script>
+</body>
+</html>

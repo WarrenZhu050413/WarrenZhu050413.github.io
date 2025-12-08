@@ -31,6 +31,9 @@ collections:
   sentences:
     output: true
     permalink: /sentences/:slug/
+  media:
+    output: true
+    permalink: /media/:slug/
 
 # Default layouts for collections
 defaults:
@@ -39,6 +42,11 @@ defaults:
       type: sentences
     values:
       layout: sentence
+  - scope:
+      path: ""
+      type: media
+    values:
+      layout: media-item
 
 # Author information
 author:

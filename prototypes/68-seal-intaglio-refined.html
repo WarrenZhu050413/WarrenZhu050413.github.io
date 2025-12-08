@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朱 Intaglio Seal Variations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #F5F1E8;
+            --paper-warm: #FAF6ED;
+            --ink: #2C2C2C;
+            --ink-light: #4A4A4A;
+
+            /* Kala palette */
+            --vermillion: #C8442E;
+            --vermillion-dark: #9E3524;
+            --rust: #A67B5B;
+            --rust-dark: #8B6347;
+            --sea: #4A9B9B;
+            --sea-dark: #3A7A7A;
+            --mountain: #8B7B7B;
+            --mountain-dark: #6B5B5B;
+
+            /* Sophisticated additions */
+            --terracotta: #C17F59;
+            --aged-ink: #3D3632;
+            --patina: #5E8B7A;
+            --bronze: #8B7355;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 48px;
+            min-height: 100vh;
+        }
+
+        /* Film grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 9999;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            margin-bottom: 6px;
+            color: var(--ink);
+        }
+
+        .subtitle {
+            color: var(--rust);
+            margin-bottom: 48px;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .variations {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 24px;
+            margin-bottom: 64px;
+        }
+
+        .variation {
+            background: var(--paper-warm);
+            border: 1px solid rgba(0,0,0,0.04);
+            padding: 32px 20px;
+            text-align: center;
+        }
+
+        .variation h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            color: var(--ink-light);
+        }
+
+        .variation .desc {
+            font-size: 0.7rem;
+            color: var(--rust);
+            margin-bottom: 28px;
+            font-style: italic;
+        }
+
+        .seal-container {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .context {
+            background: var(--paper);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            font-size: 0.8rem;
+        }
+
+        .context nav {
+            display: flex;
+            gap: 14px;
+        }
+
+        .context nav a {
+            color: var(--ink);
+            text-decoration: none;
+            opacity: 0.6;
+        }
+
+        /* Large display */
+        .seal-large {
+            transform: scale(2);
+        }
+
+        /* ============================================
+           SEAL 1: Vermillion Intaglio
+           Classic red-on-cream with aged border
+           ============================================ */
+        .seal-a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--paper);
+            color: var(--vermillion-dark);
+            font-family: 'Noto Serif SC', 'STKaiti', 'KaiTi', serif;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1.5px solid var(--vermillion-dark);
+            position: relative;
+        }
+
+        .seal-a::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border: 0.5px solid var(--vermillion-dark);
+            opacity: 0.4;
+        }
+
+        .seal-a::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+            pointer-events: none;
+            mix-blend-mode: multiply;
+        }
+
+        /* ============================================
+           SEAL 2: Ink Stone
+           Dark charcoal with paper character
+           ============================================ */
+        .seal-b {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--paper);
+            color: var(--aged-ink);
+            font-family: 'Noto Serif SC', 'STKaiti', serif;
+            font-size: 15px;
+            font-weight: 700;
+            border: 1.5px solid var(--aged-ink);
+            position: relative;
+        }
+
+        .seal-b::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 0.5px solid var(--aged-ink);
+            opacity: 0.25;
+        }
+
+        .seal-b::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 0.5px solid var(--aged-ink);
+            opacity: 0.15;
+        }
+
+        /* ============================================
+           SEAL 3: Terracotta
+           Warm earth tone, archaeological feel
+           ============================================ */
+        .seal-c {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--paper-warm) 0%, var(--paper) 100%);
+            color: var(--terracotta);
+            font-family: 'Noto Serif SC', 'STKaiti', serif;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid var(--terracotta);
+            position: relative;
+            box-shadow: inset 0 0 8px rgba(193, 127, 89, 0.08);
+        }
+
+        .seal-c::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid var(--terracotta);
+            opacity: 0.3;
+        }
+
+        .seal-c::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 0.5px solid var(--terracotta);
+            opacity: 0.12;
+        }
+
+        /* ============================================
+           SEAL 4: Patina Bronze
+           Aged green-bronze, museum artifact
+           ============================================ */
+        .seal-d {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--paper);
+            color: var(--patina);
+            font-family: 'Noto Serif SC', 'STKaiti', serif;
+            font-size: 15px;
+            font-weight: 700;
+            border: 1.5px solid var(--patina);
+            position: relative;
+        }
+
+        .seal-d::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border: 0.5px solid var(--bronze);
+            opacity: 0.3;
+        }
+
+        .seal-d::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 30% 30%, rgba(94, 139, 122, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 70%, rgba(139, 115, 85, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* ============================================
+           SEAL 5: Mountain Stone
+           Muted grey-brown, scholar's seal
+           ============================================ */
+        .seal-e {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 29px;
+            height: 29px;
+            background: var(--paper);
+            color: var(--mountain-dark);
+            font-family: 'Noto Serif SC', 'STKaiti', serif;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1.5px solid var(--mountain);
+            position: relative;
+        }
+
+        .seal-e::before {
+            content: '';
+            position: absolute;
+            inset: 2.5px;
+            border: 0.5px solid var(--mountain-dark);
+            opacity: 0.35;
+        }
+
+        /* Full header comparison */
+        .header-section {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .header-section h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            color: var(--rust);
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .header-row:last-child {
+            border-bottom: none;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .header-left .name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .header-left .chinese {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.85rem;
+            color: var(--rust);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-right nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .header-right nav a {
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .label {
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--mountain);
+            min-width: 90px;
+        }
+
+        /* Color swatch indicator */
+        .swatch {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .swatch span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Intaglio Seal Variations</h1>
+    <p class="subtitle">Sophisticated outlined forms with the Kala palette</p>
+
+    <div class="variations">
+        <!-- A: Vermillion Intaglio -->
+        <div class="variation">
+            <h3>Vermillion</h3>
+            <p class="desc">Classic cinnabar, double frame</p>
+            <div class="seal-container">
+                <span class="seal-a seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-a">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+            <div class="swatch">
+                <span style="background: var(--vermillion-dark)"></span>
+                <span style="background: var(--paper)"></span>
+            </div>
+        </div>
+
+        <!-- B: Ink Stone -->
+        <div class="variation">
+            <h3>Ink Stone</h3>
+            <p class="desc">Aged charcoal, triple line</p>
+            <div class="seal-container">
+                <span class="seal-b seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-b">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+            <div class="swatch">
+                <span style="background: var(--aged-ink)"></span>
+                <span style="background: var(--paper)"></span>
+            </div>
+        </div>
+
+        <!-- C: Terracotta -->
+        <div class="variation">
+            <h3>Terracotta</h3>
+            <p class="desc">Warm earth, archaeological</p>
+            <div class="seal-container">
+                <span class="seal-c seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-c">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+            <div class="swatch">
+                <span style="background: var(--terracotta)"></span>
+                <span style="background: var(--paper-warm)"></span>
+            </div>
+        </div>
+
+        <!-- D: Patina Bronze -->
+        <div class="variation">
+            <h3>Patina</h3>
+            <p class="desc">Aged bronze, museum piece</p>
+            <div class="seal-container">
+                <span class="seal-d seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-d">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+            <div class="swatch">
+                <span style="background: var(--patina)"></span>
+                <span style="background: var(--bronze)"></span>
+            </div>
+        </div>
+
+        <!-- E: Mountain Stone -->
+        <div class="variation">
+            <h3>Mountain</h3>
+            <p class="desc">Scholar's seal, quiet grey</p>
+            <div class="seal-container">
+                <span class="seal-e seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-e">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+            <div class="swatch">
+                <span style="background: var(--mountain-dark)"></span>
+                <span style="background: var(--mountain)"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full header comparison -->
+    <div class="header-section">
+        <h2>In Context</h2>
+
+        <div class="header-row">
+            <span class="label">Vermillion</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-a">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Ink Stone</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-b">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Terracotta</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-c">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Patina</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-d">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Mountain</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-e">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

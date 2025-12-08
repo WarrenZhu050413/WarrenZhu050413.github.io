@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Add Flows - Prototypes</title>
+  <style>
+    :root {
+      --vermillion: #C8442E;
+      --kala-sea: #7BA3A3;
+      --bg: #FAFAFA;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e0e0e0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      font-size: 15px;
+    }
+
+    .section {
+      margin-bottom: 56px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .option-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .option-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .option-card .complexity {
+      font-size: 10px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #e8f4e8;
+      color: #4a7c4a;
+    }
+
+    .option-card .complexity.medium { background: #fdf8e8; color: #9c7c4a; }
+    .option-card .complexity.hard { background: #fde8e8; color: #c8442e; }
+
+    .option-card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    pre {
+      background: #f5f5f5;
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+      font-family: 'SF Mono', Monaco, monospace;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 13px;
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+
+    .pros h4, .cons h4 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    .pros ul, .cons ul {
+      list-style: none;
+    }
+
+    .pros li::before { content: '✓ '; color: #4a7c4a; }
+    .cons li::before { content: '✗ '; color: #c8442e; }
+
+    .demo-form {
+      background: #f9f9f9;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--kala-sea);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background: var(--vermillion);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .workflow {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+
+    .workflow-step {
+      flex: 1;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      position: relative;
+    }
+
+    .workflow-step::after {
+      content: '→';
+      position: absolute;
+      right: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .workflow-step:last-child::after { display: none; }
+
+    .workflow-step .num {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background: var(--kala-sea);
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 11px;
+      line-height: 20px;
+      margin-right: 6px;
+    }
+
+    .highlight-box {
+      background: #E8F4F4;
+      border-left: 3px solid var(--kala-sea);
+      padding: 16px;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    .highlight-box strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Media: How to Add</h1>
+<p class="subtitle">Different approaches for capturing media easily</p>
+
+<!-- OPTION 1: MARKDOWN FILE -->
+<div class="section">
+  <div class="section-title">Option 1: Markdown Files (Current)</div>
+  <div class="option-card">
+    <h3>Create a markdown file in _media/<span class="complexity">Easy</span></h3>
+    <p>Manually create a .md file with frontmatter. Works with Jekyll's existing collection system.</p>
+
+    <pre>---
+title: "The Real Computer Revolution"
+type: paper
+url_link: "https://example.com/paper.pdf"
+creator: Alan Kay
+date: 2025-12-08
+---
+
+My notes about this paper...</pre>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>Pros</h4>
+        <ul>
+          <li>No build tooling needed</li>
+          <li>Version controlled in git</li>
+          <li>Notes support markdown</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>Cons</h4>
+        <ul>
+          <li>Requires file system access</li>
+          <li>Manual date formatting</li>
+          <li>Need to remember frontmatter keys</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 2: CLI COMMAND -->
+<div class="section">
+  <div class="section-title">Option 2: CLI Command</div>
+  <div class="option-card">
+    <h3>One-liner terminal command<span class="complexity">Easy</span></h3>
+    <p>Simple bash script to create media entries from command line.</p>
+
+    <pre># Add a paper
+media add paper "The Mother of All Demos" "https://..." --creator "Doug Engelbart"
+
+# Add a video
+media add video "Inventing on Principle" "https://..." --creator "Bret Victor"
+
+# Quick add (auto-detects type from URL)
+media add "https://youtube.com/watch?v=..."
+media add "https://arxiv.org/abs/..."</pre>
+
+    <div class="workflow">
+      <div class="workflow-step"><span class="num">1</span>Copy URL</div>
+      <div class="workflow-step"><span class="num">2</span>Run command</div>
+      <div class="workflow-step"><span class="num">3</span>Done!</div>
+    </div>
+
+    <div class="highlight-box">
+      <strong>Implementation idea:</strong>
+      A simple shell script that creates the .md file with proper date and slug.
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 3: BOOKMARKLET -->
+<div class="section">
+  <div class="section-title">Option 3: Bookmarklet</div>
+  <div class="option-card">
+    <h3>Browser bookmarklet → copy frontmatter<span class="complexity">Easy</span></h3>
+    <p>Click a bookmarklet on any page to copy the frontmatter to clipboard.</p>
+
+    <pre>javascript:(function(){
+  const title = document.title;
+  const url = window.location.href;
+  const type = url.includes('youtube') ? 'video' :
+               url.includes('arxiv') ? 'paper' : 'link';
+  const date = new Date().toISOString().split('T')[0];
+
+  const frontmatter = `---
+title: "${title}"
+type: ${type}
+url_link: "${url}"
+date: ${date}
+---
+
+`;
+  navigator.clipboard.writeText(frontmatter);
+  alert('Copied to clipboard!');
+})();</pre>
+
+    <div class="workflow">
+      <div class="workflow-step"><span class="num">1</span>Click bookmarklet</div>
+      <div class="workflow-step"><span class="num">2</span>Paste into new file</div>
+      <div class="workflow-step"><span class="num">3</span>Add notes</div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 4: DATA FILE -->
+<div class="section">
+  <div class="section-title">Option 4: Single Data File</div>
+  <div class="option-card">
+    <h3>All media in one YAML file<span class="complexity">Easy</span></h3>
+    <p>Instead of separate files, maintain a single _data/media.yml file.</p>
+
+    <pre># _data/media.yml
+- title: "The Real Computer Revolution"
+  type: paper
+  url: "https://..."
+  creator: Alan Kay
+  date: 2025-12-08
+  notes: |
+    My notes here...
+
+- title: "The Mother of All Demos"
+  type: video
+  url: "https://youtube.com/..."
+  creator: Doug Engelbart
+  date: 2025-12-07</pre>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>Pros</h4>
+        <ul>
+          <li>One file to manage</li>
+          <li>Easy to reorder</li>
+          <li>Quick to add new entries</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>Cons</h4>
+        <ul>
+          <li>No individual permalink per item</li>
+          <li>Long notes get unwieldy</li>
+          <li>File grows over time</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 5: OBSIDIAN-STYLE -->
+<div class="section">
+  <div class="section-title">Option 5: Obsidian/Logseq Integration</div>
+  <div class="option-card">
+    <h3>Sync from PKM tool<span class="complexity medium">Medium</span></h3>
+    <p>Tag items in Obsidian/Logseq and sync to Jekyll.</p>
+
+    <pre># In Obsidian, tag notes with #media
+# A script syncs tagged notes to _media/
+
+# obsidian-to-jekyll.py
+for note in vault.notes_with_tag('media'):
+    create_media_entry(
+        title=note.title,
+        url=note.get_property('url'),
+        type=note.get_property('type'),
+        notes=note.content
+    )</pre>
+
+    <div class="highlight-box">
+      <strong>Best for:</strong> If you already use Obsidian for note-taking
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 6: SHORTCUT/ALFRED -->
+<div class="section">
+  <div class="section-title">Option 6: Alfred/Raycast Workflow</div>
+  <div class="option-card">
+    <h3>Keyboard shortcut → form<span class="complexity medium">Medium</span></h3>
+    <p>Trigger with hotkey, paste URL, hit enter.</p>
+
+    <div class="demo-form">
+      <div class="form-group">
+        <label>URL (auto-fills title)</label>
+        <input type="url" placeholder="https://..." value="https://youtube.com/watch?v=...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type</label>
+          <select>
+            <option>video</option>
+            <option>paper</option>
+            <option>podcast</option>
+            <option>book</option>
+            <option>link</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Creator</label>
+          <input type="text" placeholder="Name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notes (optional)</label>
+        <textarea rows="2" placeholder="Quick note..."></textarea>
+      </div>
+      <button class="btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECOMMENDATION -->
+<div class="section">
+  <div class="section-title">Recommendation</div>
+  <div class="option-card" style="border-color: var(--kala-sea); border-width: 2px;">
+    <h3>Start with: CLI + Data File<span class="complexity">Easy</span></h3>
+    <p>Combine the simplicity of a single data file with a quick CLI command.</p>
+
+    <pre># Simple add command
+media add "https://youtube.com/..." --note "Great talk on X"
+
+# Appends to _data/media.yml:
+- title: "Auto-fetched Title"
+  type: video
+  url: "https://youtube.com/..."
+  date: 2025-12-08
+  note: "Great talk on X"</pre>
+
+    <div class="workflow">
+      <div class="workflow-step"><span class="num">1</span>Copy URL</div>
+      <div class="workflow-step"><span class="num">2</span>Run <code>media add [url]</code></div>
+      <div class="workflow-step"><span class="num">3</span>Done!</div>
+    </div>
+
+    <div class="highlight-box">
+      <strong>Why this works:</strong>
+      <ul style="margin-top: 8px; padding-left: 20px;">
+        <li>One command, minimum friction</li>
+        <li>Auto-fetches title from URL</li>
+        <li>Auto-detects type (YouTube → video, arXiv → paper)</li>
+        <li>Single file keeps everything organized</li>
+        <li>Easy to migrate to separate files later if needed</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

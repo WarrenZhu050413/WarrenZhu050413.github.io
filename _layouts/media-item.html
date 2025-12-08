@@ -1,0 +1,63 @@
+---
+layout: default
+---
+<article class="media-item">
+  <header class="media-item-header">
+    <div class="media-type-badge media-type-{{ page.type | default: 'link' }}">{{ page.type | default: 'link' }}</div>
+    <h1 class="media-item-title">
+      <a href="{{ page.url_link }}" target="_blank" rel="noopener">{{ page.title | escape }}</a>
+    </h1>
+    <div class="media-item-meta">
+      {% if page.creator %}
+      <span class="media-creator">{{ page.creator }}</span>
+      {% endif %}
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        Added {{ page.date | date: "%B %-d, %Y" }}
+      </time>
+    </div>
+  </header>
+
+  {% assign content_length = content | strip_html | strip | size %}
+  {% if content_length > 0 %}
+  <div class="media-item-content">
+    {{ content }}
+  </div>
+  {% endif %}
+
+  <div class="media-item-link">
+    <a href="{{ page.url_link }}" target="_blank" rel="noopener" class="external-link">
+      {{ page.url_link | truncate: 60 }} &rarr;
+    </a>
+  </div>
+
+  <nav class="media-nav">
+    {% assign sorted_media = site.media | sort: 'date' %}
+    {% assign current_index = nil %}
+    {% for m in sorted_media %}
+      {% if m.url == page.url %}
+        {% assign current_index = forloop.index0 %}
+      {% endif %}
+    {% endfor %}
+
+    {% if current_index != nil %}
+      {% assign prev_index = current_index | minus: 1 %}
+      {% assign next_index = current_index | plus: 1 %}
+
+      <div class="nav-prev">
+        {% if prev_index >= 0 %}
+          {% assign prev_media = sorted_media[prev_index] %}
+          <a href="{{ prev_media.url | relative_url }}">&larr; {{ prev_media.title | truncate: 30 }}</a>
+        {% endif %}
+      </div>
+
+      <a class="nav-all" href="{{ '/media/' | relative_url }}">All Media</a>
+
+      <div class="nav-next">
+        {% if next_index < sorted_media.size %}
+          {% assign next_media = sorted_media[next_index] %}
+          <a href="{{ next_media.url | relative_url }}">{{ next_media.title | truncate: 30 }} &rarr;</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </nav>
+</article>

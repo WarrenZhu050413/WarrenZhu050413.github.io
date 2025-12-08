@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朱 Seal Variations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #F5F1E8;
+            --ink: #2C2C2C;
+            --vermillion: #C8442E;
+            --vermillion-dark: #A63828;
+            --vermillion-light: #D4563F;
+            --rust: #A67B5B;
+            --sea: #4A9B9B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .subtitle {
+            color: var(--rust);
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        .variations {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .variation {
+            background: white;
+            border-radius: 8px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .variation h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .variation .desc {
+            font-size: 0.75rem;
+            color: var(--rust);
+            margin-bottom: 24px;
+        }
+
+        .seal-container {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* Context preview - how it looks in header */
+        .context {
+            background: var(--paper);
+            padding: 12px 16px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            font-size: 0.85rem;
+        }
+
+        .context nav {
+            display: flex;
+            gap: 16px;
+        }
+
+        .context nav a {
+            color: var(--ink);
+            text-decoration: none;
+            opacity: 0.7;
+        }
+
+        /* ============================================
+           SEAL VARIATION 1: Classic Square
+           Traditional stamp with subtle worn edges
+           ============================================ */
+        .seal-1 {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--vermillion);
+            color: var(--paper);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 2px;
+            position: relative;
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+
+        .seal-1::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           SEAL VARIATION 2: Circular Traditional
+           Round seal format, common in Chinese stamps
+           ============================================ */
+        .seal-2 {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: var(--vermillion);
+            color: var(--paper);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50%;
+            position: relative;
+            box-shadow:
+                inset 0 0 0 2px rgba(255, 255, 255, 0.15),
+                0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .seal-2::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           SEAL VARIATION 3: Minimalist Modern
+           Clean, flat design with no texture
+           ============================================ */
+        .seal-3 {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--vermillion);
+            color: var(--paper);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 3px;
+        }
+
+        /* ============================================
+           SEAL VARIATION 4: Antique Worn
+           Heavy texture, aged ink appearance
+           ============================================ */
+        .seal-4 {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg,
+                var(--vermillion) 0%,
+                var(--vermillion-dark) 50%,
+                var(--vermillion) 100%);
+            color: var(--paper);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            font-size: 19px;
+            font-weight: 700;
+            border-radius: 1px;
+            position: relative;
+            box-shadow:
+                inset 0 0 8px rgba(0, 0, 0, 0.2),
+                0 1px 2px rgba(0, 0, 0, 0.15);
+            text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .seal-4::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.18'/%3E%3C/svg%3E");
+            border-radius: 1px;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        .seal-4::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            border-radius: 1px;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           SEAL VARIATION 5: Outlined/Intaglio
+           Reversed - vermillion border with paper center
+           ============================================ */
+        .seal-5 {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: var(--paper);
+            color: var(--vermillion);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            font-size: 17px;
+            font-weight: 700;
+            border: 2px solid var(--vermillion);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .seal-5::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border: 1px solid var(--vermillion);
+            border-radius: 1px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Large display versions for comparison */
+        .seal-large {
+            transform: scale(1.8);
+        }
+
+        /* Side by side header mockup */
+        .header-mockup {
+            background: var(--paper);
+            padding: 20px 32px;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+
+        .header-mockup h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: var(--rust);
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .header-row:last-child {
+            border-bottom: none;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .header-left .name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .header-left .chinese {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.9rem;
+            color: var(--rust);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-right nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .header-right nav a {
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            color: var(--rust);
+            margin-right: 12px;
+            min-width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <h1>朱 Vermillion Seal Variations</h1>
+    <p class="subtitle">Five interpretations of the Chinese family stamp</p>
+
+    <div class="variations">
+        <!-- Variation 1: Classic Square -->
+        <div class="variation">
+            <h3>1. Classic Square</h3>
+            <p class="desc">Traditional stamp, subtle texture</p>
+            <div class="seal-container">
+                <span class="seal-1 seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-1">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Variation 2: Circular -->
+        <div class="variation">
+            <h3>2. Circular</h3>
+            <p class="desc">Round format, double border</p>
+            <div class="seal-container">
+                <span class="seal-2 seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-2">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Variation 3: Minimalist -->
+        <div class="variation">
+            <h3>3. Minimalist</h3>
+            <p class="desc">Clean, flat, modern</p>
+            <div class="seal-container">
+                <span class="seal-3 seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-3">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Variation 4: Antique -->
+        <div class="variation">
+            <h3>4. Antique Worn</h3>
+            <p class="desc">Heavy texture, aged patina</p>
+            <div class="seal-container">
+                <span class="seal-4 seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-4">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Variation 5: Outlined -->
+        <div class="variation">
+            <h3>5. Outlined</h3>
+            <p class="desc">Intaglio style, reversed</p>
+            <div class="seal-container">
+                <span class="seal-5 seal-large">朱</span>
+            </div>
+            <div class="context">
+                <span class="seal-5">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full header mockups -->
+    <div class="header-mockup">
+        <h2>In Context: Full Header Comparison</h2>
+
+        <div class="header-row">
+            <span class="label">Classic</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-1">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Circular</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-2">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Minimalist</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-3">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Antique</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-4">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header-row">
+            <span class="label">Outlined</span>
+            <div class="header-left">
+                <a href="#" class="name">Warren Zhu</a>
+                <span class="chinese">朱富橙</span>
+            </div>
+            <div class="header-right">
+                <span class="seal-5">朱</span>
+                <nav>
+                    <a href="#">Writing</a>
+                    <a href="#">About</a>
+                    <a href="#">Sentences</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

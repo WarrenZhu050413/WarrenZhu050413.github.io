@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype 75B: Draggable Sentences - Muuri</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/web-animations-js@2.3.2/web-animations.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/muuri@0.9.5/dist/muuri.min.js"></script>
+  <style>
+    :root {
+      --kala-sea: #7BA3A3;
+      --kala-rust: #A67B5B;
+      --kala-mountain: #8B7B7B;
+      --vermillion: #C8442E;
+      --paper: #F5F1E8;
+      --ink: #141414;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Source Serif 4', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 2rem;
+    }
+
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--kala-mountain);
+      font-style: italic;
+    }
+
+    .sentences-feed {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .sentence-item {
+      position: absolute;
+      width: calc(25% - 12px);
+      margin: 0;
+      z-index: 1;
+    }
+
+    @media (max-width: 900px) {
+      .sentence-item { width: calc(50% - 8px); }
+    }
+
+    @media (max-width: 500px) {
+      .sentence-item { width: 100%; }
+    }
+
+    .sentence-item.muuri-item-dragging {
+      z-index: 3;
+    }
+
+    .sentence-item.muuri-item-releasing {
+      z-index: 2;
+    }
+
+    .sentence-item.muuri-item-hidden {
+      z-index: 0;
+    }
+
+    .sentence-item-content {
+      position: relative;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 3px;
+      padding: 0.5rem 1rem 1rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      cursor: grab;
+      transition: box-shadow 0.2s;
+      margin-bottom: 1rem;
+    }
+
+    .sentence-item-content:active {
+      cursor: grabbing;
+    }
+
+    .sentence-item-content:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .muuri-item-dragging .sentence-item-content {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .sentence-entry-date {
+      font-size: 0.64rem;
+      color: var(--kala-mountain);
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .sentence-entry-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0 0 0.5rem;
+      line-height: 1.3;
+    }
+
+    .sentence-entry-content {
+      font-size: 0.8rem;
+      color: var(--kala-mountain);
+      line-height: 1.6;
+    }
+
+    /* Border colors */
+    .sentence-item:nth-child(5n + 1) .sentence-item-content { border-top: 3px solid var(--kala-sea); }
+    .sentence-item:nth-child(5n + 2) .sentence-item-content { border-top: 3px solid var(--ink); }
+    .sentence-item:nth-child(5n + 3) .sentence-item-content { border-top: 3px solid var(--kala-rust); }
+    .sentence-item:nth-child(5n + 4) .sentence-item-content { border-top: 3px solid var(--vermillion); }
+    .sentence-item:nth-child(5n + 5) .sentence-item-content { border-top: 3px solid var(--kala-mountain); }
+
+    .tech-note {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>One True Sentences</h1>
+    <p>Variant B: Muuri — Drag-to-reflow masonry with smooth animations</p>
+  </div>
+
+  <div class="sentences-feed" id="grid">
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 8</time>
+        <h2 class="sentence-entry-title">The Finger Protocol</h2>
+        <div class="sentence-entry-content">There used to be a protocol called "finger" that let you check on friends.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 7</time>
+        <h2 class="sentence-entry-title">Productivity Tool Strangeness</h2>
+        <div class="sentence-entry-content">The strangest thing about productivity tools is that they make you feel productive without actually producing.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 6</time>
+        <h2 class="sentence-entry-title">Ephemerality</h2>
+        <div class="sentence-entry-content">The best things in life disappear.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 5</time>
+        <h2 class="sentence-entry-title">EdTech Made Up</h2>
+        <div class="sentence-entry-content">Most educational technology solves problems that don't exist.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 4</time>
+        <h2 class="sentence-entry-title">Consistency as Vice</h2>
+        <div class="sentence-entry-content">A foolish consistency is the hobgoblin of little minds.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 3</time>
+        <h2 class="sentence-entry-title">Xiaohongshu is Powerful</h2>
+        <div class="sentence-entry-content">The algorithm knows what you want before you do.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 2</time>
+        <h2 class="sentence-entry-title">Wouldn't It Be Nice</h2>
+        <div class="sentence-entry-content">If we were older, then we wouldn't have to wait so long.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Dec 1</time>
+        <h2 class="sentence-entry-title">Quantity</h2>
+        <div class="sentence-entry-content">Quality comes from quantity. Ship more.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Nov 30</time>
+        <h2 class="sentence-entry-title">2 Rules for Happiness</h2>
+        <div class="sentence-entry-content">1. Don't sweat the small stuff. 2. It's all small stuff.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Nov 29</time>
+        <h2 class="sentence-entry-title">Doing Good</h2>
+        <div class="sentence-entry-content">The best way to do good is to be good at what you do.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Nov 28</time>
+        <h2 class="sentence-entry-title">Winning in Stupid Games</h2>
+        <div class="sentence-entry-content">Play stupid games, win stupid prizes.</div>
+      </div>
+    </div>
+
+    <div class="sentence-item">
+      <div class="sentence-item-content">
+        <time class="sentence-entry-date">Nov 27</time>
+        <h2 class="sentence-entry-title">What I Do vs What I Say</h2>
+        <div class="sentence-entry-content">What I do is who I am. What I say is who I want to be.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tech-note">Muuri Grid</div>
+
+  <script>
+    // Apply random rotation to each card (1-10 degrees, positive or negative)
+    document.querySelectorAll('.sentence-item-content').forEach(card => {
+      const rotation = (Math.random() * 9 + 1) * (Math.random() < 0.5 ? -1 : 1);
+      card.style.transform = `rotate(${rotation}deg)`;
+      card.dataset.rotation = rotation;
+    });
+
+    // Initialize Muuri
+    const grid = new Muuri('#grid', {
+      dragEnabled: true,
+      dragSort: true,
+      dragSortHeuristics: {
+        sortInterval: 100,
+        minDragDistance: 10,
+        minBounceBackAngle: 1
+      },
+      dragPlaceholder: {
+        enabled: true,
+        createElement: function(item) {
+          const el = item.getElement().cloneNode(true);
+          el.style.opacity = '0.2';
+          return el;
+        }
+      },
+      layout: {
+        fillGaps: true,
+        horizontal: false,
+        alignRight: false,
+        alignBottom: false,
+        rounding: true
+      },
+      dragStartPredicate: {
+        distance: 0,
+        delay: 0
+      },
+      dragRelease: {
+        duration: 300,
+        easing: 'ease-out'
+      }
+    });
+
+    // Reset rotation when dragging starts, restore when done
+    grid.on('dragStart', function(item) {
+      const content = item.getElement().querySelector('.sentence-item-content');
+      content.style.transform = 'rotate(0deg) scale(1.02)';
+    });
+
+    grid.on('dragEnd', function(item) {
+      const content = item.getElement().querySelector('.sentence-item-content');
+      const rotation = content.dataset.rotation;
+      content.style.transform = `rotate(${rotation}deg)`;
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      grid.refreshItems().layout();
+    });
+  </script>
+</body>
+</html>

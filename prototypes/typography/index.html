@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typography Experiments - Warren Zhu</title>
+
+  <!-- Google Fonts - All variants -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Shippori+Mincho:wght@400;500;600&family=Noto+Sans:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@400;500;700&family=Cinzel:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --kala-sea: #7ba3a3;
+      --kala-rust: #a67b5b;
+      --kala-mountain: #8b7b7b;
+      --vermillion: #c8442e;
+      --paper: #f5f1e8;
+      --ink: #141414;
+      --ink-soft: rgba(20, 20, 20, 0.8);
+    }
+
+    body {
+      background: #1a1a1a;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Control Panel */
+    .control-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(20, 20, 20, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 16px 24px;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .control-panel h1 {
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .variant-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .variant-pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .variant-pill:hover {
+      background: rgba(255,255,255,0.15);
+      color: white;
+    }
+
+    .variant-pill.active {
+      background: var(--kala-sea);
+      border-color: var(--kala-sea);
+      color: white;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .view-btn {
+      padding: 6px 12px;
+      font-size: 11px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+    }
+
+    .view-btn.active {
+      background: var(--vermillion);
+      border-color: var(--vermillion);
+      color: white;
+    }
+
+    /* Main Grid */
+    .main-container {
+      padding-top: 140px;
+      padding-bottom: 40px;
+    }
+
+    .grid-view {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      padding: 0 16px;
+    }
+
+    .grid-view.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-view.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-view.cols-5 { grid-template-columns: repeat(5, 1fr); }
+    .grid-view.single { grid-template-columns: 1fr; max-width: 800px; margin: 0 auto; }
+
+    /* Typography Card */
+    .typo-card {
+      background: var(--paper);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .typo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .typo-card.hidden {
+      display: none;
+    }
+
+    .card-label {
+      background: var(--ink);
+      color: white;
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-label .fonts {
+      font-size: 9px;
+      opacity: 0.6;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
+    .card-content {
+      padding: 24px;
+      color: var(--ink);
+    }
+
+    /* Component Sections */
+    .component-section {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(20,20,20,0.08);
+    }
+
+    .component-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .component-label {
+      font-family: -apple-system, sans-serif;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--kala-mountain);
+      margin-bottom: 8px;
+    }
+
+    /* === VARIANT 1: Current (Cormorant + Source Serif) === */
+    .variant-1 .site-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .variant-1 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--kala-rust);
+      letter-spacing: 0.15em;
+    }
+
+    .variant-1 .nav-item {
+      font-family: 'Source Serif 4', serif;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    .variant-1 .section-heading {
+      font-family: 'Source Serif 4', serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .variant-1 .post-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+
+    .variant-1 .post-date {
+      font-family: 'Source Serif 4', serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--kala-mountain);
+    }
+
+    .variant-1 .body-text {
+      font-family: 'Source Serif 4', serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+
+    .variant-1 .blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--kala-mountain);
+      border-left: 3px solid var(--kala-rust);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 2: Swiss Modern (Inter) === */
+    .variant-2 .site-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .variant-2 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      color: var(--kala-rust);
+      letter-spacing: 0.1em;
+    }
+
+    .variant-2 .nav-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      letter-spacing: 0.01em;
+    }
+
+    .variant-2 .section-heading {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .variant-2 .post-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+
+    .variant-2 .post-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      color: var(--kala-mountain);
+      font-weight: 500;
+    }
+
+    .variant-2 .body-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    .variant-2 .blockquote {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--kala-mountain);
+      border-left: 2px solid var(--kala-sea);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 3: French Editorial (Playfair + Lora) === */
+    .variant-3 .site-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    .variant-3 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--kala-rust);
+      letter-spacing: 0.12em;
+    }
+
+    .variant-3 .nav-item {
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      font-style: italic;
+      color: var(--ink-soft);
+    }
+
+    .variant-3 .section-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .variant-3 .post-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .variant-3 .post-date {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--kala-mountain);
+    }
+
+    .variant-3 .body-text {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    .variant-3 .blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--kala-mountain);
+      border-left: 3px solid var(--vermillion);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 4: Humanist Warmth (Literata + Merriweather) === */
+    .variant-4 .site-title {
+      font-family: 'Literata', serif;
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    .variant-4 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--kala-rust);
+      letter-spacing: 0.12em;
+    }
+
+    .variant-4 .nav-item {
+      font-family: 'Merriweather', serif;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+
+    .variant-4 .section-heading {
+      font-family: 'Literata', serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .variant-4 .post-title {
+      font-family: 'Literata', serif;
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    .variant-4 .post-date {
+      font-family: 'Merriweather', serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--kala-mountain);
+    }
+
+    .variant-4 .body-text {
+      font-family: 'Merriweather', serif;
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--ink-soft);
+    }
+
+    .variant-4 .blockquote {
+      font-family: 'Literata', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--kala-mountain);
+      border-left: 3px solid var(--kala-rust);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 5: Geometric Precision (DM Sans) === */
+    .variant-5 .site-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .variant-5 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      color: var(--kala-rust);
+      letter-spacing: 0.08em;
+    }
+
+    .variant-5 .nav-item {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+
+    .variant-5 .section-heading {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .variant-5 .post-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .variant-5 .post-date {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--kala-mountain);
+    }
+
+    .variant-5 .body-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+    }
+
+    .variant-5 .blockquote {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--kala-mountain);
+      border-left: 2px solid var(--kala-sea);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 6: Classical Revival (Libre Baskerville) === */
+    .variant-6 .site-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.15;
+    }
+
+    .variant-6 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--kala-rust);
+      letter-spacing: 0.15em;
+    }
+
+    .variant-6 .nav-item {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+
+    .variant-6 .section-heading {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .variant-6 .post-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    .variant-6 .post-date {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--kala-mountain);
+    }
+
+    .variant-6 .body-text {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--ink-soft);
+    }
+
+    .variant-6 .blockquote {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--kala-mountain);
+      border-left: 3px solid var(--kala-rust);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 7: Japanese Inspired (Shippori Mincho + Noto Sans) === */
+    .variant-7 .site-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    .variant-7 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 15px;
+      color: var(--kala-rust);
+      letter-spacing: 0.2em;
+    }
+
+    .variant-7 .nav-item {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      letter-spacing: 0.03em;
+    }
+
+    .variant-7 .section-heading {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .variant-7 .post-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.4;
+      letter-spacing: 0.01em;
+    }
+
+    .variant-7 .post-date {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 11px;
+      color: var(--kala-mountain);
+      letter-spacing: 0.05em;
+    }
+
+    .variant-7 .body-text {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--ink-soft);
+    }
+
+    .variant-7 .blockquote {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 16px;
+      color: var(--kala-mountain);
+      border-left: 2px solid var(--vermillion);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 8: Brutalist (Space Grotesk) === */
+    .variant-8 .site-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      text-transform: uppercase;
+    }
+
+    .variant-8 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--kala-rust);
+      letter-spacing: 0.1em;
+    }
+
+    .variant-8 .nav-item {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .variant-8 .section-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .variant-8 .post-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .variant-8 .post-date {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      color: var(--kala-mountain);
+      font-weight: 500;
+    }
+
+    .variant-8 .body-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+
+    .variant-8 .blockquote {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ink);
+      border-left: 4px solid var(--ink);
+      padding-left: 16px;
+    }
+
+    /* === VARIANT 9: Art Deco (Cinzel + Spectral) === */
+    .variant-9 .site-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .variant-9 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--kala-rust);
+      letter-spacing: 0.2em;
+    }
+
+    .variant-9 .nav-item {
+      font-family: 'Spectral', serif;
+      font-size: 13px;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+    }
+
+    .variant-9 .section-heading {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+    }
+
+    .variant-9 .post-title {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.35;
+      letter-spacing: 0.03em;
+    }
+
+    .variant-9 .post-date {
+      font-family: 'Spectral', serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--kala-mountain);
+    }
+
+    .variant-9 .body-text {
+      font-family: 'Spectral', serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    .variant-9 .blockquote {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--kala-mountain);
+      border-left: 3px solid var(--vermillion);
+      padding-left: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    /* === VARIANT 10: Minimalist Serif (EB Garamond) === */
+    .variant-10 .site-title {
+      font-family: 'EB Garamond', serif;
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+
+    .variant-10 .chinese-name {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--kala-rust);
+      letter-spacing: 0.15em;
+    }
+
+    .variant-10 .nav-item {
+      font-family: 'EB Garamond', serif;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    .variant-10 .section-heading {
+      font-family: 'EB Garamond', serif;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .variant-10 .post-title {
+      font-family: 'EB Garamond', serif;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+
+    .variant-10 .post-date {
+      font-family: 'EB Garamond', serif;
+      font-size: 13px;
+      font-style: italic;
+      color: var(--kala-mountain);
+    }
+
+    .variant-10 .body-text {
+      font-family: 'EB Garamond', serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+    }
+
+    .variant-10 .blockquote {
+      font-family: 'EB Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      color: var(--kala-mountain);
+      border-left: 2px solid var(--kala-rust);
+      padding-left: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Control Panel -->
+  <div class="control-panel">
+    <h1>Typography Experiments</h1>
+    <div class="variant-pills">
+      <button class="variant-pill active" data-variant="all">All</button>
+      <button class="variant-pill" data-variant="1">1. Current</button>
+      <button class="variant-pill" data-variant="2">2. Swiss</button>
+      <button class="variant-pill" data-variant="3">3. French</button>
+      <button class="variant-pill" data-variant="4">4. Humanist</button>
+      <button class="variant-pill" data-variant="5">5. Geometric</button>
+      <button class="variant-pill" data-variant="6">6. Classical</button>
+      <button class="variant-pill" data-variant="7">7. Japanese</button>
+      <button class="variant-pill" data-variant="8">8. Brutalist</button>
+      <button class="variant-pill" data-variant="9">9. Art Deco</button>
+      <button class="variant-pill" data-variant="10">10. Minimal</button>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn" data-cols="2">2 cols</button>
+      <button class="view-btn" data-cols="3">3 cols</button>
+      <button class="view-btn active" data-cols="5">5 cols</button>
+      <button class="view-btn" data-cols="single">Single</button>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-container">
+    <div class="grid-view cols-5">
+
+      <!-- Variant 1: Current -->
+      <div class="typo-card variant-1" data-variant="1">
+        <div class="card-label">
+          <span>1. Current</span>
+          <span class="fonts">Cormorant + Source Serif</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 2: Swiss Modern -->
+      <div class="typo-card variant-2" data-variant="2">
+        <div class="card-label">
+          <span>2. Swiss Modern</span>
+          <span class="fonts">Inter</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 3: French Editorial -->
+      <div class="typo-card variant-3" data-variant="3">
+        <div class="card-label">
+          <span>3. French Editorial</span>
+          <span class="fonts">Playfair + Lora</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 4: Humanist Warmth -->
+      <div class="typo-card variant-4" data-variant="4">
+        <div class="card-label">
+          <span>4. Humanist Warmth</span>
+          <span class="fonts">Literata + Merriweather</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 5: Geometric Precision -->
+      <div class="typo-card variant-5" data-variant="5">
+        <div class="card-label">
+          <span>5. Geometric</span>
+          <span class="fonts">DM Sans</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 6: Classical Revival -->
+      <div class="typo-card variant-6" data-variant="6">
+        <div class="card-label">
+          <span>6. Classical</span>
+          <span class="fonts">Libre Baskerville</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 7: Japanese Inspired -->
+      <div class="typo-card variant-7" data-variant="7">
+        <div class="card-label">
+          <span>7. Japanese</span>
+          <span class="fonts">Shippori Mincho + Noto Sans</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 8: Brutalist -->
+      <div class="typo-card variant-8" data-variant="8">
+        <div class="card-label">
+          <span>8. Brutalist</span>
+          <span class="fonts">Space Grotesk</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 9: Art Deco -->
+      <div class="typo-card variant-9" data-variant="9">
+        <div class="card-label">
+          <span>9. Art Deco</span>
+          <span class="fonts">Cinzel + Spectral</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 10: Minimalist Serif -->
+      <div class="typo-card variant-10" data-variant="10">
+        <div class="card-label">
+          <span>10. Minimal Serif</span>
+          <span class="fonts">EB Garamond</span>
+        </div>
+        <div class="card-content">
+          <div class="component-section">
+            <div class="component-label">Header</div>
+            <div class="site-title">Warren Zhu</div>
+            <div class="chinese-name">朱 富 城</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Navigation</div>
+            <span class="nav-item">Writing</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">Sentences</span> &nbsp;&middot;&nbsp;
+            <span class="nav-item">About</span>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Section</div>
+            <div class="section-heading">Recent Writing</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Post</div>
+            <div class="post-title">The Architecture of Attention</div>
+            <div class="post-date">December 2024</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Body</div>
+            <div class="body-text">In the quiet hours before dawn, when the city still sleeps, I find myself drawn to the window. The streets below are empty, save for the occasional taxi.</div>
+          </div>
+          <div class="component-section">
+            <div class="component-label">Quote</div>
+            <div class="blockquote">"The only true voyage of discovery would be not to visit strange lands but to possess other eyes."</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Variant filter
+    document.querySelectorAll('.variant-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.variant-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const variant = pill.dataset.variant;
+        document.querySelectorAll('.typo-card').forEach(card => {
+          if (variant === 'all' || card.dataset.variant === variant) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const grid = document.querySelector('.grid-view');
+        grid.classList.remove('cols-2', 'cols-3', 'cols-5', 'single');
+        grid.classList.add(btn.dataset.cols === 'single' ? 'single' : `cols-${btn.dataset.cols}`);
+      });
+    });
+  </script>
+</body>
+</html>

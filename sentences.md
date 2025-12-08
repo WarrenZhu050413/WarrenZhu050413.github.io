@@ -39,3 +39,22 @@ wide: true
 
 <p class="no-sentences">No sentences yet. The first one is always the hardest.</p>
 {% endif %}
+
+<script>
+// Randomize animation properties for each sentence card at runtime
+document.querySelectorAll('.sentence-entry').forEach(card => {
+  // Amplitude: 0.24 to 0.52 deg (current range)
+  const amp = 0.24 + Math.random() * 0.28;
+  // Direction: randomly 1 or -1
+  const dir = Math.random() < 0.5 ? 1 : -1;
+  // Duration: 7.3 to 10.4 seconds (current range)
+  const duration = 7.3 + Math.random() * 3.1;
+  // Delay: random offset to desync (negative to start mid-animation)
+  const delay = -Math.random() * duration;
+
+  card.style.setProperty('--rot-amp', amp + 'deg');
+  card.style.setProperty('--rot-dir', dir);
+  card.style.animation = `float ${duration}s ease-in-out infinite`;
+  card.style.animationDelay = delay + 's';
+});
+</script>

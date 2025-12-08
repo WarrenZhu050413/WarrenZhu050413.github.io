@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media - Editorial Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --kala-sea: #7BA3A3;
+      --kala-rust: #A67B5B;
+      --kala-mountain: #8B7B7B;
+      --vermillion: #C8442E;
+      --paper: #F5F1E8;
+      --ink: #141414;
+
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Source Serif 4', serif;
+
+      --text-xs: 0.64rem;
+      --text-sm: 0.8rem;
+      --text-base: 1rem;
+      --text-lg: 1.25rem;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: var(--text-base);
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    /* Page Header */
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      color: var(--kala-mountain);
+      font-size: var(--text-sm);
+      font-style: italic;
+    }
+
+    /* Filter */
+    .filter-container {
+      margin-bottom: 32px;
+    }
+
+    .filter-input-wrapper {
+      display: flex;
+      border: 1px solid #d5d0c7;
+      border-left: 3px solid var(--vermillion);
+      background: white;
+    }
+
+    .filter-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+    }
+
+    .filter-input:focus { outline: none; }
+    .filter-input::placeholder { color: var(--kala-mountain); }
+
+    .filter-type-btns {
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      border-left: 1px solid #e5e0d7;
+    }
+
+    .type-btn {
+      padding: 4px 10px;
+      border: none;
+      background: transparent;
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--kala-mountain);
+      cursor: pointer;
+      border-radius: 2px;
+      font-family: var(--font-body);
+    }
+
+    .type-btn:hover { background: #f0ebe2; }
+    .type-btn.active { background: var(--ink); color: var(--paper); }
+
+    /* Media List */
+    .media-list {
+      border-top: 1px solid #d5d0c7;
+    }
+
+    .media-item {
+      padding: 20px 0;
+      border-bottom: 1px solid #e5e0d7;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .media-item:hover { background: rgba(255,255,255,0.5); margin: 0 -12px; padding: 20px 12px; }
+
+    .media-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .media-type {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-weight: 600;
+    }
+
+    .media-type-paper { background: #E8F4F4; color: #4A7C7C; }
+    .media-type-video { background: #FDE8E8; color: var(--vermillion); }
+    .media-type-podcast { background: #F3E8FD; color: #7C4A9C; }
+    .media-type-book { background: #FDF8E8; color: #9C7C4A; }
+    .media-type-link { background: #f0ebe2; color: var(--kala-mountain); }
+
+    .media-creator {
+      font-size: var(--text-sm);
+      color: var(--kala-rust);
+    }
+
+    .media-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .media-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .media-title a:hover { color: var(--vermillion); }
+
+    .media-note {
+      font-size: var(--text-sm);
+      color: var(--kala-mountain);
+      line-height: 1.5;
+    }
+
+    .media-date {
+      font-size: var(--text-xs);
+      color: var(--kala-mountain);
+      white-space: nowrap;
+      padding-top: 4px;
+    }
+
+    /* Section Headers */
+    .section-header {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--kala-mountain);
+      padding: 24px 0 12px;
+      border-bottom: 1px solid #d5d0c7;
+      margin-top: 24px;
+    }
+
+    .section-header:first-child { margin-top: 0; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 48px;
+      color: var(--kala-mountain);
+      font-style: italic;
+    }
+
+    /* Switcher for layout preview */
+    .switcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: white;
+      border: 1px solid #d5d0c7;
+      border-radius: 6px;
+      padding: 8px;
+      display: flex;
+      gap: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+
+    .switcher button {
+      padding: 6px 12px;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .switcher button:hover { background: #f0ebe2; }
+    .switcher button.active { background: var(--ink); color: white; }
+
+    /* Timeline variant */
+    .layout-timeline .media-list {
+      border-top: none;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .layout-timeline .media-list::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #d5d0c7;
+    }
+
+    .layout-timeline .media-item {
+      position: relative;
+      border-bottom: none;
+      padding: 16px 0;
+    }
+
+    .layout-timeline .media-item::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 22px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 2px solid var(--kala-sea);
+    }
+
+    .layout-timeline .media-item.type-video::before { border-color: var(--vermillion); }
+    .layout-timeline .media-item.type-paper::before { border-color: #4A7C7C; }
+    .layout-timeline .media-item.type-podcast::before { border-color: #7C4A9C; }
+    .layout-timeline .media-item.type-book::before { border-color: #9C7C4A; }
+
+    .layout-timeline .section-header {
+      margin-left: -24px;
+    }
+
+    /* Cards variant */
+    .layout-cards .media-list {
+      border-top: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .layout-cards .media-item {
+      background: white;
+      border: 1px solid #d5d0c7;
+      border-radius: 6px;
+      padding: 16px;
+      display: block;
+      border-top: 3px solid var(--kala-sea);
+    }
+
+    .layout-cards .media-item.type-video { border-top-color: var(--vermillion); }
+    .layout-cards .media-item.type-paper { border-top-color: #4A7C7C; }
+    .layout-cards .media-item.type-podcast { border-top-color: #7C4A9C; }
+    .layout-cards .media-item.type-book { border-top-color: #9C7C4A; }
+
+    .layout-cards .media-item:hover {
+      margin: 0;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .layout-cards .media-date {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid #e5e0d7;
+    }
+
+    .layout-cards .section-header {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 600px) {
+      .layout-cards .media-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="main">
+  <header class="page-header">
+    <h1 class="page-title">Media</h1>
+    <p class="page-subtitle">Papers, videos, and things worth revisiting</p>
+  </header>
+
+  <div class="filter-container">
+    <div class="filter-input-wrapper">
+      <input type="text" class="filter-input" placeholder="Search media..." id="filterInput">
+      <div class="filter-type-btns">
+        <button class="type-btn active" data-type="all">All</button>
+        <button class="type-btn" data-type="paper">Papers</button>
+        <button class="type-btn" data-type="video">Video</button>
+        <button class="type-btn" data-type="book">Books</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="media-list" id="mediaList">
+    <h3 class="section-header">December 2025</h3>
+
+    <article class="media-item type-paper" data-type="paper">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-paper">Paper</span>
+          <span class="media-creator">Alan Kay</span>
+        </div>
+        <h2 class="media-title"><a href="#">The Real Computer Revolution Hasn't Happened Yet</a></h2>
+        <p class="media-note">Alan Kay's vision of what computing could become. The revolution isn't the computer itself, but the new ways of thinking it enables.</p>
+      </div>
+      <div class="media-date">Dec 8</div>
+    </article>
+
+    <article class="media-item type-video" data-type="video">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-video">Video</span>
+          <span class="media-creator">Douglas Engelbart</span>
+        </div>
+        <h2 class="media-title"><a href="#">The Mother of All Demos</a></h2>
+      </div>
+      <div class="media-date">Dec 7</div>
+    </article>
+
+    <article class="media-item type-paper" data-type="paper">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-paper">Paper</span>
+          <span class="media-creator">Claude Shannon</span>
+        </div>
+        <h2 class="media-title"><a href="#">A Mathematical Theory of Communication</a></h2>
+        <p class="media-note">The foundational paper that created information theory. Introduces the concept of entropy in communication.</p>
+      </div>
+      <div class="media-date">Dec 5</div>
+    </article>
+
+    <article class="media-item type-podcast" data-type="podcast">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-podcast">Podcast</span>
+          <span class="media-creator">Lex Fridman</span>
+        </div>
+        <h2 class="media-title"><a href="#">Lex Fridman #400: Elon Musk</a></h2>
+        <p class="media-note">Wide-ranging conversation on AI, space, and the future of humanity.</p>
+      </div>
+      <div class="media-date">Dec 4</div>
+    </article>
+
+    <h3 class="section-header">November 2025</h3>
+
+    <article class="media-item type-book" data-type="book">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-book">Book</span>
+          <span class="media-creator">M. Mitchell Waldrop</span>
+        </div>
+        <h2 class="media-title"><a href="#">The Dream Machine</a></h2>
+        <p class="media-note">Biography of J.C.R. Licklider and the history of personal computing.</p>
+      </div>
+      <div class="media-date">Nov 28</div>
+    </article>
+
+    <article class="media-item type-link" data-type="link">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-link">Link</span>
+        </div>
+        <h2 class="media-title"><a href="#">Bret Victor's Website</a></h2>
+      </div>
+      <div class="media-date">Nov 25</div>
+    </article>
+
+    <article class="media-item type-video" data-type="video">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-video">Video</span>
+          <span class="media-creator">Bret Victor</span>
+        </div>
+        <h2 class="media-title"><a href="#">Inventing on Principle</a></h2>
+        <p class="media-note">The talk that changed how I think about tools and creation.</p>
+      </div>
+      <div class="media-date">Nov 20</div>
+    </article>
+
+    <article class="media-item type-paper" data-type="paper">
+      <div class="media-content">
+        <div class="media-meta">
+          <span class="media-type media-type-paper">Paper</span>
+          <span class="media-creator">Vannevar Bush</span>
+        </div>
+        <h2 class="media-title"><a href="#">As We May Think</a></h2>
+      </div>
+      <div class="media-date">Nov 15</div>
+    </article>
+  </div>
+</div>
+
+<!-- Layout Switcher -->
+<div class="switcher">
+  <button class="active" data-layout="list">List</button>
+  <button data-layout="timeline">Timeline</button>
+  <button data-layout="cards">Cards</button>
+</div>
+
+<script>
+  // Layout switching
+  const main = document.getElementById('main');
+  const layoutBtns = document.querySelectorAll('.switcher button');
+
+  layoutBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      layoutBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      main.className = 'container';
+      if (btn.dataset.layout !== 'list') {
+        main.classList.add('layout-' + btn.dataset.layout);
+      }
+    });
+  });
+
+  // Type filtering
+  const typeBtns = document.querySelectorAll('.type-btn');
+  const items = document.querySelectorAll('.media-item');
+
+  typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      typeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const type = btn.dataset.type;
+      items.forEach(item => {
+        if (type === 'all' || item.dataset.type === type) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Text filtering
+  const filterInput = document.getElementById('filterInput');
+  filterInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(query) ? '' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
