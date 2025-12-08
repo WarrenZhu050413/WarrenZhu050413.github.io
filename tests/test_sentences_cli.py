@@ -13,6 +13,7 @@ from sentences_cli.cli import (
     get_sentences,
     get_sentences_dir,
     slugify,
+    yaml_escape_title,
 )
 
 
@@ -124,6 +125,60 @@ class TestSlugify:
     def test_slugify_real_example(self):
         """Test with a real sentence example."""
         assert slugify("The best code is no code at all") == "the-best-code-is-no-code-at-all"
+
+
+class TestYamlEscapeTitle:
+    """Test the yaml_escape_title helper function (uses PyYAML)."""
+
+    def test_basic_title_unquoted(self):
+        """Test that basic titles don't need quotes."""
+        # PyYAML only quotes when necessary
+        assert yaml_escape_title("Hello World") == "Hello World"
+
+    def test_title_with_double_quotes(self):
+        """Test that titles containing double quotes are properly escaped."""
+        result = yaml_escape_title('"You have a calibrated life"')
+        # PyYAML wraps in single quotes when containing double quotes
+        assert result == "'\"You have a calibrated life\"'"
+
+    def test_title_with_both_quotes(self):
+        """Test that single quotes inside titles with double quotes are escaped."""
+        result = yaml_escape_title("\"It's a test\"")
+        # PyYAML doubles single quotes inside single-quoted strings
+        assert result == "'\"It''s a test\"'"
+
+    def test_title_with_only_single_quotes(self):
+        """Test title with only single quotes."""
+        result = yaml_escape_title("It's working")
+        # PyYAML doesn't need to quote for just apostrophe
+        assert result == "It's working"
+
+    def test_empty_title(self):
+        """Test empty title."""
+        assert yaml_escape_title("") == "''"
+
+    def test_title_with_colon(self):
+        """Test title with colon (YAML special char)."""
+        result = yaml_escape_title("Title with: colon")
+        # PyYAML quotes strings with colons
+        assert "Title with: colon" in result
+
+    def test_title_with_hash(self):
+        """Test title with hash (YAML comment char)."""
+        result = yaml_escape_title("Title with # hash")
+        # PyYAML quotes strings with hash
+        assert "Title with # hash" in result
+
+    def test_real_taleb_quote(self):
+        """Test the actual Taleb quote that caused the bug."""
+        title = '"You have a calibrated life if most of what you fear has the titillating prospect of adventure."'
+        result = yaml_escape_title(title)
+        # Should be properly escaped by PyYAML
+        assert '"You have' in result
+        # Result should be valid YAML when parsed back
+        import yaml
+        parsed = yaml.safe_load(f"title: {result}")
+        assert parsed["title"] == title
 
 
 class TestGetSentencesDir:
@@ -366,7 +421,7 @@ class TestCreateCommand:
 
         created_file = mock_sentences_dir / "test-sentence.md"
         content = created_file.read_text()
-        assert 'title: "Test Sentence"' in content
+        assert "title: Test Sentence" in content  # PyYAML doesn't quote simple strings
         assert "date:" in content
         assert "Some reflection" in content
 

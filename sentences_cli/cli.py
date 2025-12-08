@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+import yaml
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -55,6 +56,14 @@ def slugify(text: str, max_length: int = 50) -> str:
     slug = re.sub(r'-+', '-', slug)
     slug = slug.strip('-')
     return slug[:max_length]
+
+
+def yaml_escape_title(title: str) -> str:
+    """Escape a title for YAML front matter using PyYAML."""
+    # Use yaml.dump to properly escape all special characters
+    # Remove document end marker (\n...) and trailing whitespace
+    result = yaml.dump(title, default_flow_style=True, allow_unicode=True)
+    return result.replace('\n...', '').strip()
 
 
 def get_sentences() -> list[dict]:
@@ -188,8 +197,9 @@ def create(
 
     # Create file
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S -0500")
+    escaped_title = yaml_escape_title(title)
     file_content = f'''---
-title: "{title}"
+title: {escaped_title}
 date: {now}
 ---
 
@@ -300,6 +310,42 @@ def get_project_dir() -> Path:
     """Get the project root directory."""
     sentences_dir = get_sentences_dir()
     return sentences_dir.parent
+
+
+def archive_email(message_id: str, debug: bool = False) -> bool:
+    """Archive an email by removing it from INBOX using Gmail API."""
+    # Use the gmaillm tool's Python which has gmaillm installed
+    GMAILLM_PYTHON = Path.home() / ".local/share/uv/tools/gmaillm/bin/python3"
+
+    script = f'''
+from gmaillm.gmail_client import GmailClient
+client = GmailClient()
+client.service.users().messages().modify(
+    userId='me',
+    id='{message_id}',
+    body={{'removeLabelIds': ['INBOX']}}
+).execute()
+print('OK')
+'''
+    try:
+        python_cmd = str(GMAILLM_PYTHON) if GMAILLM_PYTHON.exists() else "python3"
+        if debug:
+            console.print(f"[dim]Using python: {python_cmd} (exists: {GMAILLM_PYTHON.exists()})[/dim]")
+        result = subprocess.run(
+            [python_cmd, "-c", script],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode == 0 and 'OK' in result.stdout:
+            return True
+        if debug:
+            console.print(f"[yellow]Archive stderr: {result.stderr}[/yellow]")
+        return False
+    except Exception as e:
+        if debug:
+            console.print(f"[yellow]Archive failed: {e}[/yellow]")
+        return False
 
 
 @app.command()
@@ -439,6 +485,281 @@ def push(
         raise typer.Exit(1)
 
 
+@app.command()
+def pull(
+    interactive: bool = typer.Option(False, "--interactive", "-i", help="Interactive mode: review each email before creating"),
+    auto_push: bool = typer.Option(False, "--push", "-p", help="Automatically approve and push all emails"),
+    debug: bool = typer.Option(False, "--debug", "-d", help="Show debug information"),
+):
+    """Pull sentences from emails sent to wzhu+sentences@college.harvard.edu."""
+    import json as json_module
+
+    SENTENCES_EMAIL = "wzhu+sentences@college.harvard.edu"
+
+    console.print(f"[cyan]Searching for emails to {SENTENCES_EMAIL}...[/cyan]")
+
+    # Search for emails to the sentences address (INBOX only, not archived)
+    try:
+        result = subprocess.run(
+            ["gmail", "search", f"to:{SENTENCES_EMAIL}", "--folder", "INBOX", "--max", "50", "--output-format", "json"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        data = json_module.loads(result.stdout)
+        all_emails = data.get("emails", [])
+        # Filter out drafts - only process sent/delivered emails
+        emails = [e for e in all_emails if "DRAFT" not in e.get("labels", [])]
+        if debug and len(all_emails) != len(emails):
+            console.print(f"[dim]Filtered out {len(all_emails) - len(emails)} draft(s)[/dim]")
+    except subprocess.CalledProcessError as e:
+        console.print(f"[red]Failed to search emails: {e.stderr}[/red]")
+        raise typer.Exit(1)
+    except json_module.JSONDecodeError:
+        console.print("[red]Failed to parse email search results[/red]")
+        raise typer.Exit(1)
+
+    if not emails:
+        console.print("[yellow]No new sentences in inbox (emails to wzhu+sentences@college.harvard.edu)[/yellow]")
+        raise typer.Exit(0)
+
+    console.print(f"[green]Found {len(emails)} email(s) in inbox[/green]\n")
+
+    # Get existing sentences to check for duplicates
+    existing_sentences = get_sentences()
+    existing_slugs = {s["slug"] for s in existing_sentences}
+
+    # Parse emails into sentence candidates
+    candidates = []
+    for email in emails:
+        subject = email.get("subject", "").strip()
+        date_str = email.get("date", "")
+        message_id = email.get("message_id", "")
+
+        if not subject:
+            continue
+
+        # Read full email body
+        try:
+            cmd = ["gmail", "read", message_id, "--full", "--output-format", "json"]
+            if debug:
+                console.print(f"[dim]Running: {' '.join(cmd)}[/dim]")
+            body_result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            if debug:
+                console.print(f"[dim]stdout: {body_result.stdout[:200]}...[/dim]")
+            body_data = json_module.loads(body_result.stdout)
+            body = body_data.get("body_plain", body_data.get("body", "")).strip()
+            if debug:
+                console.print(f"[dim]body: {body[:100]}...[/dim]")
+        except subprocess.CalledProcessError as e:
+            if debug:
+                console.print(f"[red]Error: {e.stderr}[/red]")
+            body = ""
+        except json_module.JSONDecodeError as e:
+            if debug:
+                console.print(f"[red]JSON decode error: {e}[/red]")
+            body = ""
+
+        # Generate slug
+        slug = slugify(subject)
+
+        # Check if already exists
+        is_duplicate = slug in existing_slugs
+
+        candidates.append({
+            "message_id": message_id,
+            "title": subject,
+            "body": body,
+            "date": date_str,
+            "slug": slug,
+            "is_duplicate": is_duplicate,
+        })
+
+    if not candidates:
+        console.print("[yellow]No valid sentence candidates found[/yellow]")
+        raise typer.Exit(0)
+
+    # Display candidates
+    console.print("[bold]Sentence Candidates:[/bold]\n")
+    for i, c in enumerate(candidates, 1):
+        status = "[yellow](duplicate)[/yellow]" if c["is_duplicate"] else "[green](new)[/green]"
+        console.print(Panel(
+            f"[bold]{c['title']}[/bold]\n\n"
+            f"{c['body'][:300]}{'...' if len(c['body']) > 300 else ''}\n\n"
+            f"[dim]Date: {c['date']}[/dim]\n"
+            f"[dim]Slug: {c['slug']}[/dim]",
+            title=f"#{i} {status}",
+            border_style="cyan" if not c["is_duplicate"] else "yellow",
+        ))
+        console.print()
+
+    # Filter out duplicates for processing
+    new_candidates = [c for c in candidates if not c["is_duplicate"]]
+
+    if not new_candidates:
+        console.print("[yellow]All emails are duplicates of existing sentences[/yellow]")
+        raise typer.Exit(0)
+
+    console.print(f"[cyan]{len(new_candidates)} new sentence(s) to process[/cyan]\n")
+
+    if not interactive and not auto_push:
+        console.print("[dim]Use -i for interactive mode or -p to auto-push[/dim]")
+        raise typer.Exit(0)
+
+    # Process candidates
+    sentences_dir = get_sentences_dir()
+    sentences_dir.mkdir(exist_ok=True)
+    project_dir = get_project_dir()
+
+    created_count = 0
+    skipped_count = 0
+
+    for i, candidate in enumerate(new_candidates, 1):
+        console.print(f"\n[bold cyan]Processing {i}/{len(new_candidates)}: {candidate['title']}[/bold cyan]")
+
+        if interactive:
+            # Show the candidate
+            console.print(Panel(
+                f"[bold]{candidate['title']}[/bold]\n\n"
+                f"{candidate['body']}\n\n"
+                f"[dim]Date: {candidate['date']}[/dim]\n"
+                f"[dim]Slug: {candidate['slug']}[/dim]",
+                border_style="cyan",
+            ))
+
+            console.print("\n[dim]Options: \\[a]pprove, \\[s]kip, \\[e]dit[/dim]")
+            choice = typer.prompt("Action", default="a").lower()
+
+            if choice in ('s', 'skip'):
+                console.print("[yellow]Skipped[/yellow]")
+                skipped_count += 1
+                continue
+
+            if choice in ('e', 'edit'):
+                # Edit in $EDITOR
+                editor = os.environ.get("EDITOR", "vim")
+                with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+                    f.write(f"# Title (first line becomes the sentence title)\n")
+                    f.write(f"{candidate['title']}\n\n")
+                    f.write(f"# Body (everything below becomes the elaboration)\n")
+                    f.write(f"{candidate['body']}\n")
+                    temp_path = f.name
+
+                subprocess.run([editor, temp_path])
+
+                # Parse edited content
+                with open(temp_path, 'r') as f:
+                    content = f.read()
+                os.unlink(temp_path)
+
+                # Parse: first non-comment, non-empty line is title, rest is body
+                lines = content.split('\n')
+                new_title = None
+                body_lines = []
+                in_body = False
+
+                for line in lines:
+                    if line.startswith('#'):
+                        if 'body' in line.lower():
+                            in_body = True
+                        continue
+                    if not in_body:
+                        if line.strip() and not new_title:
+                            new_title = line.strip()
+                    else:
+                        body_lines.append(line)
+
+                if new_title:
+                    candidate['title'] = new_title
+                    candidate['slug'] = slugify(new_title)
+                candidate['body'] = '\n'.join(body_lines).strip()
+
+                console.print(f"[green]Updated: {candidate['title']}[/green]")
+
+        # Create the sentence file
+        target = sentences_dir / f"{candidate['slug']}.md"
+
+        # Handle duplicate slugs from editing
+        if target.exists():
+            console.print(f"[yellow]Slug {candidate['slug']} already exists, adding suffix[/yellow]")
+            suffix = 1
+            while target.exists():
+                new_slug = f"{candidate['slug']}-{suffix}"
+                target = sentences_dir / f"{new_slug}.md"
+                suffix += 1
+            candidate['slug'] = target.stem
+
+        # Parse and format date
+        try:
+            parsed_date = datetime.fromisoformat(candidate['date'])
+            offset = parsed_date.strftime("%z")
+            if len(offset) == 5:  # +0500 -> +05:00
+                offset = offset[:3] + ":" + offset[3:]
+            formatted_date = parsed_date.strftime(f"%Y-%m-%d %H:%M:%S {offset.replace(':', '')}")
+        except (ValueError, AttributeError):
+            formatted_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S -0500")
+
+        # Use yaml_escape_title for proper YAML escaping
+        escaped_title = yaml_escape_title(candidate['title'])
+        file_content = f'''---
+title: {escaped_title}
+date: {formatted_date}
+---
+
+{candidate['body']}
+'''.strip() + "\n"
+
+        target.write_text(file_content)
+        console.print(f"[green]Created: _sentences/{candidate['slug']}.md[/green]")
+
+        # Commit and push this sentence
+        file_path = f"_sentences/{candidate['slug']}.md"
+        commit_title = candidate['title'][:47] + "..." if len(candidate['title']) > 50 else candidate['title']
+        commit_message = f"New sentences: {commit_title}"
+
+        try:
+            subprocess.run(
+                ["git", "add", file_path],
+                cwd=project_dir,
+                check=True,
+                capture_output=True,
+            )
+            subprocess.run(
+                ["git", "commit", "-m", commit_message],
+                cwd=project_dir,
+                check=True,
+                capture_output=True,
+            )
+            subprocess.run(
+                ["git", "push"],
+                cwd=project_dir,
+                check=True,
+                capture_output=True,
+            )
+            console.print(f"[green]Pushed: {commit_message}[/green]")
+            created_count += 1
+
+            # Archive the email (remove from INBOX)
+            try:
+                archive_email(candidate['message_id'], debug)
+                if debug:
+                    console.print(f"[dim]Archived email {candidate['message_id']}[/dim]")
+            except Exception as e:
+                if debug:
+                    console.print(f"[yellow]Failed to archive email: {e}[/yellow]")
+
+        except subprocess.CalledProcessError as e:
+            console.print(f"[red]Failed to push: {e}[/red]")
+            # Continue with next sentence
+
+    console.print(f"\n[bold green]Done! Created {created_count} sentence(s), skipped {skipped_count}[/bold green]")
+
+
 @app.callback(invoke_without_command=True)
 def callback(ctx: typer.Context):
     """Write the truest sentence that you know."""
@@ -450,7 +771,7 @@ def callback(ctx: typer.Context):
             sentences = get_sentences()
             display_sentences(sentences)
 
-            console.print("\n[dim]Commands: [c]reate, [e]dit, [d]elete, [p]review, pu[s]h, [q]uit[/dim]")
+            console.print("\n[dim]Commands: [c]reate, [e]dit, [d]elete, p[u]ll, [p]review, pu[s]h, [q]uit[/dim]")
             action = typer.prompt("Action", default="q")
 
             if action.lower() in ('q', 'quit'):
@@ -461,6 +782,8 @@ def callback(ctx: typer.Context):
                 edit(None)
             elif action.lower() in ('d', 'delete'):
                 delete(None, force=False)
+            elif action.lower() in ('u', 'pull'):
+                pull(interactive=True)
             elif action.lower() in ('p', 'preview'):
                 preview(None)
             elif action.lower() in ('s', 'push'):
