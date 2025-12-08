@@ -1,15 +1,10 @@
 ---
 layout: default
 ---
-<div class="home">
-  <div class="home-about">
-    {{ content }}
-  </div>
-
-  <h2 class="home-section-title">{{ page.list_title | default: "Writing" }}</h2>
+<div class="writing-page">
   <ul class="post-list">
     {%- assign filtered_posts = site.posts | where_exp: "post", "post.relegated != true" -%}
-    {%- for post in filtered_posts limit: 10 -%}
+    {%- for post in filtered_posts -%}
     <li class="post-item">
       <article>
         <span class="post-date">{{ post.date | date: "%b %Y" }}</span>
@@ -18,8 +13,4 @@ layout: default
     </li>
     {%- endfor -%}
   </ul>
-
-  {%- if filtered_posts.size > 10 -%}
-  <p class="view-all"><a href="{{ '/writing/' | relative_url }}">View all &rarr;</a></p>
-  {%- endif -%}
 </div>
