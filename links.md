@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Links
-permalink: /media/
+permalink: /links/
 wide: true
 ---
 
@@ -25,7 +25,7 @@ Videos, papers, and things worth revisiting.
 </div>
 
 <div class="media-feed" id="mediaFeed" data-view="grid">
-  {% assign sorted_media = site.media | sort: 'date' | reverse %}
+  {% assign sorted_media = site.links | sort: 'date' | reverse %}
   {% for item in sorted_media %}
     {% comment %} Extract embed URLs {% endcomment %}
     {% if item.url_link contains 'youtube.com/watch' %}
@@ -154,7 +154,7 @@ Videos, papers, and things worth revisiting.
   {% endfor %}
 </div>
 
-{% if site.media.size == 0 %}
+{% if site.links.size == 0 %}
 <p class="no-media">No links saved yet.</p>
 {% endif %}
 

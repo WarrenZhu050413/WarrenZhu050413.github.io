@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sentences-cli"
-version = "0.4.0"
-description = "CLI for managing One True Sentences collection"
+name = "website-cli"
+version = "0.5.0"
+description = "CLI for managing warrenzhu.com content"
 requires-python = ">=3.10"
 authors = [
     {name = "Warren Zhu", email = "wzhu@college.harvard.edu"}
@@ -16,28 +16,29 @@ dependencies = [
     "pyyaml>=6.0.0",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest>=7.0.0",
     "pytest-mock>=3.10.0",
     "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
 ]
 
 [project.scripts]
-sentences = "sentences_cli.cli:main"
+website = "website_cli.cli:main"
 
 [tool.setuptools]
-packages = ["sentences_cli"]
+packages = ["website_cli"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --cov=sentences_cli --cov-report=term-missing --cov-report=html"
+addopts = "-v --cov=website_cli --cov-report=term-missing --cov-report=html"
 
 [tool.coverage.run]
-source = ["sentences_cli"]
+source = ["website_cli"]
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
@@ -52,3 +53,11 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP"]
+ignore = ["E501", "B008"]

@@ -1,4 +1,4 @@
-.PHONY: help install preview build clean lint check serve doctor sentences sentences-editable sentences-clean
+.PHONY: help install preview build clean lint check serve doctor website website-dev website-clean website-test
 
 # Default target
 help:
@@ -13,10 +13,11 @@ help:
 	@echo "  make lint      - Run Jekyll doctor and check site health"
 	@echo "  make doctor    - Run Jekyll doctor diagnostics"
 	@echo ""
-	@echo "Sentences CLI:"
-	@echo "  make sentences          - Install sentences CLI globally"
-	@echo "  make sentences-editable - Install sentences CLI (editable mode)"
-	@echo "  make sentences-clean    - Clean sentences CLI build artifacts"
+	@echo "Website CLI:"
+	@echo "  make website       - Install website CLI globally (production)"
+	@echo "  make website-dev   - Install website CLI (editable mode)"
+	@echo "  make website-clean - Clean website CLI build artifacts"
+	@echo "  make website-test  - Run website CLI tests"
 
 # Install dependencies
 install:
@@ -66,24 +67,32 @@ update:
 version:
 	bundle exec jekyll --version
 
-# ============ Sentences CLI ============
+# ============ Website CLI ============
 
-# Install sentences CLI globally
-sentences: sentences-clean
-	@echo "Installing sentences-cli globally..."
-	@uv cache clean 2>/dev/null || true
-	uv tool install --force .
-	@echo "Done! Run 'sentences' to use."
+# Install website CLI globally (production)
+website: website-clean
+	@echo "📦 Building and installing website-cli globally..."
+	uv build -q
+	uv tool uninstall website-cli 2>/dev/null || true
+	uv tool install dist/*.whl
+	@echo "✅ Done! Run 'website --help' to use."
 
-# Install sentences CLI in editable mode (no cache clean needed - changes are instant)
-sentences-editable: sentences-clean
-	@echo "Installing sentences-cli globally (editable)..."
+# Install website CLI in editable mode (changes take effect immediately)
+website-dev: website-clean
+	@echo "📦 Installing website-cli (editable mode)..."
 	uv tool install --force --editable .
-	@echo "Done! Changes take effect immediately."
+	@echo "✅ Done! Changes take effect immediately."
 
-# Clean sentences CLI build artifacts
-sentences-clean:
-	@echo "Cleaning sentences-cli artifacts..."
-	rm -rf build/ dist/ *.egg-info sentences_cli.egg-info
+# Run website CLI tests
+website-test:
+	@echo "🧪 Running tests..."
+	uv run pytest --cov=website_cli --cov-report=term-missing -v
+	@echo "✅ Tests complete"
+
+# Clean website CLI build artifacts
+website-clean:
+	@echo "🧹 Cleaning website-cli artifacts..."
+	rm -rf build/ dist/ *.egg-info website_cli.egg-info
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-	@echo "Done"
+	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
+	@echo "✅ Done"

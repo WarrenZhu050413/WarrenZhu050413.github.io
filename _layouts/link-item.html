@@ -31,7 +31,7 @@ layout: default
   </div>
 
   <nav class="media-nav">
-    {% assign sorted_media = site.media | sort: 'date' %}
+    {% assign sorted_media = site.links | sort: 'date' %}
     {% assign current_index = nil %}
     {% for m in sorted_media %}
       {% if m.url == page.url %}
@@ -50,7 +50,7 @@ layout: default
         {% endif %}
       </div>
 
-      <a class="nav-all" href="{{ '/media/' | relative_url }}">All Media</a>
+      <a class="nav-all" href="{{ '/links/' | relative_url }}">All Links</a>
 
       <div class="nav-next">
         {% if next_index < sorted_media.size %}
