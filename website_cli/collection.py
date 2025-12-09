@@ -92,10 +92,10 @@ class Collection:
         @self.app.command()
         def pull(
             interactive: bool = typer.Option(False, "--interactive", "-i", help="Review each item"),
-            auto_push: bool = typer.Option(False, "--push", "-p", help="Auto-push after creating"),
+            dry_run: bool = typer.Option(False, "--dry-run", "-n", help="Show candidates without processing"),
             debug: bool = typer.Option(False, "--debug", "-d", help="Show debug info"),
         ):
-            self.pull_cmd(interactive, auto_push, debug)
+            self.pull_cmd(interactive, dry_run, debug)
 
         @self.app.callback(invoke_without_command=True)
         def callback(ctx: typer.Context):
@@ -295,15 +295,15 @@ class Collection:
 
         # Push if requested
         if push:
-            project_dir = self.get_project_dir()
-            file_path = f"{self.config.dir_name}/{slug}.md"
+            project_dir = self.get_project_dir().resolve()
+            target_abs = target.resolve()
             commit_title = title[:47] + "..." if len(title) > 50 else title
             commit_message = f"New {self.config.name}: {commit_title}"
 
             try:
-                subprocess.run(["git", "add", file_path], cwd=project_dir, check=True, capture_output=True)
-                subprocess.run(["git", "commit", "-m", commit_message], cwd=project_dir, check=True, capture_output=True)
-                subprocess.run(["git", "push"], cwd=project_dir, check=True, capture_output=True)
+                subprocess.run(["git", "add", str(target_abs)], cwd=str(project_dir), check=True, capture_output=True)
+                subprocess.run(["git", "commit", "-m", commit_message], cwd=str(project_dir), check=True, capture_output=True)
+                subprocess.run(["git", "push"], cwd=str(project_dir), check=True, capture_output=True)
                 console.print(f"[green]Pushed: {commit_message}[/green]")
             except subprocess.CalledProcessError as e:
                 console.print(f"[red]Failed to push: {e}[/red]")
@@ -497,7 +497,7 @@ class Collection:
             console.print("[red]Error: 'claude' CLI not found.[/red]")
             raise typer.Exit(1)
 
-    def pull_cmd(self, interactive: bool = False, auto_push: bool = False, debug: bool = False):
+    def pull_cmd(self, interactive: bool = False, dry_run: bool = False, debug: bool = False):
         """Pull items from email."""
         email_address = f"wzhu+{self.config.email_suffix}@college.harvard.edu"
 
@@ -585,8 +585,8 @@ class Collection:
 
         console.print(f"[cyan]{len(new_candidates)} new item(s) to process[/cyan]\n")
 
-        if not interactive and not auto_push:
-            console.print("[dim]Use -i for interactive mode or -p to auto-push[/dim]")
+        if dry_run:
+            console.print("[dim]Dry run mode - no changes made. Run without -n to process.[/dim]")
             raise typer.Exit(0)
 
         collection_dir = self.get_dir()
@@ -683,14 +683,13 @@ date: {formatted_date}
             console.print(f"[green]Created: {self.config.dir_name}/{candidate['slug']}.md[/green]")
 
             # Commit and push
-            file_path = f"{self.config.dir_name}/{candidate['slug']}.md"
             commit_title = candidate['title'][:47] + "..." if len(candidate['title']) > 50 else candidate['title']
             commit_message = f"New {self.config.name}: {commit_title}"
 
             try:
-                subprocess.run(["git", "add", file_path], cwd=project_dir, check=True, capture_output=True)
-                subprocess.run(["git", "commit", "-m", commit_message], cwd=project_dir, check=True, capture_output=True)
-                subprocess.run(["git", "push"], cwd=project_dir, check=True, capture_output=True)
+                subprocess.run(["git", "add", str(target.resolve())], cwd=str(project_dir.resolve()), check=True, capture_output=True)
+                subprocess.run(["git", "commit", "-m", commit_message], cwd=str(project_dir.resolve()), check=True, capture_output=True)
+                subprocess.run(["git", "push"], cwd=str(project_dir.resolve()), check=True, capture_output=True)
                 console.print(f"[green]Pushed: {commit_message}[/green]")
                 created_count += 1
 
