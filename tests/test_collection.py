@@ -1,12 +1,69 @@
-"""Tests for Collection class."""
+"""Tests for Collection class and agent."""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 import typer
 
+from website_cli.agent import extract_youtube_metadata, is_youtube_url
 from website_cli.collection import Collection
 from website_cli.config import LINKS_CONFIG
+
+
+class TestYouTubeExtraction:
+    """Tests for YouTube URL detection and oEmbed extraction."""
+
+    def test_is_youtube_url_standard(self):
+        """Detect standard YouTube watch URLs."""
+        assert is_youtube_url("https://www.youtube.com/watch?v=abc123")
+        assert is_youtube_url("http://youtube.com/watch?v=abc123")
+        assert is_youtube_url("https://youtube.com/watch?v=abc123&t=10s")
+
+    def test_is_youtube_url_short(self):
+        """Detect short youtu.be URLs."""
+        assert is_youtube_url("https://youtu.be/abc123")
+        assert is_youtube_url("http://youtu.be/abc123?t=10")
+
+    def test_is_youtube_url_negative(self):
+        """Non-YouTube URLs should return False."""
+        assert not is_youtube_url("https://vimeo.com/123456")
+        assert not is_youtube_url("https://example.com/youtube")
+        assert not is_youtube_url("https://notyoutube.com/watch?v=abc")
+
+    def test_extract_youtube_metadata_success(self):
+        """Extract metadata from YouTube oEmbed API."""
+        import json
+
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.read.return_value = json.dumps(
+            {
+                "title": "Test Video Title",
+                "author_name": "Test Channel",
+            }
+        ).encode("utf-8")
+        mock_response.__enter__ = MagicMock(return_value=mock_response)
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("website_cli.agent.urllib.request.urlopen", return_value=mock_response):
+            result = extract_youtube_metadata("https://www.youtube.com/watch?v=test123")
+
+        assert result is not None
+        assert result.title == "Test Video Title"
+        assert result.creator == "Test Channel"
+        assert result.tags == "video"
+
+    def test_extract_youtube_metadata_failure(self):
+        """Handle oEmbed API failure gracefully."""
+        import urllib.error
+
+        with patch(
+            "website_cli.agent.urllib.request.urlopen",
+            side_effect=urllib.error.URLError("Not found"),
+        ):
+            result = extract_youtube_metadata("https://www.youtube.com/watch?v=invalid")
+
+        assert result is None
 
 
 class TestCreateCmdAutoMode:
