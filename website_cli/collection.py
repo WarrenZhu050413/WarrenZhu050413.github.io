@@ -62,12 +62,15 @@ class Collection:
             title: str | None = typer.Argument(
                 None, help="Item title or URL (for links with --auto)"
             ),
-            push: bool = typer.Option(False, "--push", "-p", help="Commit and push after creating"),
+            push: bool = typer.Option(False, "--push", "-P", help="Commit and push after creating"),
             auto: bool = typer.Option(
                 False, "--auto", "-a", help="Auto-extract metadata from URL (links only)"
             ),
+            paste: bool = typer.Option(
+                False, "--paste", "-p", help="Read URL from clipboard (use with --auto)"
+            ),
         ):
-            self.create_cmd(title, push, auto)
+            self.create_cmd(title, push, auto, paste)
 
         @self.app.command()
         def edit(slug: str | None = typer.Argument(None, help="Item slug to edit")):
@@ -204,7 +207,13 @@ class Collection:
         items = self.get_items()
         self.display_items(items, show_numbers=False)
 
-    def create_cmd(self, title: str | None = None, push: bool = False, auto: bool = False):
+    def create_cmd(
+        self,
+        title: str | None = None,
+        push: bool = False,
+        auto: bool = False,
+        paste: bool = False,
+    ):
         """Create a new item."""
         collection_dir = self.get_dir()
         collection_dir.mkdir(exist_ok=True)
@@ -212,8 +221,16 @@ class Collection:
         # Check for auto-extraction mode (links only)
         extra_values = {}
         if auto and self.config.name == "links":
-            # Auto mode: expect URL as first argument
+            # Auto mode: expect URL as first argument or from clipboard
             url = title
+
+            # Read from clipboard if --paste flag is set
+            if paste and not url:
+                result = subprocess.run(["pbpaste"], capture_output=True, text=True)
+                if result.returncode == 0 and result.stdout.strip():
+                    url = result.stdout.strip()
+                    console.print(f"[dim]Read from clipboard: {url}[/dim]")
+
             if not url:
                 url = typer.prompt("URL to extract")
 

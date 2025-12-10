@@ -66,6 +66,56 @@ class TestYouTubeExtraction:
         assert result is None
 
 
+class TestClipboardPaste:
+    """Tests for --paste/-p clipboard input."""
+
+    @pytest.fixture
+    def links_collection(self, tmp_path):
+        """Create a links collection with a temp directory."""
+        config = LINKS_CONFIG
+        collection = Collection(config)
+        collection._dir = tmp_path / "_links"
+        collection._dir.mkdir()
+        return collection
+
+    def test_paste_flag_reads_url_from_clipboard(self, links_collection):
+        """--paste should read URL from clipboard for auto mode."""
+        clipboard_url = "https://www.youtube.com/watch?v=test123"
+
+        with (
+            patch("website_cli.collection.subprocess.run") as mock_subprocess,
+            patch("website_cli.agent.extract_link_metadata") as mock_extract,
+            patch.object(typer, "prompt") as mock_prompt,
+            patch.object(typer, "confirm") as mock_confirm,
+        ):
+            # Mock pbpaste returning URL
+            mock_pbpaste = MagicMock()
+            mock_pbpaste.returncode = 0
+            mock_pbpaste.stdout = clipboard_url
+            mock_subprocess.return_value = mock_pbpaste
+
+            # Mock successful extraction
+            mock_metadata = MagicMock()
+            mock_metadata.title = "Test Video"
+            mock_metadata.creator = "Test Channel"
+            mock_metadata.tags = "video"
+            mock_extract.return_value = mock_metadata
+
+            # Accept metadata, skip content, accept slug
+            mock_confirm.side_effect = [True]  # Use this metadata?
+            mock_prompt.side_effect = ["q", "test-video"]  # skip content, filename
+
+            # Call with paste=True, auto=True
+            links_collection.create_cmd(title=None, push=False, auto=True, paste=True)
+
+            # Verify pbpaste was called
+            mock_subprocess.assert_any_call(["pbpaste"], capture_output=True, text=True)
+
+            # Verify file was created
+            created_files = list(links_collection.get_dir().glob("*.md"))
+            assert len(created_files) == 1
+
+
 class TestCreateCmdAutoMode:
     """Tests for create_cmd with --auto flag."""
 
