@@ -1,5 +1,5 @@
 ---
-title: "Quantity"
+title: "Quantity of Information is a Horrible Metric"
 date: 2025-12-02 23:26:49 -0500
 ---
 

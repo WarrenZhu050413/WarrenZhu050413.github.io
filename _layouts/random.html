@@ -1,0 +1,54 @@
+---
+layout: default
+---
+<article class="sentence">
+  <header class="sentence-header">
+    <h1 class="sentence-title">{{ page.title | escape }}</h1>
+    <div class="sentence-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        {{ page.date | date: "%B %-d, %Y" }}
+      </time>
+      {% if page.source %}
+      <span class="sentence-source">&mdash; {{ page.source }}</span>
+      {% endif %}
+    </div>
+  </header>
+
+  {% assign content_length = content | strip_html | strip | size %}
+  {% if content_length > 0 %}
+  <div class="sentence-content">
+    {{ content }}
+  </div>
+  {% endif %}
+
+  <nav class="sentence-nav">
+    {% assign sorted_random = site.random | sort: 'date' %}
+    {% assign current_index = nil %}
+    {% for r in sorted_random %}
+      {% if r.url == page.url %}
+        {% assign current_index = forloop.index0 %}
+      {% endif %}
+    {% endfor %}
+
+    {% if current_index != nil %}
+      {% assign prev_index = current_index | minus: 1 %}
+      {% assign next_index = current_index | plus: 1 %}
+
+      <div class="nav-prev">
+        {% if prev_index >= 0 %}
+          {% assign prev_item = sorted_random[prev_index] %}
+          <a href="{{ prev_item.url | relative_url }}">&larr; {{ prev_item.title | truncate: 30 }}</a>
+        {% endif %}
+      </div>
+
+      <a class="nav-all" href="{{ '/random/' | relative_url }}">All Random</a>
+
+      <div class="nav-next">
+        {% if next_index < sorted_random.size %}
+          {% assign next_item = sorted_random[next_index] %}
+          <a href="{{ next_item.url | relative_url }}">{{ next_item.title | truncate: 30 }} &rarr;</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </nav>
+</article>

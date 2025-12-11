@@ -34,6 +34,9 @@ collections:
   links:
     output: true
     permalink: /links/:slug/
+  random:
+    output: true
+    permalink: /random/:slug/
 
 # Default layouts for collections
 defaults:
@@ -47,6 +50,11 @@ defaults:
       type: links
     values:
       layout: link-item
+  - scope:
+      path: ""
+      type: random
+    values:
+      layout: random
 
 # Author information
 author:

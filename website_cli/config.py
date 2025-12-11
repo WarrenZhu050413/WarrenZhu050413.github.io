@@ -52,3 +52,15 @@ LINKS_CONFIG = CollectionConfig(
     columns=[("Slug", "slug"), ("Title", "title"), ("Creator", "creator")],
     title_prompt="Title",
 )
+
+RANDOM_CONFIG = CollectionConfig(
+    name="random",
+    dir_name="_random",
+    site_url="https://www.warrenzhu.com/random",
+    email_suffix="random",
+    tagline="Loose threads and unfinished thoughts.",
+    extra_fields=[],
+    required_fields=["title"],
+    columns=[("Slug", "slug"), ("Title", "title"), ("Date", "date")],
+    title_prompt="What's on your mind?",
+)
