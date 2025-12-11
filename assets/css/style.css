@@ -707,15 +707,17 @@ nav a.active {
   line-height: 1.5;
 }
 
-/* Sentences Controls */
-.sentences-controls {
+/* Collection Controls (shared by sentences, random, links) */
+.sentences-controls,
+.media-controls {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   margin-bottom: var(--space-5);
 }
 
-.sentences-controls .inline-filter {
+.sentences-controls .inline-filter,
+.media-controls .inline-filter {
   flex: 1;
   margin-bottom: 0;
 }
@@ -1137,18 +1139,6 @@ img {
   color: var(--kala-mountain);
   font-style: italic;
   margin-bottom: var(--space-5);
-}
-
-.media-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-5);
-}
-
-.media-controls .inline-filter {
-  flex: 1;
-  margin-bottom: 0;
 }
 
 .view-toggle {
@@ -1752,10 +1742,12 @@ img {
     columns: 1;
   }
 
+  .sentences-controls,
   .media-controls {
     flex-wrap: wrap;
   }
 
+  .sentences-controls .inline-filter,
   .media-controls .inline-filter {
     order: 1;
     flex: 1 1 100%;
