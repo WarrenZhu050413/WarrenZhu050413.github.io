@@ -348,10 +348,17 @@ class Collection:
         slug = typer.prompt("Filename (this becomes the URL)", default=suggested)
         slug = slugify(slug)
 
+        # For posts, add date prefix
+        if self.config.name == "posts":
+            date_prefix = datetime.now().strftime("%Y-%m-%d")
+            filename = f"{date_prefix}-{slug}.md"
+        else:
+            filename = f"{slug}.md"
+
         # Check for duplicates
-        target = collection_dir / f"{slug}.md"
+        target = collection_dir / filename
         if target.exists():
-            console.print(f"[red]Error: {slug}.md already exists![/red]")
+            console.print(f"[red]Error: {filename} already exists![/red]")
             raise typer.Exit(1)
 
         # Create file
@@ -359,7 +366,10 @@ class Collection:
         escaped_title = yaml_escape_title(title)
 
         # Build frontmatter
-        fm_lines = [f"title: {escaped_title}", f"date: {now}"]
+        fm_lines = []
+        if self.config.name == "posts":
+            fm_lines.append("layout: post")
+        fm_lines.extend([f"title: {escaped_title}", f"date: {now}"])
         for key, val in extra_values.items():
             escaped_val = yaml_escape_title(val)
             fm_lines.append(f"{key}: {escaped_val}")
@@ -378,7 +388,7 @@ class Collection:
 
         console.print(
             Panel(
-                f"[green]Created:[/green] {self.config.dir_name}/{slug}.md\n"
+                f"[green]Created:[/green] {self.config.dir_name}/{filename}\n"
                 f"[cyan]URL:[/cyan] {self.config.site_url}/{slug}/",
                 title="Success",
                 border_style="green",

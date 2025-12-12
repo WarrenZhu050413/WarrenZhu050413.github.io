@@ -1753,3 +1753,64 @@ img {
     flex: 1 1 100%;
   }
 }
+
+/* ==========================================================================
+   Scoreboard of Life
+   ========================================================================== */
+
+.scoreboard {
+  margin: var(--space-7) 0;
+}
+
+.scoreboard h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.scoreboard table {
+  font-size: var(--text-sm);
+}
+
+.scoreboard th {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--text-xs);
+  color: var(--kala-mountain);
+  font-weight: 500;
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper-warm);
+}
+
+.scoreboard td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.scoreboard tr:hover td {
+  background: rgba(123, 163, 163, 0.05);
+}
+
+/* Count column styling */
+.scoreboard td:last-child {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--kala-sea);
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Book/Author styling */
+.scoreboard td:first-child {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.scoreboard td:nth-child(2) {
+  color: var(--kala-mountain);
+  font-style: italic;
+}
