@@ -1,0 +1,239 @@
+---
+layout: default
+title: Random
+permalink: /random-3/
+wide: true
+---
+
+<style>
+/* Prototype 3: Stacked Overlap - Cards pile up with dramatic overlap */
+.random-intro {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--kala-mountain);
+  max-width: 500px;
+  margin-bottom: var(--space-5);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--kala-rust);
+  line-height: 1.5;
+}
+
+.random-pile {
+  position: relative;
+  min-height: 2400px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-5);
+}
+
+.random-card {
+  position: absolute;
+  background: var(--paper-warm);
+  padding: 20px 28px;
+  width: 280px;
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.08),
+    0 4px 12px rgba(0,0,0,0.06);
+  cursor: grab;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-top: 3px solid var(--ink);
+}
+
+.random-card:hover {
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.15),
+    0 2px 8px rgba(0,0,0,0.1);
+  z-index: 100 !important;
+  transform: scale(1.03) rotate(0deg) !important;
+}
+
+.random-card:active { cursor: grabbing; }
+
+/* Kala palette borders */
+.random-card:nth-child(5n+1) { border-top-color: var(--kala-sea); }
+.random-card:nth-child(5n+2) { border-top-color: var(--ink); }
+.random-card:nth-child(5n+3) { border-top-color: var(--kala-rust); }
+.random-card:nth-child(5n+4) { border-top-color: var(--vermillion); }
+.random-card:nth-child(5n+5) { border-top-color: var(--kala-mountain); }
+
+/* Subtle paper texture differences */
+.random-card:nth-child(3n+1) { background: #faf8f3; }
+.random-card:nth-child(3n+2) { background: #f8f6f0; }
+.random-card:nth-child(3n+3) { background: #fcfaf5; }
+
+.random-card-text {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.random-card-date {
+  font-size: var(--text-xs);
+  color: var(--kala-mountain);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: var(--space-3);
+  display: block;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-light);
+}
+
+/* Gentle sway */
+@keyframes sway {
+  0%, 100% { transform: rotate(var(--rot)); }
+  50% { transform: rotate(calc(var(--rot) + var(--sway-amt))); }
+}
+
+.random-card {
+  animation: sway var(--duration) ease-in-out infinite;
+}
+
+.random-card:hover {
+  animation: none;
+}
+
+.random-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: var(--space-3);
+  z-index: 1000;
+}
+
+.random-btn {
+  padding: var(--space-3) var(--space-5);
+  background: var(--ink);
+  color: white;
+  border: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.random-btn:hover {
+  background: var(--vermillion);
+}
+</style>
+
+<p class="random-intro">
+A pile of thoughts, slightly askew. Hover to bring one to focus.
+</p>
+
+<div class="random-pile" id="randomPile">
+  {% assign sorted_random = site.random | sort: 'date' | reverse %}
+  {% for thought in sorted_random %}
+  <article class="random-card" data-index="{{ forloop.index0 }}">
+    <p class="random-card-text">{{ thought.content | strip_html | strip }}</p>
+    <time class="random-card-date" datetime="{{ thought.date | date_to_xmlschema }}">
+      {{ thought.date | date: "%b %-d, %Y" }}
+    </time>
+  </article>
+  {% endfor %}
+</div>
+
+<div class="random-controls">
+  <button class="random-btn" onclick="spreadOut()">Spread</button>
+  <button class="random-btn" onclick="pileUp()">Pile</button>
+</div>
+
+<script>
+(function() {
+  const pile = document.getElementById('randomPile');
+  const cards = Array.from(pile.querySelectorAll('.random-card'));
+  const originalPositions = [];
+
+  // Stack cards with deliberate overlap and chaos
+  cards.forEach((card, i) => {
+    // Create overlapping clusters
+    const cluster = Math.floor(i / 4);
+    const inCluster = i % 4;
+
+    // Base position for cluster
+    const clusterX = 10 + (cluster % 2) * 45;
+    const clusterY = cluster * 300;
+
+    // Offset within cluster (creates overlap)
+    const offsetX = inCluster * 25 + (Math.random() - 0.5) * 60;
+    const offsetY = inCluster * 40 + (Math.random() - 0.5) * 30;
+
+    const x = clusterX + offsetX;
+    const y = clusterY + offsetY;
+    const rot = (Math.random() - 0.5) * 20;
+    const swayAmt = (Math.random() - 0.5) * 3;
+
+    card.style.left = x + '%';
+    card.style.top = y + 'px';
+    card.style.setProperty('--rot', rot + 'deg');
+    card.style.setProperty('--sway-amt', swayAmt + 'deg');
+    card.style.setProperty('--duration', (8 + Math.random() * 6) + 's');
+    card.style.animationDelay = (-Math.random() * 10) + 's';
+    card.style.zIndex = cards.length - i; // Newer on top
+
+    originalPositions.push({ x, y, rot, z: cards.length - i });
+
+    // Drag
+    let isDragging = false;
+    let startX, startY;
+
+    card.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - card.offsetLeft;
+      startY = e.clientY - card.offsetTop;
+      card.style.zIndex = 1000;
+      card.style.animation = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        card.style.left = (e.clientX - startX) + 'px';
+        card.style.top = (e.clientY - startY) + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        card.style.zIndex = originalPositions[i].z;
+        card.style.animation = `sway ${8 + Math.random() * 6}s ease-in-out infinite`;
+      }
+    });
+  });
+
+  window.spreadOut = function() {
+    cards.forEach((card, i) => {
+      const col = i % 4;
+      const row = Math.floor(i / 4);
+      const x = 5 + col * 24;
+      const y = row * 220;
+      const rot = (Math.random() - 0.5) * 8;
+
+      card.style.transition = 'all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      card.style.left = x + '%';
+      card.style.top = y + 'px';
+      card.style.setProperty('--rot', rot + 'deg');
+      card.style.zIndex = i;
+
+      setTimeout(() => card.style.transition = '', 700);
+    });
+  };
+
+  window.pileUp = function() {
+    cards.forEach((card, i) => {
+      card.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+      card.style.left = originalPositions[i].x + '%';
+      card.style.top = originalPositions[i].y + 'px';
+      card.style.setProperty('--rot', originalPositions[i].rot + 'deg');
+      card.style.zIndex = originalPositions[i].z;
+
+      setTimeout(() => card.style.transition = '', 600);
+    });
+  };
+})();
+</script>

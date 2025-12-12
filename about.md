@@ -24,7 +24,7 @@ permalink: /about/
 
 ## Currently
 
-- I'm working on [Studio Tenwu](https://studiotenwu.github.io) with [Matthew Kotzbauer](https://www.facebook.com/matthew.kotzbauer.50/).
+- I'm working on [Denken](https://denken-ai.github.io/) with [Matthew Kotzbauer](https://www.facebook.com/matthew.kotzbauer.50/).
 
 ## ML Systems Projects
 

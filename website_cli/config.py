@@ -64,3 +64,15 @@ RANDOM_CONFIG = CollectionConfig(
     columns=[("Slug", "slug"), ("Title", "title"), ("Date", "date")],
     title_prompt="What's on your mind?",
 )
+
+POSTS_CONFIG = CollectionConfig(
+    name="posts",
+    dir_name="_posts",
+    site_url="https://www.warrenzhu.com",
+    email_suffix="writing",
+    tagline="Long-form writing and essays.",
+    extra_fields=["categories", "description"],
+    required_fields=["title"],
+    columns=[("Slug", "slug"), ("Title", "title"), ("Date", "date")],
+    title_prompt="Post title",
+)

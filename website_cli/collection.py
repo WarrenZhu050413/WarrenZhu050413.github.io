@@ -62,7 +62,7 @@ class Collection:
             title: str | None = typer.Argument(
                 None, help="Item title or URL (for links with --auto)"
             ),
-            push: bool = typer.Option(False, "--push", "-P", help="Commit and push after creating"),
+            push: bool = typer.Option(False, "--push", help="Commit and push after creating"),
             auto: bool = typer.Option(
                 False, "--auto", "-a", help="Auto-extract metadata from URL (links only)"
             ),
@@ -391,6 +391,9 @@ class Collection:
             target_abs = target.resolve()
             commit_title = title[:47] + "..." if len(title) > 50 else title
             commit_message = f"New {self.config.name}: {commit_title}"
+
+            # Clean up stale git lock if present
+            self._cleanup_git_lock(project_dir)
 
             try:
                 subprocess.run(
@@ -821,6 +824,9 @@ date: {formatted_date}
             )
             commit_message = f"New {self.config.name}: {commit_title}"
 
+            # Clean up stale git lock if present
+            self._cleanup_git_lock(project_dir, debug)
+
             try:
                 subprocess.run(
                     ["git", "add", str(target.resolve())],
@@ -849,6 +855,42 @@ date: {formatted_date}
         console.print(
             f"\n[bold green]Done! Created {created_count}, skipped {skipped_count}[/bold green]"
         )
+
+    def _cleanup_git_lock(self, project_dir: Path, debug: bool = False) -> bool:
+        """Remove stale .git/index.lock if no git processes are running on this repo."""
+        lock_file = project_dir / ".git" / "index.lock"
+        if not lock_file.exists():
+            return False
+
+        # Check if any git processes are running (excluding gitstatusd which is read-only)
+        try:
+            result = subprocess.run(
+                ["pgrep", "-f", f"git.*(add|commit|push|pull|fetch).*{project_dir.name}"],
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                # Active git process found, don't remove lock
+                if debug:
+                    console.print(f"[yellow]Git process active, keeping lock[/yellow]")
+                return False
+        except Exception:
+            pass
+
+        # Check lock file age (stale if older than 5 minutes)
+        try:
+            lock_age = datetime.now().timestamp() - lock_file.stat().st_mtime
+            if lock_age > 300:  # 5 minutes
+                lock_file.unlink()
+                console.print(f"[yellow]Removed stale git lock (age: {int(lock_age)}s)[/yellow]")
+                return True
+            elif debug:
+                console.print(f"[dim]Lock file age: {int(lock_age)}s (keeping)[/dim]")
+        except Exception as e:
+            if debug:
+                console.print(f"[yellow]Could not check lock: {e}[/yellow]")
+
+        return False
 
     def _archive_email(self, message_id: str, debug: bool = False) -> bool:
         """Archive an email by removing it from INBOX."""

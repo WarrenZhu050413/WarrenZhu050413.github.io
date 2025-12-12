@@ -1,0 +1,306 @@
+---
+layout: default
+title: Random
+permalink: /random-4/
+wide: true
+---
+
+<style>
+/* Prototype 4: Constellation - Cards with connecting threads */
+.random-intro {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--kala-mountain);
+  max-width: 500px;
+  margin-bottom: var(--space-5);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--kala-mountain);
+  line-height: 1.5;
+}
+
+.random-cosmos {
+  position: relative;
+  min-height: 2000px;
+  padding: var(--space-5);
+}
+
+/* Connection lines */
+.random-threads {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.random-threads line {
+  stroke: var(--kala-sand);
+  stroke-width: 1;
+  opacity: 0.4;
+  stroke-dasharray: 4 4;
+}
+
+.random-card {
+  position: absolute;
+  background: white;
+  padding: 16px 20px;
+  max-width: 240px;
+  border-radius: 50px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  cursor: grab;
+  user-select: none;
+  transition: all 0.3s ease;
+  z-index: 1;
+  border: 1px solid var(--border-light);
+}
+
+.random-card::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--paper);
+  border: 2px solid var(--kala-sea);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.random-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: scale(1.05);
+  z-index: 100;
+}
+
+.random-card:active { cursor: grabbing; }
+
+/* Color variations for dots */
+.random-card:nth-child(5n+1)::before { border-color: var(--kala-sea); }
+.random-card:nth-child(5n+2)::before { border-color: var(--vermillion); }
+.random-card:nth-child(5n+3)::before { border-color: var(--kala-rust); }
+.random-card:nth-child(5n+4)::before { border-color: var(--kala-mountain); }
+.random-card:nth-child(5n+5)::before { border-color: var(--ink); }
+
+.random-card-text {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.random-card-date {
+  font-size: var(--text-xs);
+  color: var(--kala-mountain);
+  font-style: italic;
+  margin-top: var(--space-2);
+  display: block;
+}
+
+/* Gentle orbit animation */
+@keyframes orbit {
+  0%, 100% {
+    transform: translate(var(--ox1), var(--oy1));
+  }
+  25% {
+    transform: translate(var(--ox2), var(--oy2));
+  }
+  50% {
+    transform: translate(var(--ox3), var(--oy3));
+  }
+  75% {
+    transform: translate(var(--ox4), var(--oy4));
+  }
+}
+
+.random-card {
+  animation: orbit var(--duration) ease-in-out infinite;
+}
+
+.random-card:hover {
+  animation-play-state: paused;
+}
+
+.random-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: var(--space-3);
+  z-index: 1000;
+}
+
+.random-btn {
+  padding: var(--space-3) var(--space-5);
+  background: rgba(255,255,255,0.95);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 20px;
+}
+
+.random-btn:hover {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
+}
+</style>
+
+<p class="random-intro">
+Thoughts like stars, connected by invisible threads of association.
+</p>
+
+<div class="random-cosmos" id="randomCosmos">
+  <svg class="random-threads" id="threads"></svg>
+  {% assign sorted_random = site.random | sort: 'date' | reverse %}
+  {% for thought in sorted_random %}
+  <article class="random-card" data-index="{{ forloop.index0 }}">
+    <p class="random-card-text">{{ thought.content | strip_html | strip }}</p>
+    <time class="random-card-date" datetime="{{ thought.date | date_to_xmlschema }}">
+      {{ thought.date | date: "%b %-d" }}
+    </time>
+  </article>
+  {% endfor %}
+</div>
+
+<div class="random-controls">
+  <button class="random-btn" onclick="rewire()">Rewire</button>
+  <button class="random-btn" onclick="scatter()">Scatter</button>
+</div>
+
+<script>
+(function() {
+  const cosmos = document.getElementById('randomCosmos');
+  const threadsEl = document.getElementById('threads');
+  const cards = Array.from(cosmos.querySelectorAll('.random-card'));
+  let connections = [];
+
+  // Position cards in a loose spiral/constellation
+  cards.forEach((card, i) => {
+    // Spiral-ish distribution
+    const angle = i * 0.8;
+    const radius = 100 + i * 50;
+    const centerX = 45;
+    const centerY = 100 + i * 90;
+
+    const x = centerX + Math.cos(angle) * 25 + (Math.random() - 0.5) * 30;
+    const y = centerY + Math.sin(angle) * 30 + (Math.random() - 0.5) * 40;
+
+    card.style.left = x + '%';
+    card.style.top = y + 'px';
+
+    // Orbit animation
+    const range = 15;
+    card.style.setProperty('--ox1', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--oy1', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--ox2', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--oy2', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--ox3', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--oy3', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--ox4', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--oy4', (Math.random() - 0.5) * range + 'px');
+    card.style.setProperty('--duration', (15 + Math.random() * 10) + 's');
+    card.style.animationDelay = (-Math.random() * 20) + 's';
+
+    // Drag
+    let isDragging = false;
+    let startX, startY;
+
+    card.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - card.offsetLeft;
+      startY = e.clientY - card.offsetTop;
+      card.style.zIndex = 1000;
+      card.style.animation = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        card.style.left = (e.clientX - startX) + 'px';
+        card.style.top = (e.clientY - startY) + 'px';
+        updateThreads();
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        card.style.zIndex = 1;
+        card.style.animation = `orbit ${15 + Math.random() * 10}s ease-in-out infinite`;
+      }
+    });
+  });
+
+  function createConnections() {
+    connections = [];
+    // Connect neighboring thoughts (chronological proximity)
+    for (let i = 0; i < cards.length - 1; i++) {
+      if (Math.random() > 0.3) { // 70% chance to connect to next
+        connections.push([i, i + 1]);
+      }
+    }
+    // Add some random cross-connections
+    for (let i = 0; i < 5; i++) {
+      const a = Math.floor(Math.random() * cards.length);
+      let b = Math.floor(Math.random() * cards.length);
+      while (Math.abs(a - b) < 2) b = Math.floor(Math.random() * cards.length);
+      connections.push([a, b]);
+    }
+    updateThreads();
+  }
+
+  function updateThreads() {
+    threadsEl.innerHTML = '';
+    connections.forEach(([a, b]) => {
+      const cardA = cards[a];
+      const cardB = cards[b];
+      if (!cardA || !cardB) return;
+
+      const rectA = cardA.getBoundingClientRect();
+      const rectB = cardB.getBoundingClientRect();
+      const cosmosRect = cosmos.getBoundingClientRect();
+
+      const x1 = rectA.left - cosmosRect.left + rectA.width / 2;
+      const y1 = rectA.top - cosmosRect.top + rectA.height / 2;
+      const x2 = rectB.left - cosmosRect.left + rectB.width / 2;
+      const y2 = rectB.top - cosmosRect.top + rectB.height / 2;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', x1);
+      line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2);
+      line.setAttribute('y2', y2);
+      threadsEl.appendChild(line);
+    });
+  }
+
+  createConnections();
+
+  // Update threads periodically (for animation)
+  setInterval(updateThreads, 100);
+
+  window.rewire = function() {
+    createConnections();
+  };
+
+  window.scatter = function() {
+    cards.forEach(card => {
+      const x = 10 + Math.random() * 70;
+      const y = Math.random() * (cosmos.offsetHeight - 150);
+
+      card.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+      card.style.left = x + '%';
+      card.style.top = y + 'px';
+
+      setTimeout(() => {
+        card.style.transition = '';
+        updateThreads();
+      }, 800);
+    });
+  };
+})();
+</script>

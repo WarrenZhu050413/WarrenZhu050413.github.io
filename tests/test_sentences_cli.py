@@ -4,8 +4,6 @@ from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-from typer.testing import CliRunner
-
 from sentences_cli.cli import (
     app,
     display_sentences,
@@ -15,6 +13,7 @@ from sentences_cli.cli import (
     slugify,
     yaml_escape_title,
 )
+from typer.testing import CliRunner
 
 
 @pytest.fixture
@@ -31,30 +30,30 @@ def temp_sentences_dir(tmp_path):
 
     # Sample sentences
     sample_1 = sentences_dir / "the-best-code-is-no-code.md"
-    sample_1.write_text('''---
+    sample_1.write_text("""---
 title: "The best code is no code at all"
 date: 2025-11-30 10:00:00 -0500
 ---
 
 Every line of code is a liability.
-''')
+""")
 
     sample_2 = sentences_dir / "truth-emerges-from-friction.md"
-    sample_2.write_text('''---
+    sample_2.write_text("""---
 title: "Truth emerges from the friction between what we believe and what we experience"
 date: 2025-11-29 14:30:00 -0500
 ---
 
-''')
+""")
 
     sample_3 = sentences_dir / "simple-is-better.md"
-    sample_3.write_text('''---
+    sample_3.write_text("""---
 title: "Simple is better than complex"
 date: 2025-11-28 09:15:00 -0500
 ---
 
 Complexity breeds bugs.
-''')
+""")
 
     return sentences_dir
 
@@ -62,6 +61,7 @@ Complexity breeds bugs.
 @pytest.fixture
 def mock_sentences_dir(monkeypatch, temp_sentences_dir):
     """Mock get_sentences_dir to return the temp directory."""
+
     def mock_get_sentences_dir():
         return temp_sentences_dir
 
@@ -143,7 +143,7 @@ class TestYamlEscapeTitle:
 
     def test_title_with_both_quotes(self):
         """Test that single quotes inside titles with double quotes are escaped."""
-        result = yaml_escape_title("\"It's a test\"")
+        result = yaml_escape_title('"It\'s a test"')
         # PyYAML doubles single quotes inside single-quoted strings
         assert result == "'\"It''s a test\"'"
 
@@ -177,6 +177,7 @@ class TestYamlEscapeTitle:
         assert '"You have' in result
         # Result should be valid YAML when parsed back
         import yaml
+
         parsed = yaml.safe_load(f"title: {result}")
         assert parsed["title"] == title
 
@@ -190,6 +191,7 @@ class TestGetSentencesDir:
         monkeypatch.setenv("SENTENCES_DIR", str(test_dir))
         # Reset the global cache
         import sentences_cli.cli
+
         sentences_cli.cli._sentences_dir = None
 
         result = get_sentences_dir()
@@ -203,6 +205,7 @@ class TestGetSentencesDir:
         monkeypatch.chdir(str(tmp_path))
         # Reset the global cache
         import sentences_cli.cli
+
         sentences_cli.cli._sentences_dir = None
 
         result = get_sentences_dir()
@@ -214,6 +217,7 @@ class TestGetSentencesDir:
         monkeypatch.setenv("SENTENCES_DIR", str(test_dir))
         # Reset the global cache
         import sentences_cli.cli
+
         sentences_cli.cli._sentences_dir = None
 
         # First call
@@ -261,6 +265,7 @@ class TestGetSentences:
 
     def test_get_sentences_nonexistent_directory(self, monkeypatch, tmp_path):
         """Test with nonexistent sentences directory."""
+
         def mock_get_sentences_dir():
             return tmp_path / "nonexistent"
 
@@ -272,12 +277,12 @@ class TestGetSentences:
         """Test parsing file with missing title."""
         # Create a file without title
         no_title = mock_sentences_dir / "no-title.md"
-        no_title.write_text('''---
+        no_title.write_text("""---
 date: 2025-11-27 10:00:00 -0500
 ---
 
 Some content
-''')
+""")
 
         sentences = get_sentences()
         no_title_sentence = [s for s in sentences if s["slug"] == "no-title"][0]
@@ -287,12 +292,12 @@ Some content
         """Test parsing file with missing date."""
         # Create a file without date
         no_date = mock_sentences_dir / "no-date.md"
-        no_date.write_text('''---
+        no_date.write_text("""---
 title: "No Date Sentence"
 ---
 
 Some content
-''')
+""")
 
         sentences = get_sentences()
         no_date_sentence = [s for s in sentences if s["slug"] == "no-date"][0]
@@ -366,7 +371,9 @@ class TestCreateCommand:
 
     def test_create_with_argument(self, runner, mock_sentences_dir):
         """Test creating a sentence with title argument."""
-        result = runner.invoke(app, ["create", "Test Sentence"], input="Some reflection\ntest-sentence\n")
+        result = runner.invoke(
+            app, ["create", "Test Sentence"], input="Some reflection\ntest-sentence\n"
+        )
         assert result.exit_code == 0
         assert "Created:" in result.stdout
 
@@ -402,7 +409,9 @@ class TestCreateCommand:
             assert "+6" in call_args
 
     @patch("subprocess.run")
-    def test_create_nano_no_cursor_position(self, mock_run, runner, mock_sentences_dir, monkeypatch):
+    def test_create_nano_no_cursor_position(
+        self, mock_run, runner, mock_sentences_dir, monkeypatch
+    ):
         """Test that non-vim editors don't get +6 flag."""
         monkeypatch.setenv("EDITOR", "nano")
 
@@ -416,7 +425,9 @@ class TestCreateCommand:
 
     def test_create_sets_correct_metadata(self, runner, mock_sentences_dir):
         """Test that created file has correct YAML frontmatter."""
-        result = runner.invoke(app, ["create", "Test Sentence"], input="Some reflection\ntest-sentence\n")
+        result = runner.invoke(
+            app, ["create", "Test Sentence"], input="Some reflection\ntest-sentence\n"
+        )
         assert result.exit_code == 0
 
         created_file = mock_sentences_dir / "test-sentence.md"
@@ -435,7 +446,9 @@ class TestCreateCommand:
 
     def test_create_slugifies_filename(self, runner, mock_sentences_dir):
         """Test that filename is slugified."""
-        result = runner.invoke(app, ["create", "Test Sentence!!!"], input="Content\nTest Sentence!!!\n")
+        result = runner.invoke(
+            app, ["create", "Test Sentence!!!"], input="Content\nTest Sentence!!!\n"
+        )
         assert result.exit_code == 0
 
         # Should be slugified
@@ -454,9 +467,7 @@ class TestCreateCommand:
         """Test that duplicate slug is rejected."""
         # Try to create with existing slug
         result = runner.invoke(
-            app,
-            ["create", "Another Title"],
-            input="Content\nthe-best-code-is-no-code\n"
+            app, ["create", "Another Title"], input="Content\nthe-best-code-is-no-code\n"
         )
         assert result.exit_code == 1
         assert "already exists" in result.stdout
@@ -686,7 +697,9 @@ class TestPreviewCommand:
     @patch("webbrowser.open")
     @patch("subprocess.Popen")
     @patch("time.sleep")
-    def test_preview_with_slug(self, mock_sleep, mock_popen, mock_browser, runner, mock_sentences_dir):
+    def test_preview_with_slug(
+        self, mock_sleep, mock_popen, mock_browser, runner, mock_sentences_dir
+    ):
         """Test preview with specific slug."""
         mock_process = MagicMock()
         mock_popen.return_value = mock_process
@@ -703,7 +716,9 @@ class TestPreviewCommand:
     @patch("webbrowser.open")
     @patch("subprocess.Popen")
     @patch("time.sleep")
-    def test_preview_uses_custom_port(self, mock_sleep, mock_popen, mock_browser, runner, mock_sentences_dir):
+    def test_preview_uses_custom_port(
+        self, mock_sleep, mock_popen, mock_browser, runner, mock_sentences_dir
+    ):
         """Test preview with custom port."""
         mock_process = MagicMock()
         mock_popen.return_value = mock_process
@@ -714,7 +729,9 @@ class TestPreviewCommand:
     @patch("webbrowser.open")
     @patch("subprocess.Popen")
     @patch("time.sleep")
-    def test_preview_opens_correct_url(self, mock_sleep, mock_popen, mock_browser, runner, mock_sentences_dir):
+    def test_preview_opens_correct_url(
+        self, mock_sleep, mock_popen, mock_browser, runner, mock_sentences_dir
+    ):
         """Test that preview opens the correct URL."""
         mock_process = MagicMock()
         mock_popen.return_value = mock_process
@@ -761,10 +778,12 @@ class TestPushCommand:
 
         # Mock Popen with JSON output containing session_id
         mock_process = MagicMock()
-        mock_process.stdout = iter([
-            '{"type": "init", "session_id": "abc123-test-session"}\n',
-            '{"type": "result", "result": "Done"}\n',
-        ])
+        mock_process.stdout = iter(
+            [
+                '{"type": "init", "session_id": "abc123-test-session"}\n',
+                '{"type": "result", "result": "Done"}\n',
+            ]
+        )
         mock_process.wait.return_value = 0
         mock_popen.return_value = mock_process
 
@@ -775,16 +794,20 @@ class TestPushCommand:
 
     @patch("subprocess.Popen")
     @patch("subprocess.run")
-    def test_push_handles_missing_session_id(self, mock_run, mock_popen, runner, mock_sentences_dir):
+    def test_push_handles_missing_session_id(
+        self, mock_run, mock_popen, runner, mock_sentences_dir
+    ):
         """Test push gracefully handles missing session_id."""
         changes_output = " M _sentences/test.md\n"
         mock_run.return_value = Mock(stdout=changes_output)
 
         # Mock Popen with no session_id in output
         mock_process = MagicMock()
-        mock_process.stdout = iter([
-            '{"type": "result", "result": "Done"}\n',
-        ])
+        mock_process.stdout = iter(
+            [
+                '{"type": "result", "result": "Done"}\n',
+            ]
+        )
         mock_process.wait.return_value = 0
         mock_popen.return_value = mock_process
 
@@ -799,9 +822,11 @@ class TestPushCommand:
         mock_run.return_value = Mock(stdout=changes_output)
 
         mock_process = MagicMock()
-        mock_process.stdout = iter([
-            '{"type": "init", "session_id": "test-session"}\n',
-        ])
+        mock_process.stdout = iter(
+            [
+                '{"type": "init", "session_id": "test-session"}\n',
+            ]
+        )
         mock_process.wait.return_value = 0
         mock_popen.return_value = mock_process
 
@@ -901,13 +926,13 @@ class TestDisplaySentences:
         """Test that long titles are truncated."""
         # Create a sentence with very long title
         long_title_file = mock_sentences_dir / "long.md"
-        long_title_file.write_text('''---
+        long_title_file.write_text("""---
 title: "This is a very long title that should definitely be truncated when displayed in the table"
 date: 2025-11-26 10:00:00 -0500
 ---
 
 Content
-''')
+""")
 
         sentences = get_sentences()
         display_sentences(sentences)
@@ -926,7 +951,9 @@ class TestIntegration:
     def test_create_and_list_workflow(self, runner, mock_sentences_dir):
         """Test creating a sentence and listing it."""
         # Create a new sentence
-        create_result = runner.invoke(app, ["create", "Integration Test"], input="Test content\nintegration-test\n")
+        create_result = runner.invoke(
+            app, ["create", "Integration Test"], input="Test content\nintegration-test\n"
+        )
         assert create_result.exit_code == 0
 
         # List sentences

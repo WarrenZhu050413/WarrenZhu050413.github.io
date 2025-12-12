@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random - D: Detective Pinboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cork: #d4a76a;
+      --cork-dark: #b8905a;
+      --paper-yellow: #fffbeb;
+      --paper-white: #fefefe;
+      --paper-pink: #ffeef2;
+      --paper-blue: #eef6ff;
+      --ink: #2a2a2a;
+      --red-string: #cc3333;
+      --pin-red: #e53935;
+      --pin-blue: #1e88e5;
+      --pin-green: #43a047;
+      --pin-yellow: #fdd835;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Source Serif 4', serif;
+      --font-typewriter: 'Special Elite', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cork);
+      background-image:
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E");
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, rgba(180,130,80,0.95) 0%, rgba(180,130,80,0) 100%);
+      z-index: 1000;
+    }
+
+    .header h1 {
+      font-family: var(--font-typewriter);
+      font-size: 1.5rem;
+      color: var(--ink);
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+    }
+
+    .proto-label {
+      font-family: var(--font-typewriter);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      background: var(--paper-yellow);
+      padding: 4px 12px;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      transform: rotate(-2deg);
+    }
+
+    .board {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* String connections - SVG */
+    .strings {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .strings line {
+      stroke: var(--red-string);
+      stroke-width: 2;
+      opacity: 0.7;
+    }
+
+    /* Cards as pinned notes */
+    .card {
+      position: absolute;
+      padding: 16px 20px;
+      max-width: 220px;
+      min-width: 150px;
+      box-shadow:
+        3px 3px 8px rgba(0, 0, 0, 0.3),
+        inset 0 0 30px rgba(0,0,0,0.03);
+      cursor: grab;
+      user-select: none;
+      z-index: 10;
+      transition: transform 0.1s, box-shadow 0.2s;
+    }
+
+    .card:active { cursor: grabbing; }
+
+    .card:hover {
+      z-index: 100;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Push pin effect */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.4),
+        inset 0 -2px 4px rgba(0,0,0,0.3),
+        inset 0 2px 4px rgba(255,255,255,0.5);
+    }
+
+    .card:nth-child(4n+1) { background: var(--paper-yellow); }
+    .card:nth-child(4n+1)::before { background: var(--pin-red); }
+
+    .card:nth-child(4n+2) { background: var(--paper-white); }
+    .card:nth-child(4n+2)::before { background: var(--pin-blue); }
+
+    .card:nth-child(4n+3) { background: var(--paper-pink); }
+    .card:nth-child(4n+3)::before { background: var(--pin-green); }
+
+    .card:nth-child(4n+4) { background: var(--paper-blue); }
+    .card:nth-child(4n+4)::before { background: var(--pin-yellow); }
+
+    .card-text {
+      font-family: var(--font-typewriter);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    /* Tape effect on some cards */
+    .card:nth-child(3n)::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      right: 20px;
+      width: 40px;
+      height: 20px;
+      background: rgba(255, 255, 200, 0.6);
+      transform: rotate(5deg);
+    }
+
+    /* Scribble marks */
+    .card:nth-child(5n) .card-text {
+      text-decoration: underline;
+      text-decoration-color: var(--red-string);
+      text-decoration-style: wavy;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1001;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: var(--paper-yellow);
+      color: var(--ink);
+      border: none;
+      font-family: var(--font-typewriter);
+      cursor: pointer;
+      font-size: 0.8rem;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+    }
+
+    /* Coffee stain decoration */
+    .stain {
+      position: fixed;
+      border-radius: 50%;
+      background: radial-gradient(ellipse,
+        transparent 40%,
+        rgba(139, 90, 43, 0.15) 50%,
+        rgba(139, 90, 43, 0.1) 60%,
+        transparent 70%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>CASE FILE: RANDOM THOUGHTS</h1>
+    <span class="proto-label">Prototype D: Detective Pinboard</span>
+  </header>
+
+  <!-- Coffee stains -->
+  <div class="stain" style="width: 150px; height: 150px; top: 20%; left: 10%;"></div>
+  <div class="stain" style="width: 100px; height: 100px; top: 60%; left: 70%; transform: rotate(30deg);"></div>
+  <div class="stain" style="width: 120px; height: 120px; top: 40%; left: 50%;"></div>
+
+  <div class="board" id="board">
+    <svg class="strings" id="strings"></svg>
+  </div>
+
+  <div class="controls">
+    <button class="btn" onclick="reorganize()">REORGANIZE</button>
+    <button class="btn" onclick="newStrings()">NEW LEADS</button>
+    <button class="btn" onclick="chaos()">CHAOS</button>
+  </div>
+
+  <script>
+    const thoughts = [
+      "Waking up feeling muscle sore is the most awesome thing in the world",
+      "Love to sunbathe in the Boston Winter",
+      "The best ideas come at 3am when you can't sleep",
+      "Why do we park in driveways but drive on parkways?",
+      "Cold showers are superior. Fight me.",
+      "Email is just async anxiety",
+      "The moon is following me specifically",
+      "Debugging: detective + murderer",
+      "I think in browser tabs",
+      "Sometimes I forget how to breathe manually",
+      "Snooze button invented by Satan",
+      "Procrastination sport: compete tomorrow",
+      "My code works. IDK why.",
+      "Time is fake. Calendars = conspiracy.",
+      "Hot take: cereal is soup",
+      "Airport WiFi: human patience test",
+      "Silence is loud if you listen",
+      "Why 'building' if already built?",
+      "Parallel universes with finished side projects",
+      "Sleep = free trial death"
+    ];
+
+    const board = document.getElementById('board');
+    const stringsEl = document.getElementById('strings');
+    const cards = [];
+    let connections = [];
+
+    // Create cards
+    thoughts.forEach((thought, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<p class="card-text">${thought}</p>`;
+      card.id = 'card-' + i;
+
+      // Grid-based initial placement with chaos
+      const cols = 5;
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const baseX = 80 + col * (window.innerWidth - 200) / cols;
+      const baseY = 100 + row * 180;
+
+      const x = baseX + (Math.random() - 0.5) * 80;
+      const y = baseY + (Math.random() - 0.5) * 40;
+      const rot = (Math.random() - 0.5) * 25;
+
+      card.style.left = x + 'px';
+      card.style.top = y + 'px';
+      card.style.transform = `rotate(${rot}deg)`;
+
+      // Drag
+      let isDragging = false;
+      let startX, startY;
+
+      card.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - card.offsetLeft;
+        startY = e.clientY - card.offsetTop;
+        card.style.zIndex = 1000;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          card.style.left = (e.clientX - startX) + 'px';
+          card.style.top = (e.clientY - startY) + 'px';
+          updateStrings();
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          card.style.zIndex = 10;
+        }
+      });
+
+      board.appendChild(card);
+      cards.push(card);
+    });
+
+    // Create string connections
+    function createStrings() {
+      connections = [];
+      // Connect some random pairs
+      const numConnections = 8 + Math.floor(Math.random() * 5);
+      for (let i = 0; i < numConnections; i++) {
+        const a = Math.floor(Math.random() * cards.length);
+        let b = Math.floor(Math.random() * cards.length);
+        while (b === a) b = Math.floor(Math.random() * cards.length);
+        connections.push([a, b]);
+      }
+      updateStrings();
+    }
+
+    function updateStrings() {
+      stringsEl.innerHTML = '';
+      connections.forEach(([a, b]) => {
+        const cardA = cards[a];
+        const cardB = cards[b];
+        const rectA = cardA.getBoundingClientRect();
+        const rectB = cardB.getBoundingClientRect();
+
+        const x1 = rectA.left + rectA.width / 2;
+        const y1 = rectA.top + rectA.height / 2;
+        const x2 = rectB.left + rectB.width / 2;
+        const y2 = rectB.top + rectB.height / 2;
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        stringsEl.appendChild(line);
+      });
+    }
+
+    createStrings();
+
+    function reorganize() {
+      cards.forEach((card, i) => {
+        const cols = 5;
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const x = 80 + col * (window.innerWidth - 200) / cols;
+        const y = 100 + row * 180;
+        const rot = (Math.random() - 0.5) * 10;
+
+        card.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+        card.style.transform = `rotate(${rot}deg)`;
+
+        setTimeout(() => {
+          card.style.transition = '';
+          updateStrings();
+        }, 600);
+      });
+    }
+
+    function newStrings() {
+      createStrings();
+    }
+
+    function chaos() {
+      cards.forEach(card => {
+        const x = 50 + Math.random() * (window.innerWidth - 300);
+        const y = 80 + Math.random() * (window.innerHeight - 200);
+        const rot = (Math.random() - 0.5) * 60;
+
+        card.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+        card.style.transform = `rotate(${rot}deg)`;
+
+        setTimeout(() => {
+          card.style.transition = '';
+          updateStrings();
+        }, 800);
+      });
+    }
+
+    // Update strings on resize
+    window.addEventListener('resize', updateStrings);
+  </script>
+</body>
+</html>

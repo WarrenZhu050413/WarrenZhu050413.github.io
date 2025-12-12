@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random - E: Glitch Terminal</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --terminal-bg: #0a0a0a;
+      --terminal-green: #00ff41;
+      --terminal-amber: #ffb000;
+      --terminal-cyan: #00ffff;
+      --terminal-magenta: #ff00ff;
+      --terminal-red: #ff0040;
+      --scanline: rgba(0, 0, 0, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'VT323', monospace;
+      background: var(--terminal-bg);
+      min-height: 100vh;
+      overflow: hidden;
+      color: var(--terminal-green);
+    }
+
+    /* CRT screen effect */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 1001;
+      animation: scanlines 0.1s linear infinite;
+    }
+
+    @keyframes scanlines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    /* Screen flicker */
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      92% { opacity: 1; }
+      93% { opacity: 0.8; }
+      94% { opacity: 1; }
+      97% { opacity: 0.9; }
+      98% { opacity: 1; }
+    }
+
+    .screen {
+      animation: flicker 5s infinite;
+    }
+
+    .header {
+      padding: 15px 30px;
+      border-bottom: 1px solid var(--terminal-green);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--terminal-bg);
+      z-index: 999;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: normal;
+      text-shadow: 0 0 10px var(--terminal-green);
+    }
+
+    .header h1::before {
+      content: '> ';
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .proto-label {
+      font-size: 0.9rem;
+      color: var(--terminal-amber);
+      text-shadow: 0 0 8px var(--terminal-amber);
+    }
+
+    .terminal {
+      padding: 80px 30px 30px;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .card {
+      position: absolute;
+      background: rgba(0, 255, 65, 0.05);
+      border: 1px solid var(--terminal-green);
+      padding: 12px 16px;
+      max-width: 320px;
+      font-size: 1.1rem;
+      line-height: 1.4;
+      text-shadow: 0 0 5px currentColor;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .card::before {
+      content: '█';
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      font-size: 0.7rem;
+      animation: blink 0.8s infinite;
+    }
+
+    .card:hover {
+      background: rgba(0, 255, 65, 0.1);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.05);
+    }
+
+    /* Color variations */
+    .card:nth-child(4n+1) {
+      color: var(--terminal-green);
+      border-color: var(--terminal-green);
+    }
+    .card:nth-child(4n+2) {
+      color: var(--terminal-amber);
+      border-color: var(--terminal-amber);
+      background: rgba(255, 176, 0, 0.05);
+    }
+    .card:nth-child(4n+3) {
+      color: var(--terminal-cyan);
+      border-color: var(--terminal-cyan);
+      background: rgba(0, 255, 255, 0.05);
+    }
+    .card:nth-child(4n+4) {
+      color: var(--terminal-magenta);
+      border-color: var(--terminal-magenta);
+      background: rgba(255, 0, 255, 0.05);
+    }
+
+    /* Glitch effect */
+    .glitch {
+      animation: glitch 0.3s infinite;
+    }
+
+    @keyframes glitch {
+      0%, 100% {
+        transform: translate(0);
+        filter: none;
+      }
+      20% {
+        transform: translate(-2px, 1px);
+        filter: hue-rotate(90deg);
+      }
+      40% {
+        transform: translate(2px, -1px);
+        filter: hue-rotate(-90deg);
+      }
+      60% {
+        transform: translate(-1px, 2px);
+      }
+      80% {
+        transform: translate(1px, -2px);
+        filter: saturate(2);
+      }
+    }
+
+    /* Chromatic aberration on hover */
+    .card:hover .card-text {
+      animation: chromatic 0.1s infinite;
+    }
+
+    @keyframes chromatic {
+      0% {
+        text-shadow: -1px 0 red, 1px 0 cyan;
+      }
+      50% {
+        text-shadow: 1px 0 red, -1px 0 cyan;
+      }
+    }
+
+    .card-text::before {
+      content: '> ';
+      opacity: 0.5;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1002;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background: transparent;
+      color: var(--terminal-green);
+      border: 1px solid var(--terminal-green);
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      text-shadow: 0 0 5px var(--terminal-green);
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--terminal-green);
+      color: var(--terminal-bg);
+      box-shadow: 0 0 20px var(--terminal-green);
+      text-shadow: none;
+    }
+
+    /* Matrix rain background */
+    .matrix {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      opacity: 0.15;
+    }
+
+    .matrix-column {
+      position: absolute;
+      top: -100%;
+      font-size: 14px;
+      line-height: 1;
+      color: var(--terminal-green);
+      writing-mode: vertical-rl;
+      animation: matrix-fall linear infinite;
+    }
+
+    @keyframes matrix-fall {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(200vh); }
+    }
+
+    /* Error state */
+    .error {
+      color: var(--terminal-red) !important;
+      border-color: var(--terminal-red) !important;
+      animation: errorPulse 0.5s infinite;
+    }
+
+    @keyframes errorPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Boot sequence */
+    .boot-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      text-align: center;
+      z-index: 2000;
+      animation: fadeOut 2s 1s forwards;
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; pointer-events: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="matrix" id="matrix"></div>
+
+    <header class="header">
+      <h1>RANDOM_THOUGHTS.exe</h1>
+      <span class="proto-label">[PROTOTYPE_E: GLITCH_TERMINAL]</span>
+    </header>
+
+    <div class="terminal" id="terminal"></div>
+
+    <div class="controls">
+      <button class="btn" onclick="scatter()">[SCATTER]</button>
+      <button class="btn" onclick="glitchAll()">[GLITCH]</button>
+      <button class="btn" onclick="reboot()">[REBOOT]</button>
+    </div>
+  </div>
+
+  <script>
+    const thoughts = [
+      "Waking up feeling muscle sore is the most awesome thing in the world",
+      "Love to sunbathe in the Boston Winter",
+      "The best ideas come at 3am when you can't sleep",
+      "Why do we park in driveways but drive on parkways?",
+      "Cold showers are superior. Fight me.",
+      "Email is just async anxiety",
+      "The moon is following me specifically",
+      "Debugging is being the detective and the murderer",
+      "I think in browser tabs",
+      "Sometimes I forget how to breathe manually",
+      "The snooze button was invented by Satan",
+      "If procrastination was a sport I'd compete tomorrow",
+      "My code works. I don't know why.",
+      "Time is fake. Calendars are a conspiracy.",
+      "Hot take: cereal is soup",
+      "The WiFi at airports tests human patience",
+      "Silence is loud if you listen hard enough",
+      "Why is it called a building if it's already built?",
+      "Parallel universes where I finished my side projects",
+      "Sleep is just free trial death"
+    ];
+
+    const terminal = document.getElementById('terminal');
+    const cards = [];
+
+    // Create matrix rain
+    const matrix = document.getElementById('matrix');
+    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789';
+    for (let i = 0; i < 30; i++) {
+      const column = document.createElement('div');
+      column.className = 'matrix-column';
+      column.style.left = (i * 3.5) + '%';
+      column.style.animationDuration = (5 + Math.random() * 10) + 's';
+      column.style.animationDelay = -Math.random() * 10 + 's';
+
+      let text = '';
+      for (let j = 0; j < 50; j++) {
+        text += chars[Math.floor(Math.random() * chars.length)] + '\n';
+      }
+      column.textContent = text;
+      matrix.appendChild(column);
+    }
+
+    // Create cards with typewriter effect simulation
+    thoughts.forEach((thought, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<span class="card-text">${thought}</span>`;
+
+      // Random grid-ish placement
+      const cols = 4;
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = 30 + col * (window.innerWidth - 400) / cols + (Math.random() - 0.5) * 50;
+      const y = 100 + row * 150 + (Math.random() - 0.5) * 30;
+
+      card.style.left = x + 'px';
+      card.style.top = y + 'px';
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+
+      // Staggered appearance
+      setTimeout(() => {
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 100 + i * 80);
+
+      // Click to glitch
+      card.addEventListener('click', () => {
+        card.classList.add('glitch');
+        setTimeout(() => card.classList.remove('glitch'), 500);
+      });
+
+      terminal.appendChild(card);
+      cards.push(card);
+    });
+
+    function scatter() {
+      cards.forEach((card, i) => {
+        const x = 30 + Math.random() * (window.innerWidth - 400);
+        const y = 80 + Math.random() * (window.innerHeight - 200);
+
+        card.style.transition = 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+
+        setTimeout(() => card.style.transition = '', 500);
+      });
+    }
+
+    function glitchAll() {
+      cards.forEach((card, i) => {
+        setTimeout(() => {
+          card.classList.add('glitch');
+          // Random color shift
+          const colors = ['var(--terminal-green)', 'var(--terminal-amber)', 'var(--terminal-cyan)', 'var(--terminal-magenta)', 'var(--terminal-red)'];
+          card.style.color = colors[Math.floor(Math.random() * colors.length)];
+          card.style.borderColor = card.style.color;
+
+          setTimeout(() => card.classList.remove('glitch'), 300);
+        }, i * 50);
+      });
+
+      // Some cards show "error"
+      const errorCount = 3;
+      const errorIndices = [];
+      while (errorIndices.length < errorCount) {
+        const idx = Math.floor(Math.random() * cards.length);
+        if (!errorIndices.includes(idx)) errorIndices.push(idx);
+      }
+
+      errorIndices.forEach(idx => {
+        setTimeout(() => {
+          cards[idx].classList.add('error');
+          setTimeout(() => cards[idx].classList.remove('error'), 2000);
+        }, 500);
+      });
+    }
+
+    function reboot() {
+      // Flash screen
+      document.body.style.background = 'white';
+      setTimeout(() => {
+        document.body.style.background = 'var(--terminal-bg)';
+      }, 100);
+
+      // Reset positions
+      cards.forEach((card, i) => {
+        const cols = 4;
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const x = 30 + col * (window.innerWidth - 400) / cols;
+        const y = 100 + row * 150;
+
+        card.style.transition = 'all 0.3s ease';
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+        card.style.color = '';
+        card.style.borderColor = '';
+        card.classList.remove('error', 'glitch');
+
+        setTimeout(() => card.style.transition = '', 300);
+      });
+    }
+  </script>
+</body>
+</html>

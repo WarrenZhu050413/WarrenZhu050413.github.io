@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random - C: Kala Seaside Drift</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --kala-sea: #7ba3a3;
+      --kala-sky: #7aacbe;
+      --kala-rust: #a67b5b;
+      --kala-sand: #c9b99a;
+      --kala-mountain: #8b7b7b;
+      --vermillion: #c8442e;
+      --paper: #f5f1e8;
+      --ink: #141414;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Source Serif 4', serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: linear-gradient(180deg,
+        #87CEEB 0%,
+        #E0F4FF 30%,
+        var(--paper) 50%,
+        var(--kala-sand) 100%
+      );
+      min-height: 200vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated waves at the bottom */
+    .waves {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: var(--kala-sea);
+      opacity: 0.3;
+      border-radius: 100% 100% 0 0;
+      animation: wave 8s ease-in-out infinite;
+    }
+
+    .wave:nth-child(2) {
+      background: var(--kala-sky);
+      animation-delay: -2s;
+      animation-duration: 10s;
+      height: 80%;
+    }
+
+    .wave:nth-child(3) {
+      background: var(--kala-sea);
+      animation-delay: -4s;
+      animation-duration: 12s;
+      height: 60%;
+      opacity: 0.5;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(2%) translateY(-10px); }
+    }
+
+    .header {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid rgba(20,20,20,0.1);
+    }
+
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--kala-sea);
+    }
+
+    .proto-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--kala-rust);
+      background: rgba(166,123,91,0.1);
+      padding: 4px 12px;
+      border-radius: 2px;
+    }
+
+    .arena {
+      padding: 100px 40px 300px;
+      position: relative;
+    }
+
+    /* Cards that look like messages in bottles / drifting papers */
+    .card {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(3px);
+      padding: 20px 28px;
+      max-width: 280px;
+      border-radius: 4px;
+      box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 1px rgba(255,255,255,0.5);
+      cursor: grab;
+      user-select: none;
+      /* Each card has unique drift animation */
+    }
+
+    .card:active { cursor: grabbing; }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: linear-gradient(90deg,
+        var(--kala-sea) 0%,
+        var(--kala-rust) 50%,
+        var(--vermillion) 100%
+      );
+      border-radius: 1px;
+    }
+
+    .card-text {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      line-height: 1.5;
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    /* Subtle border colors */
+    .card:nth-child(5n+1) { border-left: 3px solid var(--kala-sea); }
+    .card:nth-child(5n+2) { border-left: 3px solid var(--kala-rust); }
+    .card:nth-child(5n+3) { border-left: 3px solid var(--vermillion); }
+    .card:nth-child(5n+4) { border-left: 3px solid var(--kala-sand); }
+    .card:nth-child(5n+5) { border-left: 3px solid var(--kala-mountain); }
+
+    /* Floating animation with gentle seaside motion */
+    @keyframes seaside {
+      0%, 100% {
+        transform: translate(var(--tx1), var(--ty1)) rotate(var(--r1));
+      }
+      25% {
+        transform: translate(var(--tx2), var(--ty2)) rotate(var(--r2));
+      }
+      50% {
+        transform: translate(var(--tx3), var(--ty3)) rotate(var(--r3));
+      }
+      75% {
+        transform: translate(var(--tx4), var(--ty4)) rotate(var(--r4));
+      }
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1001;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.9);
+      color: var(--kala-sea);
+      border: 1px solid var(--kala-sea);
+      font-family: var(--font-body);
+      cursor: pointer;
+      font-size: 0.85rem;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--kala-sea);
+      color: white;
+    }
+
+    /* Seagulls decoration */
+    .seagull {
+      position: fixed;
+      font-size: 24px;
+      animation: fly 20s linear infinite;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    @keyframes fly {
+      0% { transform: translateX(-100px) translateY(0); }
+      25% { transform: translateX(25vw) translateY(-30px); }
+      50% { transform: translateX(50vw) translateY(10px); }
+      75% { transform: translateX(75vw) translateY(-20px); }
+      100% { transform: translateX(calc(100vw + 100px)) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="waves">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <div class="seagull" style="top: 15%; animation-delay: 0s;">🕊️</div>
+  <div class="seagull" style="top: 25%; animation-delay: -7s;">🕊️</div>
+  <div class="seagull" style="top: 10%; animation-delay: -14s;">🕊️</div>
+
+  <header class="header">
+    <h1>Random Thoughts</h1>
+    <span class="proto-label">Prototype C: Kala Seaside Drift</span>
+  </header>
+
+  <div class="arena" id="arena"></div>
+
+  <div class="controls">
+    <button class="btn" onclick="tide('out')">Tide Out</button>
+    <button class="btn" onclick="tide('in')">Tide In</button>
+    <button class="btn" onclick="shuffle()">Shuffle</button>
+  </div>
+
+  <script>
+    const thoughts = [
+      "Waking up feeling muscle sore is the most awesome thing in the world",
+      "Love to sunbathe in the Boston Winter",
+      "The best ideas come at 3am when you can't sleep",
+      "Why do we park in driveways but drive on parkways?",
+      "Cold showers are superior. Fight me.",
+      "Email is just async anxiety",
+      "The moon is following me specifically",
+      "Debugging is just being the detective in a crime movie where you are also the murderer",
+      "I think in browser tabs",
+      "Sometimes I forget how to breathe manually",
+      "The snooze button was invented by Satan",
+      "If procrastination was a sport I'd compete tomorrow",
+      "My code works. I don't know why.",
+      "Time is fake. Calendars are a conspiracy.",
+      "Hot take: cereal is soup",
+      "The WiFi at airports is a test of human patience",
+      "Silence is loud if you listen hard enough",
+      "Why is it called a building if it's already built?",
+      "Parallel universes where I actually finished my side projects",
+      "Sleep is just free trial death"
+    ];
+
+    const arena = document.getElementById('arena');
+    const cards = [];
+
+    // Generate random seaside drift motion
+    function randomDrift() {
+      const range = 40;
+      return {
+        tx1: (Math.random() - 0.5) * range + 'px',
+        ty1: (Math.random() - 0.5) * range + 'px',
+        r1: (Math.random() - 0.5) * 8 + 'deg',
+        tx2: (Math.random() - 0.5) * range + 'px',
+        ty2: (Math.random() - 0.5) * range + 'px',
+        r2: (Math.random() - 0.5) * 8 + 'deg',
+        tx3: (Math.random() - 0.5) * range + 'px',
+        ty3: (Math.random() - 0.5) * range + 'px',
+        r3: (Math.random() - 0.5) * 8 + 'deg',
+        tx4: (Math.random() - 0.5) * range + 'px',
+        ty4: (Math.random() - 0.5) * range + 'px',
+        r4: (Math.random() - 0.5) * 8 + 'deg',
+      };
+    }
+
+    // Create cards scattered like driftwood
+    thoughts.forEach((thought, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<p class="card-text">"${thought}"</p>`;
+
+      // Scatter across the page
+      const col = i % 4;
+      const row = Math.floor(i / 4);
+      const baseX = 5 + col * 24 + (Math.random() - 0.5) * 15;
+      const baseY = 100 + row * 180 + (Math.random() - 0.5) * 60;
+
+      card.style.left = baseX + '%';
+      card.style.top = baseY + 'px';
+      card.style.zIndex = Math.floor(Math.random() * 20);
+
+      // Set up drift animation
+      const drift = randomDrift();
+      Object.entries(drift).forEach(([key, val]) => {
+        card.style.setProperty('--' + key, val);
+      });
+
+      const duration = 12 + Math.random() * 8;
+      const delay = -Math.random() * duration;
+      card.style.animation = `seaside ${duration}s ease-in-out infinite`;
+      card.style.animationDelay = delay + 's';
+
+      // Drag functionality
+      let isDragging = false;
+      let startX, startY;
+
+      card.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - card.offsetLeft;
+        startY = e.clientY - card.offsetTop;
+        card.style.animation = 'none';
+        card.style.zIndex = 100;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          card.style.left = (e.clientX - startX) + 'px';
+          card.style.top = (e.clientY - startY) + 'px';
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          // Restart animation from current position
+          const newDrift = randomDrift();
+          Object.entries(newDrift).forEach(([key, val]) => {
+            card.style.setProperty('--' + key, val);
+          });
+          card.style.animation = `seaside ${12 + Math.random() * 8}s ease-in-out infinite`;
+          card.style.zIndex = Math.floor(Math.random() * 20);
+        }
+      });
+
+      arena.appendChild(card);
+      cards.push(card);
+    });
+
+    function tide(direction) {
+      cards.forEach((card, i) => {
+        card.style.animation = 'none';
+        card.style.transition = 'all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+
+        if (direction === 'out') {
+          // Push cards down toward the waves
+          const currentTop = parseInt(card.style.top) || 100;
+          card.style.top = (currentTop + 300 + Math.random() * 200) + 'px';
+          card.style.transform = `translateX(${(Math.random() - 0.5) * 200}px) rotate(${(Math.random() - 0.5) * 30}deg)`;
+        } else {
+          // Bring cards back up
+          const row = Math.floor(i / 4);
+          const baseY = 100 + row * 180 + (Math.random() - 0.5) * 60;
+          card.style.top = baseY + 'px';
+          card.style.transform = 'none';
+        }
+
+        setTimeout(() => {
+          card.style.transition = '';
+          const drift = randomDrift();
+          Object.entries(drift).forEach(([key, val]) => {
+            card.style.setProperty('--' + key, val);
+          });
+          card.style.animation = `seaside ${12 + Math.random() * 8}s ease-in-out infinite`;
+        }, 2000);
+      });
+    }
+
+    function shuffle() {
+      cards.forEach(card => {
+        card.style.animation = 'none';
+        card.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+
+        const x = 5 + Math.random() * 70;
+        const y = 100 + Math.random() * 800;
+        const rot = (Math.random() - 0.5) * 20;
+
+        card.style.left = x + '%';
+        card.style.top = y + 'px';
+        card.style.transform = `rotate(${rot}deg)`;
+        card.style.zIndex = Math.floor(Math.random() * 20);
+
+        setTimeout(() => {
+          card.style.transition = '';
+          card.style.transform = 'none';
+          const drift = randomDrift();
+          Object.entries(drift).forEach(([key, val]) => {
+            card.style.setProperty('--' + key, val);
+          });
+          card.style.animation = `seaside ${12 + Math.random() * 8}s ease-in-out infinite`;
+        }, 1000);
+      });
+    }
+  </script>
+</body>
+</html>

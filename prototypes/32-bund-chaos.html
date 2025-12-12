@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random - B: Shanghai Bund Chaos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neon-pink: #ff2d92;
+      --neon-blue: #00f3ff;
+      --neon-yellow: #f7ff00;
+      --deep-purple: #1a0a2e;
+      --ink: #141414;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Source Serif 4', serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: linear-gradient(135deg, #0a0015 0%, #1a0a2e 50%, #0f0520 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* Scanlines overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+      );
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .header {
+      padding: 20px 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 10, 46, 0.9);
+      z-index: 1001;
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 400;
+      text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink);
+    }
+
+    .proto-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--neon-blue);
+      background: rgba(0,243,255,0.1);
+      padding: 4px 12px;
+      border-radius: 2px;
+      border: 1px solid var(--neon-blue);
+      text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .arena {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      perspective: 1500px;
+    }
+
+    /* Cards flying in 3D space */
+    .card {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px 28px;
+      max-width: 300px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: float3d var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-yellow));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+      filter: blur(8px);
+    }
+
+    .card:hover::before { opacity: 0.6; }
+
+    .card:hover {
+      transform: scale(1.05) translateZ(50px) !important;
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 30px rgba(255, 45, 146, 0.3);
+    }
+
+    .card-text {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .card:nth-child(3n+1) .card-text { color: var(--neon-pink); text-shadow: 0 0 15px var(--neon-pink); }
+    .card:nth-child(3n+2) .card-text { color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); }
+    .card:nth-child(3n+3) .card-text { color: var(--neon-yellow); text-shadow: 0 0 15px var(--neon-yellow); }
+
+    @keyframes float3d {
+      0%, 100% {
+        transform: translateZ(var(--z)) rotateX(var(--rx)) rotateY(var(--ry)) translateY(0);
+      }
+      50% {
+        transform: translateZ(calc(var(--z) + 30px)) rotateX(calc(var(--rx) + 5deg)) rotateY(calc(var(--ry) - 5deg)) translateY(-20px);
+      }
+    }
+
+    /* Floating neon particles */
+    .particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      animation: rise 8s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1002;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--neon-blue);
+      border: 1px solid var(--neon-blue);
+      font-family: var(--font-body);
+      cursor: pointer;
+      font-size: 0.85rem;
+      text-shadow: 0 0 10px var(--neon-blue);
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--neon-blue);
+      color: var(--deep-purple);
+      box-shadow: 0 0 30px var(--neon-blue);
+      text-shadow: none;
+    }
+
+    /* Glitch effect on hover */
+    @keyframes glitch {
+      0%, 100% { clip-path: inset(0 0 0 0); }
+      20% { clip-path: inset(20% 0 30% 0); transform: translate(-2px); }
+      40% { clip-path: inset(50% 0 20% 0); transform: translate(2px); }
+      60% { clip-path: inset(10% 0 60% 0); transform: translate(-1px); }
+      80% { clip-path: inset(40% 0 10% 0); transform: translate(1px); }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Random Thoughts</h1>
+    <span class="proto-label">Prototype B: Shanghai Bund Chaos</span>
+  </header>
+
+  <div class="arena" id="arena"></div>
+
+  <div class="controls">
+    <button class="btn" onclick="explode()">Explode</button>
+    <button class="btn" onclick="converge()">Converge</button>
+  </div>
+
+  <script>
+    const thoughts = [
+      "Waking up feeling muscle sore is the most awesome thing in the world",
+      "Love to sunbathe in the Boston Winter",
+      "The best ideas come at 3am when you can't sleep",
+      "Why do we park in driveways but drive on parkways?",
+      "Cold showers are superior. Fight me.",
+      "Email is just async anxiety",
+      "The moon is following me specifically",
+      "Debugging is just being the detective in a crime movie where you are also the murderer",
+      "I think in browser tabs",
+      "Sometimes I forget how to breathe manually",
+      "The snooze button was invented by Satan",
+      "If procrastination was a sport I'd compete tomorrow",
+      "My code works. I don't know why.",
+      "Time is fake. Calendars are a conspiracy.",
+      "Hot take: cereal is soup",
+      "The WiFi at airports is a test of human patience",
+      "Silence is loud if you listen hard enough",
+      "Why is it called a building if it's already built?",
+      "Parallel universes where I actually finished my side projects",
+      "Sleep is just free trial death"
+    ];
+
+    const arena = document.getElementById('arena');
+    const cards = [];
+
+    // Create particles
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.animationDelay = -Math.random() * 8 + 's';
+      particle.style.background = ['#ff2d92', '#00f3ff', '#f7ff00'][Math.floor(Math.random() * 3)];
+      particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+      document.body.appendChild(particle);
+    }
+
+    // Create cards in 3D space
+    thoughts.forEach((thought, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<p class="card-text">${thought}</p>`;
+
+      // Random 3D position
+      const x = 10 + Math.random() * 70;
+      const y = 15 + Math.random() * 70;
+      const z = Math.random() * 200 - 100;
+      const rx = (Math.random() - 0.5) * 20;
+      const ry = (Math.random() - 0.5) * 30;
+
+      card.style.left = x + '%';
+      card.style.top = y + '%';
+      card.style.setProperty('--z', z + 'px');
+      card.style.setProperty('--rx', rx + 'deg');
+      card.style.setProperty('--ry', ry + 'deg');
+      card.style.setProperty('--duration', (6 + Math.random() * 4) + 's');
+      card.style.setProperty('--delay', -Math.random() * 10 + 's');
+      card.style.transform = `translateZ(${z}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      card.style.zIndex = Math.floor(100 + z);
+
+      arena.appendChild(card);
+      cards.push({ el: card, originalX: x, originalY: y });
+    });
+
+    function explode() {
+      cards.forEach(({ el }) => {
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const z = Math.random() * 400 - 200;
+        const rx = (Math.random() - 0.5) * 60;
+        const ry = (Math.random() - 0.5) * 60;
+
+        el.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+        el.style.left = x + '%';
+        el.style.top = y + '%';
+        el.style.setProperty('--z', z + 'px');
+        el.style.setProperty('--rx', rx + 'deg');
+        el.style.setProperty('--ry', ry + 'deg');
+
+        setTimeout(() => el.style.transition = '', 1000);
+      });
+    }
+
+    function converge() {
+      const centerX = 50;
+      const centerY = 50;
+
+      cards.forEach(({ el }, i) => {
+        const angle = (i / cards.length) * Math.PI * 2;
+        const radius = 20;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        const z = i * 10 - 100;
+
+        el.style.transition = 'all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        el.style.left = x + '%';
+        el.style.top = y + '%';
+        el.style.setProperty('--z', z + 'px');
+        el.style.setProperty('--rx', '0deg');
+        el.style.setProperty('--ry', (angle * 180 / Math.PI) + 'deg');
+
+        setTimeout(() => el.style.transition = '', 1200);
+      });
+    }
+  </script>
+</body>
+</html>

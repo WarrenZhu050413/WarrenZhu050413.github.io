@@ -1,0 +1,243 @@
+---
+layout: default
+title: Random
+permalink: /random-2/
+wide: true
+---
+
+<style>
+/* Prototype 2: Timeline Drift - Chronological with horizontal scatter */
+.random-intro {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--kala-mountain);
+  max-width: 500px;
+  margin-bottom: var(--space-5);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--kala-sea);
+  line-height: 1.5;
+}
+
+.random-timeline {
+  position: relative;
+  padding: var(--space-5) 0;
+}
+
+/* Vertical timeline line */
+.random-timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    var(--border) 5%,
+    var(--border) 95%,
+    transparent 100%
+  );
+  z-index: 0;
+}
+
+.random-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(3px);
+  padding: 16px 24px;
+  max-width: 320px;
+  margin: var(--space-6) 0;
+  border-radius: 3px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-left: 3px solid var(--ink);
+  cursor: grab;
+  user-select: none;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.random-card:nth-child(odd) {
+  margin-left: 10%;
+}
+
+.random-card:nth-child(even) {
+  margin-left: 55%;
+}
+
+.random-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px) rotate(var(--hover-rot, 1deg));
+}
+
+.random-card:active { cursor: grabbing; }
+
+/* Mondrian border colors */
+.random-card:nth-child(5n+1) { border-left-color: var(--kala-sea); }
+.random-card:nth-child(5n+2) { border-left-color: var(--ink); }
+.random-card:nth-child(5n+3) { border-left-color: var(--kala-rust); }
+.random-card:nth-child(5n+4) { border-left-color: var(--vermillion); }
+.random-card:nth-child(5n+5) { border-left-color: var(--kala-mountain); }
+
+.random-card-text {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.random-card-date {
+  font-size: var(--text-xs);
+  color: var(--kala-mountain);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: var(--space-3);
+  display: block;
+}
+
+/* Gentle drift animation */
+@keyframes drift {
+  0%, 100% {
+    transform: translateX(var(--dx1)) rotate(var(--rot));
+  }
+  33% {
+    transform: translateX(var(--dx2)) rotate(calc(var(--rot) + 0.5deg));
+  }
+  66% {
+    transform: translateX(var(--dx3)) rotate(calc(var(--rot) - 0.5deg));
+  }
+}
+
+.random-card {
+  animation: drift var(--duration) ease-in-out infinite;
+}
+
+.random-card:hover {
+  animation-play-state: paused;
+}
+
+.random-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: var(--space-3);
+  z-index: 1000;
+}
+
+.random-btn {
+  padding: var(--space-3) var(--space-5);
+  background: rgba(255,255,255,0.9);
+  color: var(--kala-sea);
+  border: 1px solid var(--kala-sea);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.random-btn:hover {
+  background: var(--kala-sea);
+  color: white;
+}
+</style>
+
+<p class="random-intro">
+Thoughts drifting through time. The chaos has a chronology.
+</p>
+
+<div class="random-timeline" id="randomTimeline">
+  {% assign sorted_random = site.random | sort: 'date' | reverse %}
+  {% for thought in sorted_random %}
+  <article class="random-card" data-index="{{ forloop.index0 }}">
+    <p class="random-card-text">{{ thought.content | strip_html | strip }}</p>
+    <time class="random-card-date" datetime="{{ thought.date | date_to_xmlschema }}">
+      {{ thought.date | date: "%b %-d, %Y" }}
+    </time>
+  </article>
+  {% endfor %}
+</div>
+
+<div class="random-controls">
+  <button class="random-btn" onclick="wobble()">Wobble</button>
+  <button class="random-btn" onclick="calm()">Calm</button>
+</div>
+
+<script>
+(function() {
+  const cards = document.querySelectorAll('.random-card');
+
+  cards.forEach((card, i) => {
+    // Random horizontal offset within bounds
+    const baseOffset = (i % 2 === 0) ? -15 : 15;
+    const randomOffset = baseOffset + (Math.random() - 0.5) * 30;
+    card.style.marginLeft = `calc(${i % 2 === 0 ? '10%' : '55%'} + ${randomOffset}px)`;
+
+    // Random rotation
+    const rot = (Math.random() - 0.5) * 6;
+    card.style.setProperty('--rot', rot + 'deg');
+    card.style.setProperty('--hover-rot', (rot + (Math.random() > 0.5 ? 2 : -2)) + 'deg');
+
+    // Drift animation params
+    card.style.setProperty('--dx1', (Math.random() - 0.5) * 20 + 'px');
+    card.style.setProperty('--dx2', (Math.random() - 0.5) * 20 + 'px');
+    card.style.setProperty('--dx3', (Math.random() - 0.5) * 20 + 'px');
+    card.style.setProperty('--duration', (10 + Math.random() * 8) + 's');
+    card.style.animationDelay = (-Math.random() * 15) + 's';
+
+    // Drag functionality
+    let isDragging = false;
+    let startX, startY, origLeft, origTop;
+
+    card.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      const rect = card.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      origLeft = rect.left;
+      origTop = rect.top + window.scrollY;
+      card.style.position = 'absolute';
+      card.style.left = origLeft + 'px';
+      card.style.top = origTop + 'px';
+      card.style.margin = '0';
+      card.style.zIndex = 1000;
+      card.style.animation = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        card.style.left = (origLeft + e.clientX - startX) + 'px';
+        card.style.top = (origTop + e.clientY - startY) + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        card.style.zIndex = 1;
+      }
+    });
+  });
+
+  window.wobble = function() {
+    cards.forEach(card => {
+      card.style.setProperty('--dx1', (Math.random() - 0.5) * 40 + 'px');
+      card.style.setProperty('--dx2', (Math.random() - 0.5) * 40 + 'px');
+      card.style.setProperty('--dx3', (Math.random() - 0.5) * 40 + 'px');
+      card.style.setProperty('--duration', (5 + Math.random() * 4) + 's');
+    });
+  };
+
+  window.calm = function() {
+    cards.forEach(card => {
+      card.style.setProperty('--dx1', (Math.random() - 0.5) * 10 + 'px');
+      card.style.setProperty('--dx2', (Math.random() - 0.5) * 10 + 'px');
+      card.style.setProperty('--dx3', (Math.random() - 0.5) * 10 + 'px');
+      card.style.setProperty('--duration', (12 + Math.random() * 8) + 's');
+    });
+  };
+})();
+</script>

@@ -12,14 +12,20 @@ Videos, papers, and things worth revisiting.
 <div class="media-controls">
   {% include inline-filter.html placeholder="links" target=".media-item" id="media" %}
   <div class="view-toggle">
-    <button class="view-btn active" data-view="grid" title="Grid view">
+    <button class="view-btn active" data-view="grid" data-tooltip="Grid with embeds">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     </button>
-    <button class="view-btn" data-view="preview" title="Preview with embeds">
+    <button class="view-btn" data-view="minimal" data-tooltip="Minimal text only">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="14" y2="18"/></svg>
+    </button>
+    <button class="view-btn" data-view="scroll" data-tooltip="Single column scroll">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+    </button>
+    <button class="view-btn" data-view="preview" data-tooltip="Preview with embeds">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
     </button>
   </div>
-  <button class="json-export-btn" onclick="exportFilteredJSON()" title="Copy filtered items as JSON">
+  <button class="copy-btn" data-tooltip="Copy filtered as JSON">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
   </button>
 </div>
@@ -118,8 +124,11 @@ Videos, papers, and things worth revisiting.
       </div>
       {% endif %}
       <div class="grid-info">
+        <div class="grid-meta">
+          {% if item.creator %}<span class="grid-creator">{{ item.creator }}</span>{% endif %}
+          <time class="grid-date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d" }}</time>
+        </div>
         <a href="{{ item.url_link }}" class="grid-title" target="_blank" rel="noopener">{{ item.title | escape }}</a>
-        {% if item.creator %}<span class="grid-creator">{{ item.creator }}</span>{% endif %}
         {% assign note = item.content | strip_html | strip %}
         {% if note != '' %}
           <p class="grid-note">{{ note }}</p>
@@ -129,10 +138,11 @@ Videos, papers, and things worth revisiting.
 
     <!-- Preview View Content -->
     <div class="preview-content">
-      <div class="preview-header">
-        <a href="{{ item.url_link }}" class="preview-title" target="_blank" rel="noopener">{{ item.title | escape }}</a>
+      <div class="preview-meta">
         {% if item.creator %}<span class="preview-creator">{{ item.creator }}</span>{% endif %}
+        <time class="preview-date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d" }}</time>
       </div>
+      <a href="{{ item.url_link }}" class="preview-title" target="_blank" rel="noopener">{{ item.title | escape }}</a>
       {% if embed_url != '' %}
       <div class="preview-embed" data-src="{{ embed_url }}" data-type="{% if is_pdf %}pdf{% elsif is_video %}video{% else %}link{% endif %}">
         <div class="embed-placeholder">Click to load embed</div>
@@ -150,6 +160,36 @@ Videos, papers, and things worth revisiting.
         <p class="preview-note">{{ note }}</p>
       {% endif %}
     </div>
+
+    <!-- Minimal View Content (sentence-style masonry) -->
+    <div class="minimal-content">
+      <div class="minimal-meta">
+        {% if item.creator %}<span class="minimal-creator">{{ item.creator }}</span>{% endif %}
+        <time class="minimal-date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d" }}</time>
+      </div>
+      <a href="{{ item.url_link }}" class="minimal-link" target="_blank" rel="noopener">
+        <h3 class="minimal-title">{{ item.title | escape }}</h3>
+      </a>
+      {% assign note = item.content | strip_html | strip %}
+      {% if note != '' %}
+        <div class="minimal-note">{{ note }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Scroll View Content (Twitter-like single column, no embeds) -->
+    <div class="scroll-content">
+      <div class="scroll-meta">
+        {% if item.creator %}<span class="scroll-creator">{{ item.creator }}</span>{% endif %}
+        <time class="scroll-date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d" }}</time>
+      </div>
+      <a href="{{ item.url_link }}" class="scroll-link" target="_blank" rel="noopener">
+        <h3 class="scroll-title">{{ item.title | escape }}</h3>
+      </a>
+      {% assign note = item.content | strip_html | strip %}
+      {% if note != '' %}
+        <div class="scroll-note">{{ note }}</div>
+      {% endif %}
+    </div>
   </article>
   {% endfor %}
 </div>
@@ -161,7 +201,8 @@ Videos, papers, and things worth revisiting.
 <script>
 (function() {
   const feed = document.getElementById('mediaFeed');
-  const viewBtns = document.querySelectorAll('.view-btn');
+  const viewBtns = document.querySelectorAll('.media-controls .view-btn');
+  const copyBtn = document.querySelector('.media-controls .copy-btn');
 
   // Load all embeds on page load
   function loadAllEmbeds() {
@@ -177,6 +218,19 @@ Videos, papers, and things worth revisiting.
   // Load embeds on page load
   loadAllEmbeds();
 
+  // Randomize animation properties for each card (like sentences page)
+  document.querySelectorAll('.media-item').forEach(card => {
+    const amp = 0.24 + Math.random() * 0.28;
+    const dir = Math.random() < 0.5 ? 1 : -1;
+    const duration = 7.3 + Math.random() * 3.1;
+    const delay = -Math.random() * duration;
+
+    card.style.setProperty('--rot-amp', amp + 'deg');
+    card.style.setProperty('--rot-dir', dir);
+    card.style.animation = `float ${duration}s ease-in-out infinite`;
+    card.style.animationDelay = delay + 's';
+  });
+
   // View switching
   viewBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -187,8 +241,8 @@ Videos, papers, and things worth revisiting.
     });
   });
 
-  // JSON export
-  window.exportFilteredJSON = function() {
+  // Copy functionality
+  copyBtn.addEventListener('click', () => {
     const items = Array.from(feed.querySelectorAll('.media-item')).filter(item =>
       item.style.display !== 'none' && !item.classList.contains('filtered-out')
     );
@@ -200,11 +254,10 @@ Videos, papers, and things worth revisiting.
     }));
 
     navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
-      const btn = document.querySelector('.json-export-btn');
-      btn.style.background = 'var(--kala-sea)';
-      btn.style.color = 'white';
-      setTimeout(() => { btn.style.background = ''; btn.style.color = ''; }, 1500);
+      copyBtn.style.background = 'var(--kala-sea)';
+      copyBtn.style.color = 'white';
+      setTimeout(() => { copyBtn.style.background = ''; copyBtn.style.color = ''; }, 1500);
     });
-  };
+  });
 })();
 </script>

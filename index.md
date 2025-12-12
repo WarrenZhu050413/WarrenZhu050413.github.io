@@ -15,7 +15,7 @@ list_title: Writing
 
 ## Currently
 
-- Working on [Studio Tenwu](https://studiotenwu.github.io) with [Matthew Kotzbauer](https://www.facebook.com/matthew.kotzbauer.50/)
+- Working on [Denken](https://denken-ai.github.io/) with [Matthew Kotzbauer](https://www.facebook.com/matthew.kotzbauer.50/)
 
 ## Education
 
