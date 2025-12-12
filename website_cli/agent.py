@@ -41,6 +41,48 @@ def is_youtube_url(url: str) -> bool:
     return False
 
 
+def is_spotify_url(url: str) -> bool:
+    """Check if URL is a Spotify URL.
+
+    Args:
+        url: URL to check
+
+    Returns:
+        True if URL is a Spotify track, album, artist, or playlist URL
+    """
+    parsed = urllib.parse.urlparse(url)
+    hostname = parsed.hostname or ""
+    return "spotify.com" in hostname
+
+
+def extract_spotify_metadata(url: str) -> "LinkMetadata | None":
+    """Extract metadata from Spotify using oEmbed API.
+
+    Args:
+        url: Spotify URL (track, album, artist, playlist)
+
+    Returns:
+        LinkMetadata if successful, None otherwise
+    """
+    oembed_url = f"https://open.spotify.com/oembed?url={urllib.parse.quote(url, safe='')}"
+
+    try:
+        with urllib.request.urlopen(oembed_url, timeout=10) as response:
+            if response.status != 200:
+                return None
+
+            data = json.loads(response.read().decode("utf-8"))
+            title = data.get("title", "").strip()
+
+            if not title:
+                return None
+
+            # Spotify oEmbed doesn't provide artist info; user must fill in creator manually
+            return LinkMetadata(title=title, creator="", tags="music")
+    except (urllib.error.URLError, ValueError, json.JSONDecodeError):
+        return None
+
+
 def extract_youtube_metadata(url: str) -> "LinkMetadata | None":
     """Extract metadata from YouTube using oEmbed API.
 
@@ -227,6 +269,14 @@ def extract_link_metadata(
     if is_youtube_url(url):
         console.print("[dim]Using YouTube oEmbed API...[/dim]")
         result = extract_youtube_metadata(url)
+        if result:
+            return result
+        # Fall through to Claude agent if oEmbed fails
+
+    # Use oEmbed for Spotify URLs
+    if is_spotify_url(url):
+        console.print("[dim]Using Spotify oEmbed API...[/dim]")
+        result = extract_spotify_metadata(url)
         if result:
             return result
         # Fall through to Claude agent if oEmbed fails
