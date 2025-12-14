@@ -51,27 +51,6 @@ I had a lot of free time on my hand during COVID and spent a lot of time reading
 
 I am a sucker for Wong Kar-wai movies and love Twin Peaks, Brideshead Revisited, and Yes, (Prime) Minister!.
 
-## Scoreboard of My Life
-
-<div class="scoreboard" markdown="1">
-
-### Books I Reread
-
-These are books I return to again and again. The number indicates how many times I've read them.
-
-| Book | Author | Count |
-|------|--------|:-----:|
-| Antifragile | Nassim Nicholas Taleb | 4 |
-| The Black Swan | Nassim Nicholas Taleb | 3 |
-| Skin in the Game | Nassim Nicholas Taleb | 3 |
-| The Bed of Procrustes | Nassim Nicholas Taleb | 5 |
-| Meditations | Marcus Aurelius | 3 |
-| Letters from a Stoic | Seneca | 2 |
-| The Human Condition | Hannah Arendt | 2 |
-| Being and Time | Martin Heidegger | 2 |
-
-</div>
-
 ## Courses Taken at Harvard
 
 For the interested, here are the technical courses I've taken at Harvard, listed in order of influence on me. For Harvard undergrads, feel free to email me about any of these courses!

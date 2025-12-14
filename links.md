@@ -5,9 +5,7 @@ permalink: /links/
 wide: true
 ---
 
-<p class="media-intro">
-Videos, papers, and things worth revisiting.
-</p>
+{% include collection-nav.html active="links" %}
 
 <div class="media-controls">
   {% include inline-filter.html placeholder="links" target=".media-item" id="media" %}
@@ -190,11 +188,13 @@ Videos, papers, and things worth revisiting.
         <div class="scroll-note">{{ note }}</div>
       {% endif %}
     </div>
+
   </article>
   {% endfor %}
 </div>
 
 {% if site.links.size == 0 %}
+
 <p class="no-media">No links saved yet.</p>
 {% endif %}
 

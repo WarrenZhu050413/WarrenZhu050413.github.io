@@ -10,11 +10,49 @@
       </div>
       <div class="header-right">
         <nav>
-          <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>About</a>
-          <a href="{{ '/writing/' | relative_url }}"{% if page.url == '/writing/' %} class="active"{% endif %}>Writing</a>
-          <a href="{{ '/sentences/' | relative_url }}"{% if page.url contains '/sentences' %} class="active"{% endif %}>Sentences</a>
-          <a href="{{ '/random/' | relative_url }}"{% if page.url contains '/random' %} class="active"{% endif %}>Random</a>
-          <a href="{{ '/links/' | relative_url }}"{% if page.url contains '/links' %} class="active"{% endif %}>Links</a>
+          {%- comment -%}
+          Navigation is driven by _data/collections.yaml
+          Main items are always visible, dropdown contains collections
+          {%- endcomment -%}
+
+          {%- for item in site.data.collections.navigation.main -%}
+            {%- if item.match == 'exact' -%}
+              <a href="{{ item.url | relative_url }}"{% if page.url == item.url %} class="active"{% endif %}>{{ item.label }}</a>
+            {%- else -%}
+              <a href="{{ item.url | relative_url }}"{% if page.url contains item.url %} class="active"{% endif %}>{{ item.label }}</a>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if site.data.collections.navigation.dropdown -%}
+          {%- comment -%} Check if current page is /more/ or any dropdown collection page {%- endcomment -%}
+          {%- assign dropdown_active = false -%}
+          {%- if page.url == '/more/' -%}
+            {%- assign dropdown_active = true -%}
+          {%- else -%}
+            {%- for collection_name in site.data.collections.navigation.dropdown.items -%}
+              {%- assign collection = site.data.collections.collections[collection_name] -%}
+              {%- if collection.nav_url and page.url contains collection.nav_url -%}
+                {%- assign dropdown_active = true -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          <div class="nav-dropdown">
+            <a href="/more/" class="nav-dropdown-toggle{% if dropdown_active %} active{% endif %}">
+              {{ site.data.collections.navigation.dropdown.label }}
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <div class="nav-dropdown-menu">
+              {%- for collection_name in site.data.collections.navigation.dropdown.items -%}
+                {%- assign collection = site.data.collections.collections[collection_name] -%}
+                {%- if collection.nav_label -%}
+                  <a href="{{ collection.nav_url | relative_url }}"{% if page.url contains collection.nav_url %} class="active"{% endif %}>{{ collection.nav_label }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+          {%- endif -%}
         </nav>
       </div>
     </div>

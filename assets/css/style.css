@@ -709,7 +709,8 @@ nav a.active {
 
 /* Collection Controls (shared by sentences, random, links) */
 .sentences-controls,
-.media-controls {
+.media-controls,
+.collection-controls {
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -717,7 +718,8 @@ nav a.active {
 }
 
 .sentences-controls .inline-filter,
-.media-controls .inline-filter {
+.media-controls .inline-filter,
+.collection-controls .inline-filter {
   flex: 1;
   margin-bottom: 0;
 }
@@ -828,6 +830,25 @@ nav a.active {
   font-size: var(--text-sm);
   color: var(--kala-mountain);
   line-height: 1.6;
+}
+
+.sentence-entry-creator {
+  font-size: var(--text-sm);
+  color: var(--kala-mountain);
+  margin-bottom: var(--space-2);
+}
+
+.sentence-entry-external {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  color: var(--ink-muted);
+  opacity: 0.5;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.sentence-entry:hover .sentence-entry-external {
+  opacity: 1;
 }
 
 /* Sentences Scroll View (Twitter-like) - matches Links scroll view */
@@ -1743,12 +1764,14 @@ img {
   }
 
   .sentences-controls,
-  .media-controls {
+  .media-controls,
+  .collection-controls {
     flex-wrap: wrap;
   }
 
   .sentences-controls .inline-filter,
-  .media-controls .inline-filter {
+  .media-controls .inline-filter,
+  .collection-controls .inline-filter {
     order: 1;
     flex: 1 1 100%;
   }
@@ -1813,4 +1836,117 @@ img {
 .scoreboard td:nth-child(2) {
   color: var(--kala-mountain);
   font-style: italic;
+}
+
+/* ==========================================================================
+   Navigation Dropdown
+   ========================================================================== */
+
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-dropdown-toggle {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: inherit;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.nav-dropdown-toggle:hover {
+  color: var(--ink);
+}
+
+.nav-dropdown-toggle.active {
+  color: var(--ink);
+  border-bottom: 1px solid var(--kala-rust);
+  padding-bottom: var(--space-1);
+}
+
+.nav-dropdown-toggle svg {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.nav-dropdown:hover .nav-dropdown-toggle svg,
+.nav-dropdown:focus-within .nav-dropdown-toggle svg {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 150px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: var(--space-2) 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: all var(--duration-fast) var(--ease-out);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(4px);
+}
+
+.nav-dropdown-menu a {
+  display: block;
+  padding: var(--space-3) var(--space-5);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.nav-dropdown-menu a:hover {
+  background: rgba(123, 163, 163, 0.1);
+  color: var(--kala-sea);
+}
+
+.nav-dropdown-menu a.active {
+  color: var(--kala-sea);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   More Page Navigation Links
+   ========================================================================== */
+
+.more-nav {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.more-nav-link {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid transparent;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.more-nav-link:hover {
+  color: var(--ink);
+}
+
+.more-nav-link.active {
+  color: var(--ink);
+  border-bottom-color: var(--kala-rust);
 }

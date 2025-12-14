@@ -1,0 +1,18 @@
+{%- comment -%}
+Reusable collection controls (filter, view toggle, copy button).
+Usage: {% include collection-controls.html filter_placeholder="sentences" filter_target=".sentence-entry" filter_id="sentences" %}
+{%- endcomment -%}
+<div class="collection-controls">
+  {% include inline-filter.html placeholder=include.filter_placeholder target=include.filter_target id=include.filter_id %}
+  <div class="view-toggle">
+    <button class="view-btn active" data-view="masonry" data-tooltip="Masonry cards">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="view-btn" data-view="scroll" data-tooltip="Single column scroll">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+    </button>
+  </div>
+  <button class="copy-btn" data-tooltip="Copy filtered items as JSON">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+  </button>
+</div>

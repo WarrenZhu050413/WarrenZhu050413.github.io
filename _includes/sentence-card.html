@@ -1,0 +1,26 @@
+{%- comment -%}
+Reusable sentence/random card component.
+Usage: {% include sentence-card.html item=sentence %}
+Works for both sentences and random collections.
+{%- endcomment -%}
+<article class="sentence-entry"
+         data-title="{{ include.item.title | escape }}"
+         data-content="{{ include.item.content | strip_html | strip | escape }}"
+         data-date="{{ include.item.date | date_to_xmlschema }}"
+         data-url="{{ include.item.url | relative_url }}"
+         data-type="{{ include.item.collection }}">
+  <div class="sentence-entry-header">
+    <a href="{{ include.item.url | relative_url }}" class="sentence-link">
+      <h2 class="sentence-entry-title">{{ include.item.title | escape }}</h2>
+    </a>
+    <time class="sentence-entry-date" datetime="{{ include.item.date | date_to_xmlschema }}">
+      {{ include.item.date | date: "%b %-d" }}
+    </time>
+  </div>
+  {%- assign content_stripped = include.item.content | strip_html | strip -%}
+  {%- if content_stripped != "" -%}
+  <div class="sentence-entry-content">
+    {{ include.item.content }}
+  </div>
+  {%- endif -%}
+</article>

@@ -5,110 +5,24 @@ permalink: /sentences/
 wide: true
 ---
 
+{% include collection-nav.html active="sentences" %}
+
 <p class="sentences-intro">
-
-"All you have to do is write one true sentence. Write the truest sentence that you know." — Hemingway
-
+"I would stand and look out over the roofs of Paris and think, 'Do not worry. You have always written before and you will write now. All you have to do is write one true sentence. Write the truest sentence that you know.' So finally I would write one true sentence, and then go on from there. It was easy then because there was always one true sentence that I knew or had seen or had heard someone say."
 </p>
 
-<p class="sentences-intro" style="font-size: var(--text-sm); opacity: 0.7; margin-top: calc(-1 * var(--space-4));">
-
-Deeply true observations, quotes, and standalone wisdom. For whimsical thoughts, see <a href="/random/">Random</a>.
-
-</p>
-
-<div class="sentences-controls">
-  {% include inline-filter.html placeholder="sentences" target=".sentence-entry" id="sentences" %}
-  <div class="view-toggle">
-    <button class="view-btn active" data-view="masonry" data-tooltip="Masonry cards">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    </button>
-    <button class="view-btn" data-view="scroll" data-tooltip="Single column scroll">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
-    </button>
-  </div>
-  <button class="copy-btn" data-tooltip="Copy filtered sentences as JSON">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
-  </button>
-</div>
+{% include collection-controls.html filter_placeholder="sentences" filter_target=".sentence-entry" filter_id="sentences" %}
 
 <div class="sentences-feed" id="sentencesFeed" data-view="masonry">
   {% assign sorted_sentences = site.sentences | sort: 'date' | reverse %}
   {% for sentence in sorted_sentences %}
-  <article class="sentence-entry"
-           data-title="{{ sentence.title | escape }}"
-           data-content="{{ sentence.content | strip_html | strip | escape }}"
-           data-date="{{ sentence.date | date_to_xmlschema }}"
-           data-url="{{ sentence.url | relative_url }}">
-    <div class="sentence-entry-header">
-      <a href="{{ sentence.url | relative_url }}" class="sentence-link">
-        <h2 class="sentence-entry-title">{{ sentence.title | escape }}</h2>
-      </a>
-      <time class="sentence-entry-date" datetime="{{ sentence.date | date_to_xmlschema }}">
-        {{ sentence.date | date: "%b %-d" }}
-      </time>
-    </div>
-    {% assign content_stripped = sentence.content | strip_html | strip %}
-    {% if content_stripped != "" %}
-    <div class="sentence-entry-content">
-      {{ sentence.content }}
-    </div>
-    {% endif %}
-  </article>
+    {% include sentence-card.html item=sentence %}
   {% endfor %}
 </div>
 
 {% if site.sentences.size == 0 %}
 
-<p class="no-sentences">No sentences yet. The first one is always the hardest.</p>
+<p class="no-sentences">No sentences yet...</p>
 {% endif %}
 
-<script>
-(function() {
-  const feed = document.getElementById('sentencesFeed');
-  const viewBtns = document.querySelectorAll('.sentences-controls .view-btn');
-  const copyBtn = document.querySelector('.sentences-controls .copy-btn');
-
-  // Randomize animation properties for each sentence card at runtime
-  document.querySelectorAll('.sentence-entry').forEach(card => {
-    const amp = 0.24 + Math.random() * 0.28;
-    const dir = Math.random() < 0.5 ? 1 : -1;
-    const duration = 7.3 + Math.random() * 3.1;
-    const delay = -Math.random() * duration;
-
-    card.style.setProperty('--rot-amp', amp + 'deg');
-    card.style.setProperty('--rot-dir', dir);
-    card.style.animation = `float ${duration}s ease-in-out infinite`;
-    card.style.animationDelay = delay + 's';
-  });
-
-  // View switching
-  viewBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.dataset.view;
-      viewBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      feed.dataset.view = view;
-    });
-  });
-
-  // Copy functionality
-  copyBtn.addEventListener('click', () => {
-    const items = Array.from(feed.querySelectorAll('.sentence-entry')).filter(item =>
-      item.style.display !== 'none' && !item.classList.contains('hidden')
-    );
-    const data = items.map(item => ({
-      title: item.dataset.title,
-      content: item.dataset.content || null,
-      date: item.dataset.date,
-      url: item.dataset.url
-    }));
-
-    navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
-      copyBtn.style.background = 'var(--kala-sea)';
-      copyBtn.style.color = 'white';
-      setTimeout(() => { copyBtn.style.background = ''; copyBtn.style.color = ''; }, 1500);
-    });
-  });
-})();
-</script>
+{% include collection-script.html feed_id="sentencesFeed" card_selector=".sentence-entry" controls_selector=".collection-controls" %}

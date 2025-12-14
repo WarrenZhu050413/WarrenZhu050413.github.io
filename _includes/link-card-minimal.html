@@ -1,0 +1,35 @@
+{%- comment -%}
+Reusable link card component (minimal style, matches sentence cards).
+Usage: {% include link-card-minimal.html item=link %}
+{%- endcomment -%}
+<article class="sentence-entry"
+         data-title="{{ include.item.title | escape }}"
+         data-content="{{ include.item.content | strip_html | strip | escape }}"
+         data-creator="{{ include.item.creator | escape }}"
+         data-date="{{ include.item.date | date_to_xmlschema }}"
+         data-url="{{ include.item.url | relative_url }}"
+         data-external="{{ include.item.url_link }}"
+         data-type="links">
+  <div class="sentence-entry-header">
+    <a href="{{ include.item.url | relative_url }}" class="sentence-link">
+      <h2 class="sentence-entry-title">{{ include.item.title | escape }}</h2>
+    </a>
+    <time class="sentence-entry-date" datetime="{{ include.item.date | date_to_xmlschema }}">
+      {{ include.item.date | date: "%b %-d" }}
+    </time>
+  </div>
+  {%- if include.item.creator -%}
+  <div class="sentence-entry-creator">{{ include.item.creator }}</div>
+  {%- endif -%}
+  {%- assign content_stripped = include.item.content | strip_html | strip -%}
+  {%- if content_stripped != "" -%}
+  <div class="sentence-entry-content">
+    {{ include.item.content }}
+  </div>
+  {%- endif -%}
+  {%- if include.item.url_link -%}
+  <a href="{{ include.item.url_link }}" class="sentence-entry-external" target="_blank" rel="noopener">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  </a>
+  {%- endif -%}
+</article>

@@ -1,0 +1,57 @@
+{%- comment -%}
+Reusable JavaScript for collection pages (animation, view switching, copy).
+Usage: {% include collection-script.html feed_id="sentencesFeed" card_selector=".sentence-entry" controls_selector=".collection-controls" %}
+{%- endcomment -%}
+<script>
+(function() {
+  const feed = document.getElementById('{{ include.feed_id }}');
+  const viewBtns = document.querySelectorAll('{{ include.controls_selector }} .view-btn');
+  const copyBtn = document.querySelector('{{ include.controls_selector }} .copy-btn');
+
+  // Randomize animation properties for each card
+  document.querySelectorAll('{{ include.card_selector }}').forEach(card => {
+    const amp = 0.24 + Math.random() * 0.28;
+    const dir = Math.random() < 0.5 ? 1 : -1;
+    const duration = 7.3 + Math.random() * 3.1;
+    const delay = -Math.random() * duration;
+
+    card.style.setProperty('--rot-amp', amp + 'deg');
+    card.style.setProperty('--rot-dir', dir);
+    card.style.animation = `float ${duration}s ease-in-out infinite`;
+    card.style.animationDelay = delay + 's';
+  });
+
+  // View switching
+  viewBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      viewBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      feed.dataset.view = view;
+    });
+  });
+
+  // Copy functionality
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const items = Array.from(feed.querySelectorAll('{{ include.card_selector }}')).filter(item =>
+        item.style.display !== 'none' && !item.classList.contains('hidden')
+      );
+      const data = items.map(item => ({
+        title: item.dataset.title,
+        content: item.dataset.content || null,
+        creator: item.dataset.creator || null,
+        date: item.dataset.date,
+        url: item.dataset.url,
+        external: item.dataset.external || null
+      }));
+
+      navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
+        copyBtn.style.background = 'var(--kala-sea)';
+        copyBtn.style.color = 'white';
+        setTimeout(() => { copyBtn.style.background = ''; copyBtn.style.color = ''; }, 1500);
+      });
+    });
+  }
+})();
+</script>

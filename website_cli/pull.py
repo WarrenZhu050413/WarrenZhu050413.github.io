@@ -1,13 +1,17 @@
-"""Unified pull command for classifying and creating content from emails."""
+"""Unified pull command for classifying and creating content from emails.
+
+Uses _data/collections.yaml as the source of truth for:
+- Available collections
+- AI classification hints
+- Field requirements
+"""
 
 import json
 import os
 import re
 import subprocess
-import tempfile
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 from pathlib import Path
 
 import typer
@@ -17,40 +21,19 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
-from .config import (
-    DEFAULT_PROJECT,
-    LINKS_CONFIG,
-    POSTS_CONFIG,
-    RANDOM_CONFIG,
-    SENTENCES_CONFIG,
-)
+from .registry import get_registry, CollectionConfig
 
 console = Console()
 
+# Default project path
+DEFAULT_PROJECT = Path.home() / "Desktop/zPersonalProjects/WarrenZhu050413.github.io"
 
-class ContentType(str, Enum):
-    """Types of content that can be created."""
-
-    SENTENCE = "sentence"
-    RANDOM = "random"
-    LINK = "link"
-    POST = "post"
-    SKIP = "skip"
-
-
-CONTENT_CONFIGS = {
-    ContentType.SENTENCE: SENTENCES_CONFIG,
-    ContentType.RANDOM: RANDOM_CONFIG,
-    ContentType.LINK: LINKS_CONFIG,
-    ContentType.POST: POSTS_CONFIG,
-}
-
-CONTENT_COLORS = {
-    ContentType.SENTENCE: "cyan",
-    ContentType.RANDOM: "magenta",
-    ContentType.LINK: "green",
-    ContentType.POST: "yellow",
-    ContentType.SKIP: "dim",
+# Color mapping for collections
+COLLECTION_COLORS = {
+    "sentences": "cyan",
+    "random": "magenta",
+    "links": "green",
+    "posts": "yellow",
 }
 
 
@@ -76,14 +59,14 @@ def slugify(text: str, max_length: int = 50) -> str:
 
 
 def yaml_escape_title(title: str) -> str:
-    """Escape a title for YAML front matter using PyYAML."""
+    """Escape a title for YAML front matter."""
     result = yaml.dump(title, default_flow_style=True, allow_unicode=True)
     return result.replace("\n...", "").strip()
 
 
 def fetch_emails(debug: bool = False) -> list[EmailCandidate]:
-    """Fetch emails from wzhu+notes@college.harvard.edu."""
-    email_address = "wzhu+notes@college.harvard.edu"
+    """Fetch emails from wzhu+website@college.harvard.edu."""
+    email_address = "wzhu+website@college.harvard.edu"
     console.print(f"[cyan]Searching for emails to {email_address}...[/cyan]")
 
     try:
@@ -151,8 +134,11 @@ def fetch_emails(debug: bool = False) -> list[EmailCandidate]:
     return candidates
 
 
-def classify_with_ai(candidate: EmailCandidate) -> ContentType:
-    """Use Claude to classify the content type."""
+def classify_with_ai(candidate: EmailCandidate) -> str:
+    """Use Claude to classify the content type.
+
+    Returns collection name from registry.
+    """
     from claude_agent_sdk import (
         AssistantMessage,
         ClaudeAgentOptions,
@@ -161,14 +147,8 @@ def classify_with_ai(candidate: EmailCandidate) -> ContentType:
     )
     import asyncio
 
-    system_prompt = """You are a content classifier. Given an email subject and body, classify it into ONE of these categories:
-
-1. SENTENCE - A short, profound observation or quote. Usually 1-2 sentences of timeless wisdom.
-2. RANDOM - A casual thought, amusing observation, or whimsical idea. Not profound, just fun.
-3. LINK - Contains a URL to an external resource worth saving.
-4. POST - A longer piece of writing, an essay, or detailed thoughts that deserve their own blog post.
-
-Respond with ONLY the category name in uppercase: SENTENCE, RANDOM, LINK, or POST"""
+    registry = get_registry()
+    system_prompt = registry.get_classification_prompt()
 
     prompt = f"""Subject: {candidate.subject}
 
@@ -197,24 +177,23 @@ Classify this content:"""
 
             full_response = "".join(response_text).strip().upper()
 
-            if "SENTENCE" in full_response:
-                return ContentType.SENTENCE
-            elif "RANDOM" in full_response:
-                return ContentType.RANDOM
-            elif "LINK" in full_response:
-                return ContentType.LINK
-            elif "POST" in full_response:
-                return ContentType.POST
-            else:
-                return ContentType.RANDOM  # Default fallback
+            # Match response to collection name
+            for name in registry.get_collection_names():
+                if name.upper() in full_response:
+                    return name
+
+            # Default fallback
+            return "random"
 
     return asyncio.run(classify())
 
 
-def display_candidate(candidate: EmailCandidate, index: int, classification: ContentType | None = None):
+def display_candidate(
+    candidate: EmailCandidate, index: int, classification: str | None = None
+):
     """Display a candidate email with optional classification."""
-    color = CONTENT_COLORS.get(classification, "white") if classification else "white"
-    label = f" → {classification.value}" if classification else ""
+    color = COLLECTION_COLORS.get(classification, "white") if classification else "white"
+    label = f" → {classification}" if classification else ""
 
     console.print(
         Panel(
@@ -227,61 +206,72 @@ def display_candidate(candidate: EmailCandidate, index: int, classification: Con
     )
 
 
-def prompt_classification() -> ContentType:
+def prompt_classification() -> str:
     """Prompt user to select a classification."""
+    registry = get_registry()
+    collection_names = registry.get_collection_names()
+
     console.print("\n[dim]Classify as:[/dim]")
-    console.print("  [cyan][s]entence[/cyan] - Profound observation")
-    console.print("  [magenta][r]andom[/magenta] - Casual thought")
-    console.print("  [green][l]ink[/green] - External URL")
-    console.print("  [yellow][p]ost[/yellow] - Blog post")
+    shortcuts = {}
+    for i, name in enumerate(collection_names):
+        config = registry.get_collection(name)
+        color = COLLECTION_COLORS.get(name, "white")
+        shortcut = name[0].lower()
+        shortcuts[shortcut] = name
+        console.print(f"  [{color}][{shortcut}]{name[1:]}[/{color}] - {config.tagline[:40]}")
+
+    shortcuts["x"] = "skip"
     console.print("  [dim][x] skip[/dim]")
 
-    choice = Prompt.ask("Choice", choices=["s", "r", "l", "p", "x"], default="r")
-
-    mapping = {
-        "s": ContentType.SENTENCE,
-        "r": ContentType.RANDOM,
-        "l": ContentType.LINK,
-        "p": ContentType.POST,
-        "x": ContentType.SKIP,
-    }
-    return mapping[choice]
+    choice = Prompt.ask("Choice", choices=list(shortcuts.keys()), default="r")
+    return shortcuts.get(choice, "random")
 
 
 def create_content(
     candidate: EmailCandidate,
-    content_type: ContentType,
+    collection_name: str,
     debug: bool = False,
 ) -> bool:
     """Create content file and push to git."""
-    if content_type == ContentType.SKIP:
+    if collection_name == "skip":
         return False
 
-    config = CONTENT_CONFIGS[content_type]
+    registry = get_registry()
+    config = registry.get_collection(collection_name)
+
+    if not config:
+        console.print(f"[red]Unknown collection: {collection_name}[/red]")
+        return False
+
     collection_dir = DEFAULT_PROJECT / config.dir_name
     collection_dir.mkdir(exist_ok=True)
 
     # Generate slug
     slug = slugify(candidate.subject)
 
-    # Check for duplicates
-    target = collection_dir / f"{slug}.md"
-    if target.exists():
-        suffix = 1
-        while target.exists():
-            new_slug = f"{slug}-{suffix}"
-            target = collection_dir / f"{new_slug}.md"
-            suffix += 1
-        slug = target.stem
-
-    # For posts, add date prefix
-    if content_type == ContentType.POST:
+    # Build filename
+    if config.date_prefix:
         try:
             parsed_date = datetime.fromisoformat(candidate.date)
             date_prefix = parsed_date.strftime("%Y-%m-%d")
         except (ValueError, AttributeError):
             date_prefix = datetime.now().strftime("%Y-%m-%d")
-        target = collection_dir / f"{date_prefix}-{slug}.md"
+        filename = f"{date_prefix}-{slug}.md"
+    else:
+        filename = f"{slug}.md"
+
+    target = collection_dir / filename
+
+    # Check for duplicates
+    if target.exists():
+        suffix = 1
+        while target.exists():
+            if config.date_prefix:
+                filename = f"{date_prefix}-{slug}-{suffix}.md"
+            else:
+                filename = f"{slug}-{suffix}.md"
+            target = collection_dir / filename
+            suffix += 1
 
     # Format date
     try:
@@ -293,52 +283,45 @@ def create_content(
 
     # Build frontmatter
     escaped_title = yaml_escape_title(candidate.subject)
-    fm_lines = [f"title: {escaped_title}", f"date: {formatted_date}"]
+    fm_lines = [f"layout: {config.layout}", f"title: {escaped_title}", f"date: {formatted_date}"]
 
-    if content_type == ContentType.POST:
-        fm_lines.append("layout: post")
-        fm_lines.append("categories: [writing]")
+    # Handle extra fields
+    for field in config.fields:
+        if field.name == "url_link":
+            # Try to extract URL from body
+            url_match = re.search(r"https?://[^\s<>\"]+", candidate.body)
+            if url_match:
+                fm_lines.append(f"url_link: {url_match.group()}")
+        elif field.name == "categories" and collection_name == "posts":
+            fm_lines.append("categories: [writing]")
 
-    if content_type == ContentType.LINK:
-        # Try to extract URL from body
-        url_match = re.search(r"https?://[^\s<>\"]+", candidate.body)
-        if url_match:
-            fm_lines.append(f"url_link: {url_match.group()}")
-
-    file_content = (
-        f"""---
-{chr(10).join(fm_lines)}
----
-
-{candidate.body}
-""".strip()
-        + "\n"
-    )
+    file_content = f"---\n{chr(10).join(fm_lines)}\n---\n\n{candidate.body}\n"
 
     target.write_text(file_content)
-    console.print(f"[green]Created: {config.dir_name}/{target.name}[/green]")
+    console.print(f"[green]Created: {config.dir_name}/{filename}[/green]")
 
     # Commit and push
-    project_dir = DEFAULT_PROJECT
-    commit_title = candidate.subject[:47] + "..." if len(candidate.subject) > 50 else candidate.subject
-    commit_message = f"New {content_type.value}: {commit_title}"
+    commit_title = (
+        candidate.subject[:47] + "..." if len(candidate.subject) > 50 else candidate.subject
+    )
+    commit_message = f"New {collection_name}: {commit_title}"
 
     try:
         subprocess.run(
             ["git", "add", str(target.resolve())],
-            cwd=str(project_dir),
+            cwd=str(DEFAULT_PROJECT),
             check=True,
             capture_output=True,
         )
         subprocess.run(
             ["git", "commit", "-m", commit_message],
-            cwd=str(project_dir),
+            cwd=str(DEFAULT_PROJECT),
             check=True,
             capture_output=True,
         )
         subprocess.run(
             ["git", "push"],
-            cwd=str(project_dir),
+            cwd=str(DEFAULT_PROJECT),
             check=True,
             capture_output=True,
         )
@@ -391,26 +374,25 @@ def pull_cmd(
 ):
     """Pull and classify notes from email.
 
-    Modes:
-    - Default: Show candidates and prompt for each
-    - --auto: Use AI to classify, then confirm batch
-    - --interactive: Classify each one interactively
+    Uses collections from _data/collections.yaml for classification.
     """
     candidates = fetch_emails(debug)
 
     if not candidates:
         return
 
+    registry = get_registry()
+
     # Auto mode: classify all with AI first
     if auto:
         console.print("[cyan]Classifying with AI...[/cyan]\n")
-        classifications: list[tuple[EmailCandidate, ContentType]] = []
+        classifications: list[tuple[EmailCandidate, str]] = []
 
         for i, candidate in enumerate(candidates, 1):
             with console.status(f"[bold green]Classifying {i}/{len(candidates)}..."):
-                content_type = classify_with_ai(candidate)
-                classifications.append((candidate, content_type))
-                display_candidate(candidate, i, content_type)
+                collection_name = classify_with_ai(candidate)
+                classifications.append((candidate, collection_name))
+                display_candidate(candidate, i, collection_name)
                 console.print()
 
         # Show summary
@@ -420,9 +402,11 @@ def pull_cmd(
         table.add_column("Subject", style="white")
         table.add_column("Type", style="cyan")
 
-        for i, (candidate, content_type) in enumerate(classifications, 1):
-            color = CONTENT_COLORS[content_type]
-            table.add_row(str(i), candidate.subject[:50], f"[{color}]{content_type.value}[/{color}]")
+        for i, (candidate, collection_name) in enumerate(classifications, 1):
+            color = COLLECTION_COLORS.get(collection_name, "white")
+            table.add_row(
+                str(i), candidate.subject[:50], f"[{color}]{collection_name}[/{color}]"
+            )
 
         console.print(table)
 
@@ -433,8 +417,8 @@ def pull_cmd(
         # Confirm and process
         if typer.confirm("\nProceed with these classifications?", default=True):
             created = 0
-            for candidate, content_type in classifications:
-                if create_content(candidate, content_type, debug):
+            for candidate, collection_name in classifications:
+                if create_content(candidate, collection_name, debug):
                     created += 1
             console.print(f"\n[bold green]Done! Created {created} items.[/bold green]")
         else:
@@ -453,8 +437,8 @@ def pull_cmd(
         created = 0
         for i, candidate in enumerate(candidates, 1):
             display_candidate(candidate, i)
-            content_type = prompt_classification()
-            if create_content(candidate, content_type, debug):
+            collection_name = prompt_classification()
+            if create_content(candidate, collection_name, debug):
                 created += 1
             console.print()
 
@@ -467,4 +451,7 @@ def pull_cmd(
         display_candidate(candidate, i)
         console.print()
 
-    console.print("[dim]Use --auto for AI classification, --interactive for manual classification.[/dim]")
+    console.print(
+        "[dim]Use --auto for AI classification, --interactive for manual classification.[/dim]"
+    )
+    console.print(f"[dim]Available collections: {', '.join(registry.get_collection_names())}[/dim]")

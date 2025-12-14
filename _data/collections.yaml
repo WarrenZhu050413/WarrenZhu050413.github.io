@@ -1,0 +1,179 @@
+# =============================================================================
+# Collections Registry - Single Source of Truth
+# =============================================================================
+# This file configures ALL collections for both Jekyll and the CLI.
+# Adding a new collection here automatically:
+#   1. Registers it with Jekyll
+#   2. Creates CLI commands (website <name> list/create/edit/delete/push/pull)
+#   3. Updates `website pull --auto` classification
+#   4. Updates navigation (if nav section specified)
+#
+# To add a new collection:
+#   1. Add entry below
+#   2. Create the directory (_mycollection/)
+#   3. Create layout file (_layouts/mycollection.html) if custom layout needed
+#   4. Run: bundle exec jekyll serve (to pick up changes)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Navigation Configuration
+# -----------------------------------------------------------------------------
+navigation:
+  # Main nav items (always visible)
+  main:
+    - label: About
+      url: /
+      match: exact  # Only highlight when exactly at /
+    - label: Posts
+      url: /posts/
+
+  # Dropdown menu items
+  dropdown:
+    label: More
+    items:
+      - sentences
+      - random
+      - links
+
+# -----------------------------------------------------------------------------
+# Collection Definitions
+# -----------------------------------------------------------------------------
+collections:
+  sentences:
+    # Display
+    label: Sentences
+    tagline: "Write the truest sentence that you know."
+    icon: quote  # Optional: for future UI enhancements
+
+    # Jekyll
+    dir: _sentences
+    layout: sentence
+    permalink: /sentences/:slug/
+
+    # CLI
+    email_suffix: sentences
+    title_prompt: "Write the truest sentence that you know"
+
+    # Fields (beyond title and date which are always required)
+    fields: []
+
+    # Navigation
+    nav_label: Sentences
+    nav_url: /sentences/
+    nav_match: contains  # Highlight when URL contains /sentences
+
+    # AI Classification hint for `website pull --auto`
+    classification_hint: |
+      Short, profound observation or quote. Usually 1-2 sentences of timeless wisdom.
+      Examples: philosophical aphorisms, Taleb quotes, stoic wisdom.
+
+  random:
+    label: Random
+    tagline: "Loose threads and unfinished thoughts."
+    icon: sparkles
+
+    dir: _random
+    layout: random
+    permalink: /random/:slug/
+
+    email_suffix: random
+    title_prompt: "What's on your mind?"
+
+    fields: []
+
+    nav_label: Random
+    nav_url: /random/
+    nav_match: contains
+
+    classification_hint: |
+      Casual thought, amusing observation, or whimsical idea.
+      Not profound, just fun. Shower thoughts, witty one-liners.
+
+  links:
+    label: Links
+    tagline: "Save links worth revisiting."
+    icon: link
+
+    dir: _links
+    layout: link-item
+    permalink: /links/:slug/
+
+    email_suffix: links
+    title_prompt: Title
+
+    fields:
+      - name: url_link
+        required: true
+        prompt: URL
+      - name: creator
+        required: false
+        prompt: Creator (optional)
+
+    nav_label: Links
+    nav_url: /links/
+    nav_match: contains
+
+    classification_hint: |
+      Contains a URL to an external resource worth saving.
+      Articles, videos, tools, resources.
+
+  posts:
+    label: Posts
+    tagline: "Long-form writing and essays."
+    icon: pen
+
+    dir: _posts
+    layout: post
+    permalink: /posts/:slug/
+    date_prefix: true  # Files are YYYY-MM-DD-slug.md
+
+    email_suffix: writing
+    title_prompt: Post title
+
+    fields:
+      - name: categories
+        required: false
+        prompt: Categories (comma-separated)
+      - name: description
+        required: false
+        prompt: Description (optional)
+
+    # Posts don't appear in nav (accessed via Writing page)
+    nav_label: null
+
+    classification_hint: |
+      A longer piece of writing, an essay, or detailed thoughts.
+      Deserves its own blog post. Multiple paragraphs, structured content.
+
+# -----------------------------------------------------------------------------
+# Adding a New Collection - Example
+# -----------------------------------------------------------------------------
+# To add "quotes" collection:
+#
+# 1. Add to this file:
+#   quotes:
+#     label: Quotes
+#     tagline: "Words from others that resonate."
+#     dir: _quotes
+#     layout: quote
+#     permalink: /quotes/:slug/
+#     email_suffix: quotes
+#     title_prompt: "The quote"
+#     fields:
+#       - name: author
+#         required: true
+#         prompt: Author
+#       - name: source
+#         required: false
+#         prompt: Source (optional)
+#     nav_label: Quotes
+#     nav_url: /quotes/
+#     nav_match: contains
+#     classification_hint: |
+#       A quote from someone else that resonates with you.
+#       Include the author attribution.
+#
+# 2. Create directory: mkdir _quotes
+# 3. Create layout: _layouts/quote.html (or use existing)
+# 4. Update _config.yml collections section (if not auto-generated)
+# 5. CLI commands are automatically available!

@@ -55,6 +55,20 @@ def is_spotify_url(url: str) -> bool:
     return "spotify.com" in hostname
 
 
+def is_pinterest_url(url: str) -> bool:
+    """Check if URL is a Pinterest URL.
+
+    Args:
+        url: URL to check
+
+    Returns:
+        True if URL is a Pinterest pin or short URL
+    """
+    parsed = urllib.parse.urlparse(url)
+    hostname = parsed.hostname or ""
+    return hostname in ("pinterest.com", "www.pinterest.com", "pin.it")
+
+
 def extract_spotify_metadata(url: str) -> "LinkMetadata | None":
     """Extract metadata from Spotify using oEmbed API.
 
@@ -79,6 +93,88 @@ def extract_spotify_metadata(url: str) -> "LinkMetadata | None":
 
             # Spotify oEmbed doesn't provide artist info; user must fill in creator manually
             return LinkMetadata(title=title, creator="", tags="music")
+    except (urllib.error.URLError, ValueError, json.JSONDecodeError):
+        return None
+
+
+def resolve_pinterest_url(url: str) -> str | None:
+    """Resolve a Pinterest short URL (pin.it) to canonical pinterest.com URL.
+
+    Args:
+        url: Pinterest URL (short or full)
+
+    Returns:
+        Canonical pinterest.com URL, or None if resolution fails
+    """
+    parsed = urllib.parse.urlparse(url)
+    hostname = parsed.hostname or ""
+
+    # If already a pinterest.com URL, return as-is
+    if hostname in ("pinterest.com", "www.pinterest.com"):
+        return url
+
+    # For short URLs (pin.it), follow all redirects to get final URL
+    if hostname == "pin.it":
+        try:
+            # Use urlopen with redirects enabled - it will follow the chain
+            request = urllib.request.Request(
+                url, headers={"User-Agent": "Mozilla/5.0"}, method="HEAD"
+            )
+            with urllib.request.urlopen(request, timeout=10) as response:
+                final_url = response.url
+                final_parsed = urllib.parse.urlparse(final_url)
+                if final_parsed.hostname in ("pinterest.com", "www.pinterest.com"):
+                    return final_url
+        except urllib.error.URLError:
+            pass
+
+    return None
+
+
+def extract_pinterest_metadata(url: str) -> "LinkMetadata | None":
+    """Extract metadata from Pinterest using oEmbed API.
+
+    Args:
+        url: Pinterest URL (pin or short URL)
+
+    Returns:
+        LinkMetadata if successful, None otherwise
+    """
+    # Resolve short URLs first
+    resolved_url = resolve_pinterest_url(url)
+    if not resolved_url:
+        resolved_url = url
+
+    # Normalize pin URL - extract pin ID and build canonical URL
+    # URLs like /pin/123/sent/ or /pin/123/something need to become /pin/123/
+    parsed = urllib.parse.urlparse(resolved_url)
+    pin_match = re.search(r"/pin/(\d+)", parsed.path)
+    if pin_match:
+        pin_id = pin_match.group(1)
+        clean_url = f"https://www.pinterest.com/pin/{pin_id}/"
+    else:
+        clean_url = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+
+    oembed_url = f"https://www.pinterest.com/oembed.json?url={urllib.parse.quote(clean_url, safe='')}"
+
+    try:
+        request = urllib.request.Request(
+            oembed_url, headers={"User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(request, timeout=10) as response:
+            if response.status != 200:
+                return None
+
+            data = json.loads(response.read().decode("utf-8"))
+            title = data.get("title", "").strip()
+            author = data.get("author_name", "").strip()
+
+            # Pinterest pins often have empty titles
+            if not title or title == " ":
+                # Use author name as part of title
+                title = f"Pin by {author}" if author else "Pinterest Pin"
+
+            return LinkMetadata(title=title, creator=author, tags="pinterest")
     except (urllib.error.URLError, ValueError, json.JSONDecodeError):
         return None
 
@@ -277,6 +373,14 @@ def extract_link_metadata(
     if is_spotify_url(url):
         console.print("[dim]Using Spotify oEmbed API...[/dim]")
         result = extract_spotify_metadata(url)
+        if result:
+            return result
+        # Fall through to Claude agent if oEmbed fails
+
+    # Use oEmbed for Pinterest URLs
+    if is_pinterest_url(url):
+        console.print("[dim]Using Pinterest oEmbed API...[/dim]")
+        result = extract_pinterest_metadata(url)
         if result:
             return result
         # Fall through to Claude agent if oEmbed fails

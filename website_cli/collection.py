@@ -14,7 +14,10 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from .config import DEFAULT_PROJECT, CollectionConfig
+from .registry import CollectionConfig
+
+# Default project path
+DEFAULT_PROJECT = Path.home() / "Desktop/zPersonalProjects/WarrenZhu050413.github.io"
 
 console = Console()
 
@@ -62,15 +65,18 @@ class Collection:
             title: str | None = typer.Argument(
                 None, help="Item title or URL (for links with --auto)"
             ),
-            push: bool = typer.Option(False, "--push", help="Commit and push after creating"),
             auto: bool = typer.Option(
                 False, "--auto", "-a", help="Auto-extract metadata from URL (links only)"
             ),
             paste: bool = typer.Option(
                 False, "--paste", "-p", help="Read URL from clipboard (use with --auto)"
             ),
+            force: bool = typer.Option(
+                False, "--force", "-f", help="Skip confirmations (use with --auto)"
+            ),
+            push: bool = typer.Option(False, "--push", help="Commit and push after creating"),
         ):
-            self.create_cmd(title, push, auto, paste)
+            self.create_cmd(title, push, auto, paste, force)
 
         @self.app.command()
         def edit(slug: str | None = typer.Argument(None, help="Item slug to edit")):
@@ -213,6 +219,7 @@ class Collection:
         push: bool = False,
         auto: bool = False,
         paste: bool = False,
+        force: bool = False,
     ):
         """Create a new item."""
         collection_dir = self.get_dir()
@@ -232,6 +239,9 @@ class Collection:
                     console.print(f"[dim]Read from clipboard: {url}[/dim]")
 
             if not url:
+                if force:
+                    console.print("[red]No URL provided and --force requires a URL.[/red]")
+                    raise typer.Exit(1)
                 url = typer.prompt("URL to extract")
 
             if not url.strip():
@@ -256,8 +266,11 @@ class Collection:
                         )
                     )
 
-                    # Confirm or edit
-                    if not typer.confirm("\nUse this metadata?", default=True):
+                    # Confirm or edit (skip if force)
+                    if force:
+                        title = metadata.title
+                        extra_values["creator"] = metadata.creator
+                    elif not typer.confirm("\nUse this metadata?", default=True):
                         title = typer.prompt("Title", default=metadata.title)
                         extra_values["creator"] = typer.prompt("Creator", default=metadata.creator)
                     else:
@@ -266,7 +279,9 @@ class Collection:
 
                     extra_values["url_link"] = url
                 else:
-                    console.print("[yellow]Could not extract metadata.[/yellow]")
+                    console.print("[red]Could not extract metadata.[/red]")
+                    if force:
+                        raise typer.Exit(1)
                     if typer.confirm("Continue with manual entry?", default=False):
                         title = None
                         auto = False  # Fall through to manual mode
@@ -278,7 +293,9 @@ class Collection:
                 console.print("[red]Error: claude-agent-sdk not installed. Run: make dev[/red]")
                 raise typer.Exit(1)
             except Exception as e:
-                console.print(f"[yellow]Extraction failed: {e}[/yellow]")
+                console.print(f"[red]Extraction failed: {e}[/red]")
+                if force:
+                    raise typer.Exit(1)
                 if typer.confirm("Continue with manual entry?", default=False):
                     title = None
                     auto = False
@@ -296,14 +313,13 @@ class Collection:
                 raise typer.Exit(1)
 
             # Get extra fields for this collection (skip if already populated by auto)
-            for field_name in self.config.extra_fields:
-                if field_name in extra_values:
+            for field in self.config.fields:
+                if field.name in extra_values:
                     continue  # Already set by auto mode
 
-                is_required = field_name in self.config.required_fields
-                prompt_name = field_name.replace("_", " ").title()
+                prompt_name = field.prompt or field.name.replace("_", " ").title()
 
-                if is_required:
+                if field.required:
                     val = typer.prompt(prompt_name)
                     if not val.strip():
                         console.print(f"[red]{prompt_name} is required.[/red]")
@@ -312,44 +328,48 @@ class Collection:
                     val = typer.prompt(f"{prompt_name} (optional)", default="", show_default=False)
 
                 if val.strip():
-                    extra_values[field_name] = val.strip()
+                    extra_values[field.name] = val.strip()
 
-        # Get content (optional) - launch editor or skip
+        # Get content (optional) - launch editor or skip (skip if force)
         content = ""
-        console.print("\n[dim]Add a reflection/description? [Enter to write, q to skip][/dim]")
-        choice = typer.prompt("", default="", show_default=False)
+        if not force:
+            console.print("\n[dim]Add a reflection/description? [Enter to write, q to skip][/dim]")
+            choice = typer.prompt("", default="", show_default=False)
 
-        if choice.lower() != "q":
-            editor = os.environ.get("EDITOR", "vim")
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
-                f.write(f"# Notes on: {title}\n\n")
-                f.write("# Write below. Lines starting with # will be removed.\n\n\n")
-                temp_path = f.name
+            if choice.lower() != "q":
+                editor = os.environ.get("EDITOR", "vim")
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
+                    f.write(f"# Notes on: {title}\n\n")
+                    f.write("# Write below. Lines starting with # will be removed.\n\n\n")
+                    temp_path = f.name
 
-            if "vim" in editor:
-                subprocess.run([editor, "+6", temp_path])
-            else:
-                subprocess.run([editor, temp_path])
+                if "vim" in editor:
+                    subprocess.run([editor, "+6", temp_path])
+                else:
+                    subprocess.run([editor, temp_path])
 
-            with open(temp_path) as f:
-                lines = [line for line in f.readlines() if not line.startswith("#")]
-                content = "".join(lines).strip()
+                with open(temp_path) as f:
+                    lines = [line for line in f.readlines() if not line.startswith("#")]
+                    content = "".join(lines).strip()
 
-            os.unlink(temp_path)
+                os.unlink(temp_path)
 
-            if content:
-                console.print("[green]Content added.[/green]")
-            else:
-                console.print("[dim]No content added.[/dim]")
+                if content:
+                    console.print("[green]Content added.[/green]")
+                else:
+                    console.print("[dim]No content added.[/dim]")
 
         # Generate slug
         suggested = slugify(title)
-        console.print(f"\n[cyan]Suggested filename:[/cyan] {suggested}")
-        slug = typer.prompt("Filename (this becomes the URL)", default=suggested)
-        slug = slugify(slug)
+        if force:
+            slug = suggested
+        else:
+            console.print(f"\n[cyan]Suggested filename:[/cyan] {suggested}")
+            slug = typer.prompt("Filename (this becomes the URL)", default=suggested)
+            slug = slugify(slug)
 
-        # For posts, add date prefix
-        if self.config.name == "posts":
+        # Handle date prefix based on config
+        if self.config.date_prefix:
             date_prefix = datetime.now().strftime("%Y-%m-%d")
             filename = f"{date_prefix}-{slug}.md"
         else:
@@ -366,9 +386,7 @@ class Collection:
         escaped_title = yaml_escape_title(title)
 
         # Build frontmatter
-        fm_lines = []
-        if self.config.name == "posts":
-            fm_lines.append("layout: post")
+        fm_lines = [f"layout: {self.config.layout}"]
         fm_lines.extend([f"title: {escaped_title}", f"date: {now}"])
         for key, val in extra_values.items():
             escaped_val = yaml_escape_title(val)
@@ -389,7 +407,7 @@ class Collection:
         console.print(
             Panel(
                 f"[green]Created:[/green] {self.config.dir_name}/{filename}\n"
-                f"[cyan]URL:[/cyan] {self.config.site_url}/{slug}/",
+                f"[cyan]URL:[/cyan] {self.config.site_url.rstrip('/')}/{slug}/",
                 title="Success",
                 border_style="green",
             )

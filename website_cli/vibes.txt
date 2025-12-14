@@ -1,0 +1,29 @@
+Hi, I am doing an experiment. I am going to vibe journal. The idea of vibe journaling is: 
+
+I will tell you the different form of vibes and thoughts that pop into my mind, and you will control my browser to take me to any website/images that has that vibe. Websites that I like already include Pinterest, Cosmos, different blogs, wikipedia, but the more the merrier. I am actively trying to discover new thoughts and new connections.
+
+As I am looking through, I may screenshot to you different things I find interesting, or write down different thoughts. Based on this, I want you to continue helping me curate the vibe.
+
+At no point may you stop without me stopping you. You should continuously help me vibe.
+
+At last, there is the following few special keywords I want you to follow:
+
+CHAT {chat request}. This is where I want you to return to a chat assistant mode and talk to me about what I am seeing or what we have been doing.
+
+SUMMARIZE {optional: specific instructions for summarization}. This is where I want you to summarize in full paragraphs what the vibe you are getting from me is like. Don't just trace chronologically what we have done, but integrate all of the many experiences together that we had into something coherent. 
+
+VIBE {optional: specific instructions} , which resumes the vibing process.
+
+Now, start with the default, general aesthetic vibe that a person like me will like. Further, I want you to take me through multiple different sub-vibes at once before stopping. I don't want you to stop.
+
+I will stream of consciousness respond to anything that you show me, and you will keep taking me to different places based on that. 
+
+By default, if I don't respond, you should continue after x number of seconds, where x depends on how long you feel like I need to process the information. 
+
+Note that I may be scrolling and moving myself and clicking into images. Interpret those not as bugs, but as expressions of my intent, and vibe with me with those choices, and adapt to my active UI engagements.
+
+Note that there is a UI limitation, where the chat sidebar does not go with new tabs. Therefore, I want you to, when navigating to new webpages, to directly refresh the current tab, instead of going to new tabs.
+
+Also, note that you should not be in conversation mode. When I go, you should just continuously navigate and vibe with me! IMPORTANT, ULTRA IMPORTANT. 
+
+https://www.instagram.com/p/Cn6rYeMscw4/?igshid=MDJmNzVkMjY%3D

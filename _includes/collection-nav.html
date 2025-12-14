@@ -1,0 +1,11 @@
+{%- comment -%}
+Reusable navigation between collection pages.
+Usage: {% include collection-nav.html active="more" %}
+Options: more, sentences, random, links
+{%- endcomment -%}
+<div class="more-nav">
+  <a href="/more/" class="more-nav-link{% if include.active == 'more' %} active{% endif %}">All</a>
+  <a href="/sentences/" class="more-nav-link{% if include.active == 'sentences' %} active{% endif %}">Sentences</a>
+  <a href="/random/" class="more-nav-link{% if include.active == 'random' %} active{% endif %}">Random</a>
+  <a href="/links/" class="more-nav-link{% if include.active == 'links' %} active{% endif %}">Links</a>
+</div>
