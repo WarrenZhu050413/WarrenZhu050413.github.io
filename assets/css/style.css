@@ -1950,3 +1950,300 @@ img {
   color: var(--ink);
   border-bottom-color: var(--kala-rust);
 }
+
+/* ==========================================================================
+   Dark Mode
+   ========================================================================== */
+
+/* Dark theme colors - warm, cinematic feel */
+[data-theme="dark"] {
+  /* Core Colors - inverted with warmth */
+  --paper: #141412;
+  --paper-warm: #1a1815;
+  --ink: #e8e4dc;
+  --ink-soft: rgba(232, 228, 220, 0.85);
+  --ink-muted: rgba(232, 228, 220, 0.55);
+  --border: rgba(232, 228, 220, 0.12);
+  --border-light: rgba(232, 228, 220, 0.06);
+
+  /* Kala Palette - slightly adjusted for dark */
+  --kala-sea: #8fb8b8;
+  --kala-sky: #8dc0d0;
+  --kala-rust: #c9967a;
+  --kala-sand: #a69878;
+  --kala-mountain: #a09898;
+  --vermillion: #e05a44;
+}
+
+/* Auto dark mode for users without explicit preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141412;
+    --paper-warm: #1a1815;
+    --ink: #e8e4dc;
+    --ink-soft: rgba(232, 228, 220, 0.85);
+    --ink-muted: rgba(232, 228, 220, 0.55);
+    --border: rgba(232, 228, 220, 0.12);
+    --border-light: rgba(232, 228, 220, 0.06);
+    --kala-sea: #8fb8b8;
+    --kala-sky: #8dc0d0;
+    --kala-rust: #c9967a;
+    --kala-sand: #a69878;
+    --kala-mountain: #a09898;
+    --vermillion: #e05a44;
+  }
+}
+
+/* Dark mode specific overrides */
+[data-theme="dark"] body::after,
+:root:not([data-theme="light"]) body::after {
+  /* Film grain - lighter for dark mode */
+  opacity: 0.02;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body::after {
+    opacity: 0.02;
+  }
+}
+
+[data-theme="dark"] body::before {
+  /* Warm vignette - darker edges for dark mode */
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body::before {
+    background: radial-gradient(
+      ellipse at 50% 30%,
+      transparent 40%,
+      rgba(0, 0, 0, 0.15) 100%
+    );
+  }
+}
+
+/* Seal adjustments for dark mode */
+[data-theme="dark"] .seal {
+  background: var(--paper-warm);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .seal {
+    background: var(--paper-warm);
+  }
+}
+
+/* Card backgrounds in dark mode */
+[data-theme="dark"] .sentence-entry,
+[data-theme="dark"] .media-item {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sentence-entry,
+  :root:not([data-theme="light"]) .media-item {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* Post hover in dark mode */
+[data-theme="dark"] .post-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .post-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+/* Code blocks in dark mode */
+[data-theme="dark"] code {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] pre {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) code {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  :root:not([data-theme="light"]) pre {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Filter input in dark mode */
+[data-theme="dark"] .inline-filter input {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .inline-filter input:focus {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .inline-filter input {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  :root:not([data-theme="light"]) .inline-filter input:focus {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* View toggle buttons in dark mode */
+[data-theme="dark"] .view-btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .view-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .view-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .view-btn {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  :root:not([data-theme="light"]) .view-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  :root:not([data-theme="light"]) .view-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+}
+
+/* Copy button in dark mode */
+[data-theme="dark"] .copy-btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .copy-btn {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Dropdown menu in dark mode */
+[data-theme="dark"] .nav-dropdown-menu {
+  background: var(--paper-warm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .nav-dropdown-menu {
+    background: var(--paper-warm);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Tooltips in dark mode */
+[data-theme="dark"] [data-tooltip]::after {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-tooltip]::after {
+    background: var(--ink);
+    color: var(--paper);
+  }
+}
+
+/* Scoreboard table header in dark mode */
+[data-theme="dark"] .scoreboard th {
+  background: var(--paper-warm);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .scoreboard th {
+    background: var(--paper-warm);
+  }
+}
+
+/* Image filter adjustment for dark mode */
+[data-theme="dark"] img {
+  filter: sepia(0.05) saturate(1.02) brightness(0.95);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) img {
+    filter: sepia(0.05) saturate(1.02) brightness(0.95);
+  }
+}
+
+/* Category tag in dark mode */
+[data-theme="dark"] .category {
+  background: var(--kala-sand);
+  color: var(--paper);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .category {
+    background: var(--kala-sand);
+    color: var(--paper);
+  }
+}
+
+/* ==========================================================================
+   Theme Toggle Button
+   ========================================================================== */
+
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: var(--space-2);
+  cursor: pointer;
+  color: var(--ink-muted);
+  transition: color var(--duration-fast) var(--ease-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.theme-toggle:hover {
+  color: var(--ink);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Show/hide icons based on theme */
+.theme-toggle .icon-sun {
+  display: none;
+}
+
+.theme-toggle .icon-moon {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun {
+    display: block;
+  }
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon {
+    display: none;
+  }
+}
