@@ -68,15 +68,14 @@ class Collection:
             auto: bool = typer.Option(
                 False, "--auto", "-a", help="Auto-extract metadata from URL (links only)"
             ),
-            paste: bool = typer.Option(
-                False, "--paste", "-p", help="Read URL from clipboard (use with --auto)"
+            paste_and_push: bool = typer.Option(
+                False, "--paste", "-p", help="Read URL from clipboard AND push after creating"
             ),
             force: bool = typer.Option(
                 False, "--force", "-f", help="Skip confirmations (use with --auto)"
             ),
-            push: bool = typer.Option(False, "--push", help="Commit and push after creating"),
         ):
-            self.create_cmd(title, push, auto, paste, force)
+            self.create_cmd(title, paste_and_push, auto, paste_and_push, force)
 
         @self.app.command()
         def edit(slug: str | None = typer.Argument(None, help="Item slug to edit")):
@@ -436,9 +435,25 @@ class Collection:
                     check=True,
                     capture_output=True,
                 )
-                subprocess.run(
-                    ["git", "push"], cwd=str(project_dir), check=True, capture_output=True
+                # Try push, if it fails due to diverged branch, pull --rebase and retry
+                push_result = subprocess.run(
+                    ["git", "push"], cwd=str(project_dir), capture_output=True, text=True
                 )
+                if push_result.returncode != 0 and "non-fast-forward" in push_result.stderr:
+                    console.print("[yellow]Branch behind remote, pulling...[/yellow]")
+                    subprocess.run(
+                        ["git", "pull", "--rebase"],
+                        cwd=str(project_dir),
+                        check=True,
+                        capture_output=True,
+                    )
+                    subprocess.run(
+                        ["git", "push"], cwd=str(project_dir), check=True, capture_output=True
+                    )
+                elif push_result.returncode != 0:
+                    raise subprocess.CalledProcessError(
+                        push_result.returncode, "git push", push_result.stderr
+                    )
                 console.print(f"[green]Pushed: {commit_message}[/green]")
             except subprocess.CalledProcessError as e:
                 console.print(f"[red]Failed to push: {e}[/red]")
@@ -868,9 +883,31 @@ date: {formatted_date}
                     check=True,
                     capture_output=True,
                 )
-                subprocess.run(
-                    ["git", "push"], cwd=str(project_dir.resolve()), check=True, capture_output=True
+                # Try push, if it fails due to diverged branch, pull --rebase and retry
+                push_result = subprocess.run(
+                    ["git", "push"],
+                    cwd=str(project_dir.resolve()),
+                    capture_output=True,
+                    text=True,
                 )
+                if push_result.returncode != 0 and "non-fast-forward" in push_result.stderr:
+                    console.print("[yellow]Branch behind remote, pulling...[/yellow]")
+                    subprocess.run(
+                        ["git", "pull", "--rebase"],
+                        cwd=str(project_dir.resolve()),
+                        check=True,
+                        capture_output=True,
+                    )
+                    subprocess.run(
+                        ["git", "push"],
+                        cwd=str(project_dir.resolve()),
+                        check=True,
+                        capture_output=True,
+                    )
+                elif push_result.returncode != 0:
+                    raise subprocess.CalledProcessError(
+                        push_result.returncode, "git push", push_result.stderr
+                    )
                 console.print(f"[green]Pushed: {commit_message}[/green]")
                 created_count += 1
 
