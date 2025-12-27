@@ -218,10 +218,10 @@ def prompt_classification() -> str:
         color = COLLECTION_COLORS.get(name, "white")
         shortcut = name[0].lower()
         shortcuts[shortcut] = name
-        console.print(f"  [{color}][{shortcut}]{name[1:]}[/{color}] - {config.tagline[:40]}")
+        console.print(f"  [{color}]\\[{shortcut}]{name[1:]}[/{color}] - {config.tagline[:40]}")
 
     shortcuts["x"] = "skip"
-    console.print("  [dim][x] skip[/dim]")
+    console.print("  [dim]\\[x] skip[/dim]")
 
     choice = Prompt.ask("Choice", choices=list(shortcuts.keys()), default="r")
     return shortcuts.get(choice, "random")
