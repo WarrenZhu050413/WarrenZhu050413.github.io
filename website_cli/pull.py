@@ -17,6 +17,7 @@ from pathlib import Path
 import typer
 import yaml
 from rich.console import Console
+from rich.markup import escape
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
@@ -218,10 +219,10 @@ def prompt_classification() -> str:
         color = COLLECTION_COLORS.get(name, "white")
         shortcut = name[0].lower()
         shortcuts[shortcut] = name
-        console.print(f"  [{color}]\\[{shortcut}]{name[1:]}[/{color}] - {config.tagline[:40]}")
+        console.print(f"  [{color}]{escape(f'[{shortcut}]')}{name[1:]}[/{color}] - {config.tagline[:40]}")
 
     shortcuts["x"] = "skip"
-    console.print("  [dim]\\[x] skip[/dim]")
+    console.print(f"  [dim]{escape('[x]')} skip[/dim]")
 
     choice = Prompt.ask("Choice", choices=list(shortcuts.keys()), default="r")
     return shortcuts.get(choice, "random")
