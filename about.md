@@ -44,17 +44,21 @@ I have also been tutoring highschoolers after seeing how helpful I could be to m
 
 For Winter 2025, I went to Yerevan, Armenia to lead a two week Learning Lab on "Building Tools with GenAI" at TUMO. I had the sweetest experience that I wrote about [here](/posts/yerevan-bye/).
 
-### Other Hobbies
+## Art
+
+Moving Pictures: I am a sucker for Wong Kar-wai movies (especially Ashes of Time and Fallen Angels) and love Twin Peaks, Hiroshima Mon Amour, Brideshead Revisited, and Yes, (Prime) Minister!.
+
+Literature: Antifragile, Bed of Procrustes, Skin In The Game, The Analects, The Bible, The Dream Machine, A Supposedly Fun Thing I Will Never Do Again, Moby Dick, Wittgenstein's Mistress, Around the World in 80 Days, Speak\, Memory, A Moveable Feast, The Timeless Way of Building, Hannah Arendt's Essay Collections, Being and Time, The Phenomenology of Spirit, Swann's Way, Kant's Critiques, The Trial, What Do You Care What Other People Think.
+
+Artworks: Matisse's Cut-Outs, Monet's Rouen Cathedral, Michaelangelo's The Last Judgement and Pieta, Mondrian's Grids, Kandinsky (Bauhaus and Paris periods), Samtavo Monastery (Georgia), Jardin Majorelle, Van Gogh's The Church at Auvers, Delaroche's The Execution of Lady Jane Grey, Collier's Lady Godiva, Gustav Klimt's The Kiss.
+
+Music: The Beatles (Basically All of It), [Rachnaminov Prelude Op.32 No.6](https://www.youtube.com/watch?v=G0EBMHFsEwY), Eternal Flame, Goldberg Variations (Glenn Gould 1981), ABBA, Brahms Intermezzi, Beejees, The Mamas & The Papas (Especially People Like Us), Lennon and Ono's Milk and Honey album, Leslie Cheung, Fei Wang, PREP, Herman's Hermits, Summer Salt, Queen, Delegation, LANY.
+
+## Other Miscenalleous Facts
 
 I went to Harrow International School Hong Kong, where I had fond memories studying History, Drama, English, Music, and playing Badminton and Rugby. However, my experience with the bureaucracies there, as well as just being a child who was not suitable with the general educational system, made me often terribly unhappy, and helped me understand I will have a difficult time being in a system with a great amount of formality.
 
 I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the [Trinity College Philosophy Essay Prize](https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/) for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
-
-I am a sucker for Wong Kar-wai movies and love Twin Peaks, Hiroshima Mon Amour, Brideshead Revisited, and Yes, (Prime) Minister!.
-
-Things I've loved and will forever reread: Antifragile, Bed of Procrustes, Skin In The Game, The Analects, The Bible, The Dream Machine, A Supposedly Fun Thing I Will Never Do Again, Moby Dick, Wittgenstein's Mistress, Around the World in 80 Days, Speak\, Memory, A Moveable Feast, The Timeless Way of Building, Hannah Arendt's Essay Collections, Being and Time, The Phenomenology of Spirit, Swann's Way, Kant's Critiques, The Trial, What Do You Care What Other People Think.
-
-Artworks (Work in Progress): Matisse's Cut-Outs, Monet's Rouen Cathedral, Michaelangelo's The Last Judgement and Pieta, Mondrian's Grids, Kandinsky (Bauhaus and Paris periods), Samtavo Monastery (Georgia), Jardin Majorelle, Van Gogh's The Church at Auvers, Delaroche's The Execution of Lady Jane Grey, Collier's Lady Godiva, Gustav Klimt's The Kiss.
 
 I like to absorb vocabulary from different languages by setting my electronic's system language to them. I've graduated from the Spanish phase and I'm currently in the French/Italian/German phase. I've also found that it is a good way to hide response latency from Language Models. This is the prompt that I use:
 
@@ -129,3 +133,7 @@ I have had the pleasure of attending courses (to complete graduation requirement
 - Expos20: Is it Okay To Be A Luddite (Oh I dislike it for so many reasons—it being a compulsory course, that the subject should be interesting, and that the structure was just horrible. I did meet Matthew Kotzbauer here and bonded over how bad the course is.)
 - CS1060: Software Engineering with GenAI (I love Christopher but I don't think Software Engineering should be teached. There were also so, so many tiny quizzes and attendance and homework it was dystopian.)
 - HUM20: A Colloquiem in the Visual Arts (I had the best section Professor and section leader ever. However, I found that I had zero interesting writing essays about the visual arts, of which this course had plenty. I just wanted to look and enjoy them.)
+
+### Miscellaneous
+
+I also took a course on Non-fiction Filmmaking at Harvard. I got the lowest grade out of all courses I've taken. I don't blame them. I was so bad at making films.
