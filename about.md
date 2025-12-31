@@ -48,7 +48,7 @@ For Winter 2025, I went to Yerevan, Armenia to lead a two week Learning Lab on "
 
 I went to Harrow International School Hong Kong, where I had fond memories studying History, Drama, English, Music, and playing Badminton and Rugby. However, my experience with the bureaucracies there, as well as just being a child who was not suitable with the general educational system, made me often terribly unhappy, and helped me understand I will have a difficult time being in a system with a great amount of formality.
 
-I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the <a href="https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/Trinity College Philosophy Essay Prize in 2021" target="_blank">Trinity College Philosophy Essay Prize</a> for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
+I had a lot of free time on my hand during COVID and spent a lot of time reading continental philosophy (Heidegger, Hannah Arendt, Hegel, Kant, etc.). I won the [Trinity College Philosophy Essay Prize](https://www.trin.cam.ac.uk/undergraduate/essay-prizes/philosophy/) for my essay on Social Media and Hannah Arendt's Concept of Solitude. I was also highly commended in the Philosophy section of the [John Locke Essay Prize](https://www.johnlockeinstitute.com/essay-competition) for an essay on Heidegger and Morality.
 
 I am a sucker for Wong Kar-wai movies and love Twin Peaks, Hiroshima Mon Amour, Brideshead Revisited, and Yes, (Prime) Minister!.
 
