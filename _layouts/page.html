@@ -2,7 +2,7 @@
 layout: default
 ---
 <article class="page-content">
-  {% if page.title %}
+  {% if page.title and page.title_bottom != true %}
   <header class="page-header">
     <h1 class="page-title">{{ page.title | escape }}</h1>
   </header>
@@ -11,4 +11,10 @@ layout: default
   <div class="page-body">
     {{ content }}
   </div>
+
+  {% if page.title and page.title_bottom == true %}
+  <footer class="page-header page-header--bottom">
+    <h1 class="page-title">{{ page.title | escape }}</h1>
+  </footer>
+  {% endif %}
 </article>

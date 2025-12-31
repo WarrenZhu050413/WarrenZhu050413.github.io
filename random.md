@@ -3,6 +3,7 @@ layout: page
 title: Random Thoughts
 permalink: /random/
 wide: true
+title_bottom: true
 ---
 
 {% include collection-nav.html active="random" %}

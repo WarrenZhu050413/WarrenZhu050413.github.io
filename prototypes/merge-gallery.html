@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge: Experimental Photo Gallery</title>
+    <style>
+        :root {
+            --paper: #0a0a0a;
+            --ink: #f5f1e8;
+            --vermillion: #c8442e;
+            --rust: #a67b5b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Source Serif 4', Georgia, serif;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--rust);
+            font-style: italic;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .gallery {
+            display: grid;
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--vermillion);
+            background: rgba(200,68,46,0.05);
+        }
+
+        .card.top-pick {
+            border-color: var(--vermillion);
+            box-shadow: 0 0 30px rgba(200,68,46,0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .card img:hover {
+            transform: scale(1.02);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .rank {
+            font-size: 4rem;
+            font-weight: 200;
+            color: var(--vermillion);
+            font-family: 'Cormorant Garamond', serif;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .rationale {
+            color: rgba(245,241,232,0.8);
+            font-size: 0.95rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--vermillion);
+            color: var(--ink);
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        @media (max-width: 900px) {
+            .card {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>MERGE</h1>
+    <p class="subtitle">Experimental photographs from Yerevan — ranked and named</p>
+
+    <div class="gallery">
+        <!-- Rank 1 -->
+        <div class="card top-pick">
+            <img src="file:///Users/wz/Downloads/Merge/Visceral_Layers_of_Desire-2025-12-18-22-13-04-Visceral-Layers-of-Desire-2.jpg" alt="Visceral Layers of Desire" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <span class="tag">Top Pick</span>
+                <div class="rank">#1</div>
+                <div class="name">Visceral Layers of Desire</div>
+                <p class="rationale">The most striking composition. Pure black and white with dramatic chiaroscuro lighting creates a sculptural, almost Renaissance quality. Minimal elements — just the upturned face and cradling hands — achieve maximum emotional impact. The grain adds tactile intimacy. This is restraint as power.</p>
+            </div>
+        </div>
+
+        <!-- Rank 2 -->
+        <div class="card top-pick">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-14-22-43-Untitled-3.jpg" alt="The Corridor of Longing" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <span class="tag">Top Pick</span>
+                <div class="rank">#2</div>
+                <div class="name">The Corridor of Longing</div>
+                <p class="rationale">Haunting vulnerability. The back view with hand on shoulder evokes tenderness and solitude simultaneously. The red corridor receding into light creates depth and narrative. The smoke-like hair dissolution suggests thoughts escaping, memories dispersing. Wong Kar Wai would approve.</p>
+            </div>
+        </div>
+
+        <!-- Rank 3 -->
+        <div class="card top-pick">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-14-02-36-Untitled-3.jpg" alt="Emergence from Shadow" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <span class="tag">Top Pick</span>
+                <div class="rank">#3</div>
+                <div class="name">Emergence from Shadow</div>
+                <p class="rationale">Masterful split between worlds. The face emerges from darkness, lips highlighted in vermillion — the only color that matters. The corridor backdrop anchors reality while the ink-smoke abstracts identity. A meditation on being seen and being hidden.</p>
+            </div>
+        </div>
+
+        <!-- Rank 4 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-28-20-Untitled-2.jpg" alt="Still Life with Dissolution" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#4</div>
+                <div class="name">Still Life with Dissolution</div>
+                <p class="rationale">The most compositionally ambitious. A vanitas reimagined — the table strewn with crumpled papers, roots, debris while hands cradle a vessel and smoke rises. Pure black and white gives it timelessness. The window light is hope or judgment.</p>
+            </div>
+        </div>
+
+        <!-- Rank 5 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-23-25-Untitled-3.jpg" alt="Triptych of Solitude" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#5</div>
+                <div class="name">Triptych of Solitude</div>
+                <p class="rationale">Three narratives collide: the corridor of memory on the left, the central face bisected by hand and gaze, hands cradling a cup on the right. The horizontal format and tripartite structure creates cinematic scope. Red anchors the center against grayscale wings.</p>
+            </div>
+        </div>
+
+        <!-- Rank 6 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-39-27-Untitled-3.jpg" alt="Light Breaks Through" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#6</div>
+                <div class="name">Light Breaks Through</div>
+                <p class="rationale">The dramatic diagonal light beam splits the composition decisively. Red figure emerges from darkness into illumination — a narrative of revelation or exposure. The ink-hair creates movement against the static architectural backdrop.</p>
+            </div>
+        </div>
+
+        <!-- Rank 7 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-59-05-Untitled-5.jpg" alt="Intimate Distance" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#7</div>
+                <div class="name">Intimate Distance</div>
+                <p class="rationale">Close-up portrait territory. Hand on throat, swirling hair, corridor fading — the intimacy is almost too close. The vermillion wash makes skin molten, alive. Strong but perhaps too claustrophobic for the top tier.</p>
+            </div>
+        </div>
+
+        <!-- Rank 8 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-19-45-Untitled-2.jpg" alt="Watcher in the Red Room" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#8</div>
+                <div class="name">Watcher in the Red Room</div>
+                <p class="rationale">The eye peering through splayed fingers is immediately arresting. Floral elements add organic chaos to the geometric corridor. Deep vermillion saturation creates a dreamlike intensity. Strong concept, slightly busy execution.</p>
+            </div>
+        </div>
+
+        <!-- Rank 9 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-49-30-Untitled-4.jpg" alt="Breath and Light" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#9</div>
+                <div class="name">Breath and Light</div>
+                <p class="rationale">Elegant restraint. The minimalist composition — just profile, hand, smoke, and light beam — achieves quiet power. The red is warm rather than intense. Less is more here, though it lacks the emotional punch of the top picks.</p>
+            </div>
+        </div>
+
+        <!-- Rank 10 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-56-21-Untitled-2.jpg" alt="Ascension" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#10</div>
+                <div class="name">Ascension</div>
+                <p class="rationale">Dramatic upward gaze against grayscale. The red hand reaching up the neck is the only color — a striking choice. The corridor context grounds the ecstatic pose. Powerful gesture, though the composition feels slightly unbalanced.</p>
+            </div>
+        </div>
+
+        <!-- Rank 11 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-56-39-Untitled-3.jpg" alt="Smoke Portrait" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#11</div>
+                <div class="name">Smoke Portrait</div>
+                <p class="rationale">Pure black and white, smoke wreathing around face and hands. The texture is extraordinary — grain and moisture and vapor all intermingling. Meditative rather than dramatic. A quieter piece in a loud collection.</p>
+            </div>
+        </div>
+
+        <!-- Rank 12 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-44-42-Untitled-3.jpg" alt="Embrace in Vermillion" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#12</div>
+                <div class="name">Embrace in Vermillion</div>
+                <p class="rationale">Arms encircle in protective gesture, forms become abstract in deep red saturation. The smoke and texture create visual noise. Emotionally intense but compositionally chaotic — the abstraction costs some clarity.</p>
+            </div>
+        </div>
+
+        <!-- Rank 13 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-49-38-Untitled-3.jpg" alt="Steam and Shadow" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#13</div>
+                <div class="name">Steam and Shadow</div>
+                <p class="rationale">Red-orange warmth with steam rising. Arms and forms layer in complex ways. The kitchen/bath environment adds domestic context. Interesting but the layering becomes confusing — harder to find the focal point.</p>
+            </div>
+        </div>
+
+        <!-- Rank 14 -->
+        <div class="card">
+            <img src="file:///Users/wz/Downloads/Merge/Untitled-2025-12-27-13-50-34-Untitled-2.jpg" alt="Labyrinth" onclick="openLightbox(this.src)">
+            <div class="card-content">
+                <div class="rank">#14</div>
+                <div class="name">Labyrinth</div>
+                <p class="rationale">The densest layering — corridor, smoke, hand on face, multiple exposures all compete. Deep crimson saturation. Ambitious but the complexity overwhelms. Sometimes less is more; this chose more.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Full size image">
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>

@@ -3,6 +3,7 @@ layout: page
 title: Links
 permalink: /links/
 wide: true
+title_bottom: true
 ---
 
 {% include collection-nav.html active="links" %}

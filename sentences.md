@@ -3,6 +3,7 @@ layout: page
 title: One True Sentences
 permalink: /sentences/
 wide: true
+title_bottom: true
 ---
 
 {% include collection-nav.html active="sentences" %}
