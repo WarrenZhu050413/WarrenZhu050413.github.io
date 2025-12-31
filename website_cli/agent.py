@@ -311,6 +311,7 @@ class LinkAgent:
             model=self.model,
             system_prompt=SYSTEM_PROMPT,
             permission_mode="default",
+            allowed_tools=["WebFetch"],
             max_turns=5,
         )
 
@@ -330,11 +331,6 @@ class LinkAgent:
                             self.console.print(f"[dim]Fetching: {url}[/dim]")
 
         full_response = "".join(response_text)
-        # Debug: print what we got back
-        if not full_response.strip():
-            self.console.print("[yellow]Debug: No text response received from agent[/yellow]")
-        elif "<metadata>" not in full_response:
-            self.console.print(f"[yellow]Debug: Response missing <metadata> block:[/yellow]\n{full_response[:500]}")
         return LinkMetadata.from_response(full_response)
 
     def run(self, url: str) -> LinkMetadata | None:
