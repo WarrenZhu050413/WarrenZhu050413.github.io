@@ -18,6 +18,7 @@ I want to look at `ib_write_bw` with `--use-cuda` flag and understand from a lib
 What perftest does for a standard `ib_write_bw` is similar to the example shown [here](https://github.com/animeshtrivedi/rdma-example). The main logic is in `perftest/src/write_bw.c`.
 
 The main difference lies in the memory create step, where we use the function `cuda_memory_allocate_buffer` to allocate our buffer. The specific CUDA functions that it calls are:
+
 - `cuMemAllocHost` if we are using integrated memory
 - `cuMemAlloc` if we are using specific memory
 
@@ -107,8 +108,8 @@ struct memory_ctx {
 ```
 
 8. Initialize the connection and print the local data.
-This calls `establish_connection`, which executes `rdma_server_connect` or `rdma_client_connect` depending on 
-whether the calling machine is server or client.
+   This calls `establish_connection`, which executes `rdma_server_connect` or `rdma_client_connect` depending on
+   whether the calling machine is server or client.
 
 ```cpp
 // establish connection
@@ -154,8 +155,8 @@ if(alloc_ctx(&ctx, &user_param))
 ### Steps 11-12: Change RDMA State from RESET -> INIT
 
 11. Create RDMA CM resources and connect through CM:
-This is standard RDMA CM connection creation step, where they exchange information through RDMA send/receive 
-operations in the `ctx_handshake` function. 
+    This is standard RDMA CM connection creation step, where they exchange information through RDMA send/receive
+    operations in the `ctx_handshake` function.
 
 ```cpp
 rc = create_rdma_cm_connection(&ctx, &user_param, &user_comm, my_dest, rem_dest);
@@ -174,14 +175,14 @@ Then:
 ```cpp
 if (user_param->machine == CLIENT) {
     rc = rdma_cm_client_connection(ctx, user_param, &hints);
-    
+
     // rdma_cm_client_connection calls
     // rdma_cm_get_rdma_address
     // rdma_resolve_addr
     // rdma_cm_connect_events
 } else {
     rc = rdma_cm_server_connection(ctx, user_param, &hints);
-    // calls 
+    // calls
     // rdma_create_id
     // rdma_cm_get_rdma_address
     // rdma_bind_addr
@@ -210,6 +211,7 @@ The part related to GPU RDMA is in the functions that use the `ctx->memory` attr
 It specifically uses `cuda_memory_allocate_buffer` to allocate the memory, get the memory address, and do DMA-related operations if we are testing that.
 
 The specific CUDA functions that it calls are:
+
 - `cuMemAllocHost` if we are using integrated memory
 - `cuMemAlloc` if we are using specific memory
 
@@ -218,7 +220,7 @@ Then, if we are using DMA, we do page alignment and then call `cuMemGetHandleFor
 Below is the call stack for the `create_mr` function:
 
 ```cpp
-int create_mr(struct pingpong_context *ctx, struct perftest_parameters *user_param) 
+int create_mr(struct pingpong_context *ctx, struct perftest_parameters *user_param)
 ```
 
 which calls:
@@ -231,8 +233,8 @@ which calls:
 
 ```cpp
 // is cuda_memory_allocate_buffer for the GPU case
-ctx->memory->allocate_buffer(ctx->memory, user_param->cycle_buffer, 
-                            ctx->buff_size, &dmabuf_fd, &dmabuf_offset, 
+ctx->memory->allocate_buffer(ctx->memory, user_param->cycle_buffer,
+                            ctx->buff_size, &dmabuf_fd, &dmabuf_offset,
                             &ctx->buf[qp_index], &can_init_mem)
 ```
 
@@ -264,11 +266,13 @@ Calls `run_iter_bw_server`. It doesn't do much. It posts receive requests for re
 Calls `run_iter_bw`, which has the following steps:
 
 1. Perform warmup (optional):
+
 ```cpp
 perform_warm_up(&ctx, &user_param)
 ```
 
 2. Handshake to synchronize with server client:
+
 ```cpp
 ctx_hand_shake(&user_comm, &my_dest[0], &rem_dest[0])
 ```
@@ -282,4 +286,5 @@ return ibv_post_send(ctx->qp[index], &ctx->wr[index*user_param->post_list], &bad
 
 4. Does `ctx_hand_shake` to resynchronize
 
-5. Calls `xchg_bw_reports` to exchange the bandwidth measurements between the server and the client. 
+5. Calls `xchg_bw_reports` to exchange the bandwidth measurements between the server and the client.
+

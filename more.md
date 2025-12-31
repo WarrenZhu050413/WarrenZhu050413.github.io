@@ -8,10 +8,6 @@ title_bottom: true
 
 {% include collection-nav.html active="more" %}
 
-<p class="sentences-intro">
-Everything else: sentences, random thoughts, and links in one place.
-</p>
-
 {% include collection-controls.html filter_placeholder="filter" filter_target=".sentence-entry" filter_id="more" %}
 
 <div class="sentences-feed" id="moreFeed" data-view="masonry">
