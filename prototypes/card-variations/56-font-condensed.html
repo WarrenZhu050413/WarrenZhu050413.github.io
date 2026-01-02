@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font 6: Condensed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&family=Roboto+Condensed:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f5f1e8;
+      --ink: #141414;
+      --kala-mountain: #8b7b7b;
+      --kala-sea: #7ba3a3;
+      --kala-rust: #a67b5b;
+      --vermillion: #c8442e;
+      --font-display: "Cormorant Garamond", serif;
+      --font-body: "Source Serif 4", serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--paper); color: var(--ink); padding: 2rem; }
+    h1 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--kala-mountain); font-size: 0.8rem; margin-bottom: 2rem; font-style: italic; }
+    .feed { columns: 4; column-gap: 0.75rem; }
+    .card {
+      break-inside: avoid;
+      margin-bottom: 0.75rem;
+      background: rgba(255,255,255,0.6);
+      border-radius: 3px;
+      padding: 0.25rem 0.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border-top: 2px solid var(--ink);
+    }
+    .card:nth-child(5n+1) { border-top-color: var(--kala-sea); }
+    .card:nth-child(5n+2) { border-top-color: var(--ink); }
+    .card:nth-child(5n+3) { border-top-color: var(--kala-rust); }
+    .card:nth-child(5n+4) { border-top-color: var(--vermillion); }
+    .card:nth-child(5n+5) { border-top-color: var(--kala-mountain); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.25rem; }
+    .card-title-line { flex: 1; }
+    .card-title { font-family: var(--font-display); font-size: 0.8rem; font-weight: 500; line-height: 1.25; color: var(--ink); display: inline; }
+    .card-author { font-family: var(--font-body); font-size: 0.64rem; font-style: italic; color: var(--kala-mountain); display: inline; }
+    .card-author::before { content: " ("; }
+    .card-author::after { content: ")"; }
+    .card-date { font-size: 0.5rem; color: var(--kala-mountain); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; padding-top: 2px; }
+
+    /* FONT VARIATION 6: Condensed Sans */
+    .card-content {
+      font-family: "Roboto Condensed", sans-serif;
+      font-size: 0.68rem;
+      font-weight: 300;
+      color: var(--kala-mountain);
+      line-height: 1.45;
+      margin-top: 0.25rem;
+    }
+
+    @media (max-width: 900px) { .feed { columns: 2; } }
+    @media (max-width: 500px) { .feed { columns: 1; } }
+  </style>
+</head>
+<body>
+  <h1>Font 6: Condensed</h1>
+  <p class="subtitle">Roboto Condensed, weight 300, 0.68rem - compact and light</p>
+  <div class="feed">
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">A Brief Rant on the Future of Interaction Design</h2><span class="card-author">Bret Victor</span></div><span class="card-date">Jan 2</span></div></article>
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">3 Years of Building a Fashion Brand</h2><span class="card-author">Ken Sakata</span></div><span class="card-date">Dec 9</span></div><p class="card-content">Incredibly fascinating video.</p></article>
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">Bible Study</h2></div><span class="card-date">Dec 29</span></div><p class="card-content">Why don't we treat our favorite books, ones supremely significant to us, as people treat the bible?</p></article>
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">Consistency as Vice</h2></div><span class="card-date">Dec 28</span></div><p class="card-content">A foolish consistency is the hobgoblin of little minds.</p></article>
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">Coming of Age in Second Life</h2><span class="card-author">Tom Boellstorff</span></div><span class="card-date">Jan 1</span></div></article>
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">Doing Good</h2></div><span class="card-date">Dec 27</span></div><p class="card-content">The greatest good you can do for another is not just share your riches, but reveal to them their own.</p></article>
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">Ephemerality</h2></div><span class="card-date">Dec 23</span></div><p class="card-content">Nothing gold can stay.</p></article>
+    <article class="card"><div class="card-header"><div class="card-title-line"><h2 class="card-title">Shower Thoughts</h2></div><span class="card-date">Dec 25</span></div><p class="card-content">What if deja vu is just the universe's way of saying you're on the right path?</p></article>
+  </div>
+</body>
+</html>

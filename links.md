@@ -11,11 +11,11 @@ title_bottom: true
 <div class="media-controls">
   {% include inline-filter.html placeholder="links" target=".media-item" id="media" %}
   <div class="view-toggle">
-    <button class="view-btn active" data-view="grid" data-tooltip="Grid with embeds">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    </button>
-    <button class="view-btn" data-view="minimal" data-tooltip="Minimal text only">
+    <button class="view-btn active" data-view="minimal" data-tooltip="Minimal text only">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="14" y2="18"/></svg>
+    </button>
+    <button class="view-btn" data-view="grid" data-tooltip="Grid with embeds">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     </button>
     <button class="view-btn" data-view="scroll" data-tooltip="Single column scroll">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
@@ -29,7 +29,7 @@ title_bottom: true
   </button>
 </div>
 
-<div class="media-feed" id="mediaFeed" data-view="grid">
+<div class="media-feed" id="mediaFeed" data-view="minimal">
   {% assign sorted_media = site.links | sort: 'date' | reverse %}
   {% for item in sorted_media %}
     {% comment %} Extract embed URLs {% endcomment %}
@@ -160,30 +160,30 @@ title_bottom: true
       {% endif %}
     </div>
 
-    <!-- Minimal View Content (sentence-style masonry) -->
+    <!-- Minimal View Content (ink-minimal style) -->
     <div class="minimal-content">
-      <div class="minimal-meta">
-        {% if item.creator %}<span class="minimal-creator">{{ item.creator }}</span>{% endif %}
+      <div class="minimal-header">
+        <div class="minimal-title-line">
+          <a href="{{ item.url_link }}" class="minimal-link" target="_blank" rel="noopener">
+            <h3 class="minimal-title">{{ item.title | escape }}</h3>
+          </a>
+          {% if item.creator %}<span class="minimal-creator">{{ item.creator }}</span>{% endif %}
+        </div>
         <time class="minimal-date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d" }}</time>
       </div>
-      <a href="{{ item.url_link }}" class="minimal-link" target="_blank" rel="noopener">
-        <h3 class="minimal-title">{{ item.title | escape }}</h3>
-      </a>
       {% assign note = item.content | strip_html | strip %}
       {% if note != '' %}
         <div class="minimal-note">{{ note }}</div>
       {% endif %}
     </div>
 
-    <!-- Scroll View Content (Twitter-like single column, no embeds) -->
+    <!-- Scroll View Content (clean dividers style) -->
     <div class="scroll-content">
-      <div class="scroll-meta">
-        {% if item.creator %}<span class="scroll-creator">{{ item.creator }}</span>{% endif %}
-        <time class="scroll-date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d" }}</time>
-      </div>
+      <time class="scroll-date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %-d" }}</time>
       <a href="{{ item.url_link }}" class="scroll-link" target="_blank" rel="noopener">
         <h3 class="scroll-title">{{ item.title | escape }}</h3>
       </a>
+      {% if item.creator %}<div class="scroll-creator">{{ item.creator }}</div>{% endif %}
       {% assign note = item.content | strip_html | strip %}
       {% if note != '' %}
         <div class="scroll-note">{{ note }}</div>

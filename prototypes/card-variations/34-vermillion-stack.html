@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variation D: Vermillion Stack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --kala-sea: #7ba3a3;
+      --kala-rust: #a67b5b;
+      --kala-mountain: #8b7b7b;
+      --vermillion: #c8442e;
+      --paper: #f5f1e8;
+      --ink: #141414;
+      --text-xs: 0.64rem;
+      --text-sm: 0.8rem;
+      --text-base: 1rem;
+      --font-display: "Cormorant Garamond", serif;
+      --font-body: "Source Serif 4", serif;
+      --space-2: 0.25rem;
+      --space-3: 0.5rem;
+      --space-4: 0.75rem;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 2rem;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      color: var(--kala-mountain);
+      font-size: var(--text-sm);
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .feed {
+      columns: 4;
+      column-gap: 0.75rem;
+    }
+
+    /* VARIATION D: Vermillion Stack
+       - All stacked vertically with clear hierarchy
+       - Date small caps at top
+       - Title display font
+       - Author in kala-sea color, uppercase tiny
+       - Content last
+    */
+    .card {
+      break-inside: avoid;
+      margin-bottom: 0.75rem;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 3px;
+      padding: var(--space-3) var(--space-4);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      border-top: 3px solid var(--ink);
+    }
+
+    .card:nth-child(5n + 1) { border-top-color: var(--kala-sea); }
+    .card:nth-child(5n + 2) { border-top-color: var(--ink); }
+    .card:nth-child(5n + 3) { border-top-color: var(--kala-rust); }
+    .card:nth-child(5n + 4) { border-top-color: var(--vermillion); }
+    .card:nth-child(5n + 5) { border-top-color: var(--kala-mountain); }
+
+    .card-date {
+      font-size: 0.55rem;
+      color: var(--kala-mountain);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 2px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: var(--space-2);
+    }
+
+    .card-author {
+      font-size: 0.55rem;
+      color: var(--kala-sea);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+    }
+
+    .card-content {
+      font-size: var(--text-xs);
+      color: var(--kala-mountain);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) { .feed { columns: 2; } }
+    @media (max-width: 500px) { .feed { columns: 1; } }
+  </style>
+</head>
+<body>
+  <h1>Variation D: Vermillion Stack</h1>
+  <p class="subtitle">Clean vertical stack: date, title, author (kala-sea), content</p>
+
+  <div class="feed">
+    <!-- Links -->
+    <article class="card">
+      <div class="card-date">Jan 2</div>
+      <h2 class="card-title">A Brief Rant on the Future of Interaction Design</h2>
+      <div class="card-author">Bret Victor</div>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Jan 1</div>
+      <h2 class="card-title">Coming of Age in Second Life: An Anthropologist Explores the Virtually Human</h2>
+      <div class="card-author">Tom Boellstorff</div>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Dec 9</div>
+      <h2 class="card-title">3 Years of Building a Fashion Brand in 28 mins</h2>
+      <div class="card-author">Ken Sakata</div>
+      <p class="card-content">Incredibly fascinating video.</p>
+    </article>
+
+    <!-- Sentences -->
+    <article class="card">
+      <div class="card-date">Dec 29</div>
+      <h2 class="card-title">Bible Study</h2>
+      <p class="card-content">Why don't we treat our favorite books, ones supremely significant to us, as people treat the bible?</p>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Dec 28</div>
+      <h2 class="card-title">Consistency as Vice</h2>
+      <p class="card-content">A foolish consistency is the hobgoblin of little minds.</p>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Dec 27</div>
+      <h2 class="card-title">Doing Good</h2>
+      <p class="card-content">The greatest good you can do for another is not just share your riches, but reveal to them their own.</p>
+    </article>
+
+    <!-- Random -->
+    <article class="card">
+      <div class="card-date">Dec 26</div>
+      <h2 class="card-title">XiaoHongShu Observations</h2>
+      <p class="card-content">The algorithm knows me better than I know myself.</p>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Dec 25</div>
+      <h2 class="card-title">Shower Thoughts</h2>
+      <p class="card-content">What if deja vu is just the universe's way of saying you're on the right path?</p>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Jan 2</div>
+      <h2 class="card-title">Generative UI: LLMs are Effective UI Generators</h2>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Dec 24</div>
+      <h2 class="card-title">A Website On The Internet</h2>
+      <p class="card-content">Fish</p>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Dec 23</div>
+      <h2 class="card-title">Ephemerality</h2>
+      <p class="card-content">Nothing gold can stay.</p>
+    </article>
+
+    <article class="card">
+      <div class="card-date">Dec 22</div>
+      <h2 class="card-title">The Cathedral and the Bazaar</h2>
+    </article>
+  </div>
+</body>
+</html>

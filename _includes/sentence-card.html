@@ -10,9 +10,14 @@ Works for both sentences and random collections.
          data-url="{{ include.item.url | relative_url }}"
          data-type="{{ include.item.collection }}">
   <div class="sentence-entry-header">
-    <a href="{{ include.item.url | relative_url }}" class="sentence-link">
-      <h2 class="sentence-entry-title">{{ include.item.title | escape }}</h2>
-    </a>
+    <div class="sentence-entry-title-line">
+      <a href="{{ include.item.url | relative_url }}" class="sentence-link">
+        <h2 class="sentence-entry-title">{{ include.item.title | escape }}</h2>
+      </a>
+      {%- if include.item.creator -%}
+      <span class="sentence-entry-author">{{ include.item.creator }}</span>
+      {%- endif -%}
+    </div>
     <time class="sentence-entry-date" datetime="{{ include.item.date | date_to_xmlschema }}">
       {{ include.item.date | date: "%b %-d" }}
     </time>
