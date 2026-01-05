@@ -14,9 +14,9 @@ title_bottom: true
 
 </p>
 
-{% include collection-controls.html filter_placeholder="random thoughts" filter_target=".sentence-entry" filter_id="random" %}
+{% include collection-controls.html filter_placeholder="random thoughts" filter_target=".card-entry" filter_id="random" %}
 
-<div class="sentences-feed" id="randomFeed" data-view="masonry">
+<div class="card-feed" id="randomFeed" data-view="masonry">
   {% assign sorted_random = site.random | sort: 'date' | reverse %}
   {% for item in sorted_random %}
     {% include sentence-card.html item=item %}
@@ -28,4 +28,4 @@ title_bottom: true
 <p class="no-sentences">No random thoughts yet. The first one is always the hardest.</p>
 {% endif %}
 
-{% include collection-script.html feed_id="randomFeed" card_selector=".sentence-entry" controls_selector=".collection-controls" %}
+{% include collection-script.html feed_id="randomFeed" card_selector=".card-entry" controls_selector=".collection-controls" %}

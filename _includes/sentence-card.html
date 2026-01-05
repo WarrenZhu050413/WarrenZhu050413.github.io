@@ -1,30 +1,29 @@
 {%- comment -%}
-Reusable sentence/random card component.
+Reusable card component for sentences, random, and links.
 Usage: {% include sentence-card.html item=sentence %}
-Works for both sentences and random collections.
 {%- endcomment -%}
-<article class="sentence-entry"
+<article class="card-entry"
          data-title="{{ include.item.title | escape }}"
          data-content="{{ include.item.content | strip_html | strip | escape }}"
          data-date="{{ include.item.date | date_to_xmlschema }}"
          data-url="{{ include.item.url | relative_url }}"
          data-type="{{ include.item.collection }}">
-  <div class="sentence-entry-header">
-    <div class="sentence-entry-title-line">
-      <a href="{{ include.item.url | relative_url }}" class="sentence-link">
-        <h2 class="sentence-entry-title">{{ include.item.title | escape }}</h2>
+  <div class="card-header">
+    <div class="card-title-line">
+      <a href="{{ include.item.url | relative_url }}" class="card-link">
+        <h2 class="card-title">{{ include.item.title | escape }}</h2>
       </a>
       {%- if include.item.creator -%}
-      <span class="sentence-entry-author">{{ include.item.creator }}</span>
+      <span class="card-author">{{ include.item.creator }}</span>
       {%- endif -%}
     </div>
-    <time class="sentence-entry-date" datetime="{{ include.item.date | date_to_xmlschema }}">
+    <time class="card-date" datetime="{{ include.item.date | date_to_xmlschema }}">
       {{ include.item.date | date: "%b %-d" }}
     </time>
   </div>
   {%- assign content_stripped = include.item.content | strip_html | strip -%}
   {%- if content_stripped != "" -%}
-  <div class="sentence-entry-content">
+  <div class="card-content">
     {{ include.item.content }}
   </div>
   {%- endif -%}

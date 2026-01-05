@@ -8,9 +8,9 @@ title_bottom: true
 
 {% include collection-nav.html active="more" %}
 
-{% include collection-controls.html filter_placeholder="filter" filter_target=".sentence-entry" filter_id="more" %}
+{% include collection-controls.html filter_placeholder="filter" filter_target=".card-entry" filter_id="more" %}
 
-<div class="sentences-feed" id="moreFeed" data-view="masonry">
+<div class="card-feed" id="moreFeed" data-view="masonry">
   {%- comment -%} Collect all items {%- endcomment -%}
   {%- assign all_items = "" | split: "" -%}
   {%- for item in site.sentences -%}
@@ -39,4 +39,4 @@ title_bottom: true
 <p class="no-sentences">Nothing here yet.</p>
 {%- endif -%}
 
-{% include collection-script.html feed_id="moreFeed" card_selector=".sentence-entry" controls_selector=".collection-controls" %}
+{% include collection-script.html feed_id="moreFeed" card_selector=".card-entry" controls_selector=".collection-controls" %}
