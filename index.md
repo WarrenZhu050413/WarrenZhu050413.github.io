@@ -77,4 +77,3 @@ Begin every response with:
 | [phrase] | **[translation]** | **[translation]** | **[translation]** |
 
 Skip rows where all three are obvious cognates (e.g., university/università/université/Universität). Include brief parenthetical notes for grammatical divergences (case marking, word order, pronoun dropping, fused forms). Keep tables ≤10 rows, prioritizing: verb constructions, question formation, preposition differences, and words with distinct etymological roots across the three."
-

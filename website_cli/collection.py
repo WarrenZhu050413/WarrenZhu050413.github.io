@@ -10,11 +10,49 @@ from pathlib import Path
 
 import typer
 import yaml
+from prompt_toolkit import prompt as pt_prompt
+from prompt_toolkit.history import InMemoryHistory
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
 from .registry import CollectionConfig
+
+
+# Shared history for prompt_toolkit (enables up/down arrow for history)
+_prompt_history = InMemoryHistory()
+
+
+def readline_prompt(message: str, default: str = "", show_default: bool = True) -> str:
+    """Prompt with full readline support (arrow keys, history, etc).
+
+    Uses prompt_toolkit which properly handles:
+    - Left/right arrow for cursor movement
+    - Up/down arrow for history
+    - Home/End keys
+    - Ctrl+A/E for beginning/end of line
+    - Backspace and Delete
+
+    Falls back to typer.prompt for non-TTY (piped input).
+    """
+    import sys
+
+    # Fall back to typer.prompt for non-interactive use (piped input, etc.)
+    if not sys.stdin.isatty():
+        return typer.prompt(message, default=default, show_default=show_default)
+
+    if default and show_default:
+        display_msg = f"{message} [{default}]: "
+    elif message.endswith(": "):
+        display_msg = message
+    else:
+        display_msg = f"{message}: "
+
+    try:
+        result = pt_prompt(display_msg, default=default, history=_prompt_history)
+        return result if result else default
+    except (EOFError, KeyboardInterrupt):
+        raise typer.Abort()
 
 # Default project path
 DEFAULT_PROJECT = Path.home() / "Desktop/zPersonalProjects/WarrenZhu050413.github.io"
@@ -75,7 +113,8 @@ class Collection:
                 False, "--force", "-f", help="Skip confirmations (use with --auto)"
             ),
         ):
-            self.create_cmd(title, paste_and_push, auto, paste_and_push, force)
+            # paste_and_push enables both clipboard read AND auto-push
+            self.create_cmd(title, push=paste_and_push, auto=auto, paste=paste_and_push, force=force)
 
         @self.app.command()
         def edit(slug: str | None = typer.Argument(None, help="Item slug to edit")):
@@ -241,20 +280,64 @@ class Collection:
                 if force:
                     console.print("[red]No URL provided and --force requires a URL.[/red]")
                     raise typer.Exit(1)
-                url = typer.prompt("URL to extract")
+                url = readline_prompt("URL to extract")
 
             if not url.strip():
                 console.print("[red]URL cannot be empty.[/red]")
                 raise typer.Exit(1)
 
             # Extract metadata using AI
+            metadata = None
+            is_guessed = False
+
             try:
-                from .agent import extract_link_metadata
+                from .agent import extract_link_metadata, guess_metadata_from_url
 
                 console.print(f"\n[cyan]Extracting metadata from:[/cyan] {url}")
                 metadata = extract_link_metadata(url, console=console)
 
-                if metadata:
+                if not metadata:
+                    # Fallback: use LLM to guess metadata from URL alone
+                    console.print("[yellow]Could not extract metadata from page.[/yellow]")
+                    console.print("[cyan]Trying fallback: guessing from URL...[/cyan]")
+                    metadata = guess_metadata_from_url(url, console=console)
+                    is_guessed = True
+
+            except ImportError:
+                console.print("[red]Error: claude-agent-sdk not installed. Run: make dev[/red]")
+                raise typer.Exit(1)
+            except Exception as e:
+                console.print(f"[yellow]Extraction failed: {e}[/yellow]")
+                console.print("[cyan]Trying fallback: guessing from URL...[/cyan]")
+                try:
+                    from .agent import guess_metadata_from_url
+                    metadata = guess_metadata_from_url(url, console=console)
+                    is_guessed = True
+                except Exception:
+                    pass
+
+            # Handle extracted/guessed metadata (user interaction outside try block)
+            if metadata:
+                if is_guessed:
+                    console.print(
+                        Panel(
+                            f"[cyan]Title:[/cyan] {metadata.title}\n"
+                            f"[cyan]Creator:[/cyan] {metadata.creator}\n"
+                            f"[cyan]Tags:[/cyan] {metadata.tags or '(none)'}\n\n"
+                            f"[dim italic]⚠ Best guess from URL - please verify[/dim italic]",
+                            title="Guessed Metadata",
+                            border_style="yellow",
+                        )
+                    )
+                    # Always let user edit guessed metadata
+                    if force:
+                        console.print("[dim]Using guessed metadata (--force). Edit after if needed.[/dim]")
+                        title = metadata.title
+                        extra_values["creator"] = metadata.creator
+                    else:
+                        title = readline_prompt("Title", default=metadata.title)
+                        extra_values["creator"] = readline_prompt("Creator", default=metadata.creator)
+                else:
                     console.print(
                         Panel(
                             f"[cyan]Title:[/cyan] {metadata.title}\n"
@@ -264,40 +347,26 @@ class Collection:
                             border_style="green",
                         )
                     )
-
                     # Confirm or edit (skip if force)
                     if force:
                         title = metadata.title
                         extra_values["creator"] = metadata.creator
                     elif not typer.confirm("\nUse this metadata?", default=True):
-                        title = typer.prompt("Title", default=metadata.title)
-                        extra_values["creator"] = typer.prompt("Creator", default=metadata.creator)
+                        title = readline_prompt("Title", default=metadata.title)
+                        extra_values["creator"] = readline_prompt("Creator", default=metadata.creator)
                     else:
                         title = metadata.title
                         extra_values["creator"] = metadata.creator
 
-                    extra_values["url_link"] = url
-                else:
-                    console.print("[red]Could not extract metadata.[/red]")
-                    if force:
-                        raise typer.Exit(1)
-                    if typer.confirm("Continue with manual entry?", default=False):
-                        title = None
-                        auto = False  # Fall through to manual mode
-                    else:
-                        console.print("[dim]Skipped.[/dim]")
-                        raise typer.Exit(0)
-
-            except ImportError:
-                console.print("[red]Error: claude-agent-sdk not installed. Run: make dev[/red]")
-                raise typer.Exit(1)
-            except Exception as e:
-                console.print(f"[red]Extraction failed: {e}[/red]")
+                extra_values["url_link"] = url
+            else:
+                console.print("[red]Could not extract or guess metadata.[/red]")
                 if force:
                     raise typer.Exit(1)
                 if typer.confirm("Continue with manual entry?", default=False):
                     title = None
-                    auto = False
+                    auto = False  # Fall through to manual mode
+                    extra_values["url_link"] = url
                 else:
                     console.print("[dim]Skipped.[/dim]")
                     raise typer.Exit(0)
@@ -305,7 +374,7 @@ class Collection:
         # Standard flow: get title if not already set
         if not auto or title is None:
             if not title:
-                title = typer.prompt(self.config.title_prompt)
+                title = readline_prompt(self.config.title_prompt)
 
             if not title.strip():
                 console.print("[red]Title cannot be empty.[/red]")
@@ -319,12 +388,12 @@ class Collection:
                 prompt_name = field.prompt or field.name.replace("_", " ").title()
 
                 if field.required:
-                    val = typer.prompt(prompt_name)
+                    val = readline_prompt(prompt_name)
                     if not val.strip():
                         console.print(f"[red]{prompt_name} is required.[/red]")
                         raise typer.Exit(1)
                 else:
-                    val = typer.prompt(f"{prompt_name} (optional)", default="", show_default=False)
+                    val = readline_prompt(f"{prompt_name} (optional)", default="", show_default=False)
 
                 if val.strip():
                     extra_values[field.name] = val.strip()
@@ -333,7 +402,7 @@ class Collection:
         content = ""
         if not force:
             console.print("\n[dim]Add a reflection/description? [Enter to write, q to skip][/dim]")
-            choice = typer.prompt("", default="", show_default=False)
+            choice = readline_prompt("", default="", show_default=False)
 
             if choice.lower() != "q":
                 editor = os.environ.get("EDITOR", "vim")
@@ -364,7 +433,7 @@ class Collection:
             slug = suggested
         else:
             console.print(f"\n[cyan]Suggested filename:[/cyan] {suggested}")
-            slug = typer.prompt("Filename (this becomes the URL)", default=suggested)
+            slug = readline_prompt("Filename (this becomes the URL)", default=suggested)
             slug = slugify(slug)
 
         # Handle date prefix based on config
@@ -469,7 +538,7 @@ class Collection:
         if not slug:
             self.display_items(items)
             console.print()
-            choice = typer.prompt("Select item to edit (number or 'q' to quit)", default="1")
+            choice = readline_prompt("Select item to edit (number or 'q' to quit)", default="1")
 
             if choice.lower() == "q":
                 raise typer.Exit(0)
@@ -506,7 +575,7 @@ class Collection:
         if not slug:
             self.display_items(items)
             console.print()
-            choice = typer.prompt("Select item to delete (number or 'q' to quit)", default="q")
+            choice = readline_prompt("Select item to delete (number or 'q' to quit)", default="q")
 
             if choice.lower() == "q":
                 raise typer.Exit(0)
@@ -782,7 +851,7 @@ class Collection:
                 )
 
                 console.print("\n[dim]Options: \\[a]pprove, \\[s]kip, \\[e]dit[/dim]")
-                choice = typer.prompt("Action", default="a").lower()
+                choice = readline_prompt("Action", default="a").lower()
 
                 if choice in ("s", "skip"):
                     console.print("[yellow]Skipped[/yellow]")
@@ -1003,7 +1072,7 @@ print('OK')
                 console.print(
                     "\n[dim]Commands: [c]reate, [e]dit, [d]elete, p[u]ll, [p]review, pu[s]h, [q]uit[/dim]"
                 )
-            action = typer.prompt("Action", default="q")
+            action = readline_prompt("Action", default="q")
 
             if action.lower() in ("q", "quit"):
                 break

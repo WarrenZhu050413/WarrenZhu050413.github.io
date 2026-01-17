@@ -72,29 +72,19 @@ def is_pinterest_url(url: str) -> bool:
 def extract_spotify_metadata(url: str) -> "LinkMetadata | None":
     """Extract metadata from Spotify using oEmbed API.
 
+    Note: Spotify oEmbed only provides title, not artist info.
+    Returns None to fall through to LLM agent which can WebFetch
+    the page and extract artist from the HTML.
+
     Args:
         url: Spotify URL (track, album, artist, playlist)
 
     Returns:
-        LinkMetadata if successful, None otherwise
+        None - always falls through to LLM agent for complete metadata
     """
-    oembed_url = f"https://open.spotify.com/oembed?url={urllib.parse.quote(url, safe='')}"
-
-    try:
-        with urllib.request.urlopen(oembed_url, timeout=10) as response:
-            if response.status != 200:
-                return None
-
-            data = json.loads(response.read().decode("utf-8"))
-            title = data.get("title", "").strip()
-
-            if not title:
-                return None
-
-            # Spotify oEmbed doesn't provide artist info; user must fill in creator manually
-            return LinkMetadata(title=title, creator="", tags="music")
-    except (urllib.error.URLError, ValueError, json.JSONDecodeError):
-        return None
+    # Spotify oEmbed doesn't provide artist info, so we return None
+    # to let the LLM agent fetch the page and extract both title and artist
+    return None
 
 
 def resolve_pinterest_url(url: str) -> str | None:
@@ -343,6 +333,93 @@ class LinkAgent:
             LinkMetadata if extraction successful, None otherwise
         """
         return asyncio.run(self.extract_metadata(url))
+
+
+FALLBACK_SYSTEM_PROMPT = """You are a link metadata guesser. Given ONLY a URL (without being able to fetch the page), infer the best metadata you can from the URL structure, domain, and path.
+
+GUIDELINES:
+- Extract clues from the URL path, query parameters, and domain
+- For sites like SSRN, arXiv, etc., recognize the paper/preprint pattern
+- For YouTube, extract video ID context if available
+- For known domains (medium.com, substack, github, etc.), use domain conventions
+- Make reasonable guesses for title and creator based on URL patterns
+- If the URL has a slug (like "my-article-title"), convert it to a title
+
+OUTPUT FORMAT:
+Return ONLY a structured block like this:
+
+<metadata>
+<title>Best Guess Title</title>
+<creator>Best Guess Creator</creator>
+<tags>tag1, tag2</tags>
+</metadata>
+
+Do not include any other text before or after the XML block.
+"""
+
+
+class FallbackAgent:
+    """Claude agent for guessing link metadata from URL alone."""
+
+    def __init__(self, console: Console | None = None, model: str = "haiku"):
+        self.console = console or Console()
+        self.model = model
+
+    async def guess_metadata(self, url: str) -> LinkMetadata | None:
+        """Guess metadata from URL without fetching the page."""
+        options = ClaudeAgentOptions(
+            model=self.model,
+            system_prompt=FALLBACK_SYSTEM_PROMPT,
+            permission_mode="default",
+            allowed_tools=[],  # No tools - just analyze the URL
+            max_turns=1,
+        )
+
+        prompt = f"Guess metadata for this URL: {url}"
+        response_text = []
+
+        async with ClaudeSDKClient(options=options) as client:
+            await client.query(prompt)
+
+            async for msg in client.receive_response():
+                if isinstance(msg, AssistantMessage):
+                    for block in msg.content:
+                        if isinstance(block, TextBlock):
+                            response_text.append(block.text)
+
+        full_response = "".join(response_text)
+        return LinkMetadata.from_response(full_response)
+
+    def run(self, url: str) -> LinkMetadata | None:
+        return asyncio.run(self.guess_metadata(url))
+
+
+def guess_metadata_from_url(
+    url: str,
+    console: Console | None = None,
+    model: str = "haiku",
+) -> LinkMetadata | None:
+    """Generate best-guess metadata from URL alone (without fetching).
+
+    Used as fallback when page fetching fails.
+
+    Args:
+        url: The URL to analyze
+        console: Rich console for output
+        model: Claude model to use
+
+    Returns:
+        LinkMetadata with best guesses, None if analysis fails
+    """
+    console = console or Console()
+
+    try:
+        console.print("[dim]Generating best-guess metadata from URL...[/dim]")
+        agent = FallbackAgent(console=console, model=model)
+        return agent.run(url)
+    except Exception as e:
+        console.print(f"[dim]Fallback guess failed: {e}[/dim]")
+        return None
 
 
 def extract_link_metadata(
