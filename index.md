@@ -35,6 +35,8 @@ list_title: Writing
 
 I did Harvard's SPUDS during Summer 2024, sponsored by the great Xiao-Li Meng and under the incredible mentorship of Connor Jerzak. <a href="https://arxiv.org/abs/2411.02134" target="_blank">It</a> appeared in <a href="https://www.cclear.cc" target="_blank">clear2025</a>.
 
+Also with Connor, I contributed to <a href="https://github.com/cjerzak/fastrerandomize-software" target="_blank">fastrerandomize</a>, a GPU-accelerated R package for statistical rerandomization in experimental research. The <a href="https://arxiv.org/abs/2501.07642" target="_blank">paper</a> is forthcoming in SoftwareX.
+
 ## Teaching
 
 I had the pleasure to be a teaching assisstant for these wonderful courses:
@@ -64,7 +66,8 @@ I had a lot of free time on my hand during COVID and spent a lot of time reading
 
 I like to absorb vocabulary from different languages by setting my electronic's system language to them. I've graduated from the Spanish phase and I'm currently in the French/Italian/German phase. I've also found that it is a good way to hide response latency from Language Models. This is the prompt that I use:
 
-"### Language Mode
+```
+### Language Mode
 LANGUAGES=[Italian, French, German]
 Begin every response with:
 
@@ -76,4 +79,5 @@ Begin every response with:
 | -------- | ----------------- | ----------------- | ----------------- |
 | [phrase] | **[translation]** | **[translation]** | **[translation]** |
 
-Skip rows where all three are obvious cognates (e.g., university/università/université/Universität). Include brief parenthetical notes for grammatical divergences (case marking, word order, pronoun dropping, fused forms). Keep tables ≤10 rows, prioritizing: verb constructions, question formation, preposition differences, and words with distinct etymological roots across the three."
+Skip rows where all three are obvious cognates (e.g., university/università/université/Universität). Include brief parenthetical notes for grammatical divergences (case marking, word order, pronoun dropping, fused forms). Keep tables ≤10 rows, prioritizing: verb constructions, question formation, preposition differences, and words with distinct etymological roots across the three.
+```
