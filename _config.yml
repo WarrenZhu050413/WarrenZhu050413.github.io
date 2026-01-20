@@ -1,7 +1,7 @@
 title: Warren Zhu 朱富橙
-email: wzhu@college.harvard.edu 
-description: >- 
-  I like writing and I like messing around. fuchengwarrenzhu@gmail.com
+email: wzhu at college dot harvard dot edu
+description: >-
+  I like writing and I like messing around. fuchengwarrenzhu at gmail dot com
 baseurl: ""
 url: "https://www.warrenzhu.com"
 github_username: WarrenZhu050413
@@ -65,7 +65,7 @@ defaults:
 # Author information
 author:
   name: Warren Zhu (朱富橙)
-  email: wzhu@college.harvard.edu
+  email: wzhu at college dot harvard dot edu
 
 # Minima theme settings
 minima:
