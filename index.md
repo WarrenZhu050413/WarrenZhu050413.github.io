@@ -46,6 +46,8 @@ Spring 2025: Course Assisstant for Stat111 under Prof. Joe Blitzstein, and Stat2
 
 I have also been tutoring highschoolers after seeing how helpful I could be to my sister in thinking through her academic and life choices. It has been even more fun than teaching college students!
 
+I gave a guest lecture on Multi-Scale Causal ML + Satellites research for Stat288, and a guest lecture on Agentic AI Systems and Deployment for GOV355M (AI Programming Foundations).
+
 For Winter 2025, I went to Yerevan, Armenia to lead a two week Learning Lab on "Building Tools with GenAI" at TUMO. I had the sweetest experience that I wrote about [here](/posts/yerevan-bye/).
 
 ## Art
