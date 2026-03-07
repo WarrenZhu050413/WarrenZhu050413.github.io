@@ -16,7 +16,7 @@ list_title: Writing
 
 ## Currently
 
-- I'm exploring new AI interfaces with [Matthew Kotzbauer](https://matt.quest).
+- The key metric I've been optimizing for the past month is how many tokens I can usefully use. I'm now at 5 $200 Claude accounts, and through this have been developing a lightweight orchestration framework: [claude-ops](https://github.com/qbg-dev/claude-ops).
 
 ## Education
 
