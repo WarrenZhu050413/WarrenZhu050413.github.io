@@ -16,7 +16,7 @@ list_title: Writing
 
 ## Currently
 
-- The key metric I've been optimizing for the past month is how many tokens I can usefully use. I'm now at 5 $200 Claude accounts, and through this have been developing a lightweight orchestration framework: [claude-ops](https://github.com/qbg-dev/claude-ops).
+- The key metric I've been optimizing for the past month is how many tokens I can productively use. I'm now at 5 $200 Claude accounts, and through this have been developing a lightweight orchestration framework: [claude-ops](https://github.com/qbg-dev/claude-ops).
 
 ## Education
 
