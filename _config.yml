@@ -4,6 +4,7 @@ description: >-
   I like writing and I like messing around. fuchengwarrenzhu at gmail dot com
 baseurl: ""
 url: "https://www.warrenzhu.com"
+future: true
 github_username: WarrenZhu050413
 
 # Build settings
