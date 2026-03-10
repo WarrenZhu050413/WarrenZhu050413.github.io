@@ -280,7 +280,7 @@ def create_content(
         offset = parsed_date.strftime("%z")
         formatted_date = parsed_date.strftime(f"%Y-%m-%d %H:%M:%S {offset}")
     except (ValueError, AttributeError):
-        formatted_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S -0500")
+        formatted_date = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
 
     # Build frontmatter
     escaped_title = yaml_escape_title(candidate.subject)
