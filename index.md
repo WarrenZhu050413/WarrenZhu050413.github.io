@@ -16,7 +16,7 @@ list_title: Writing
 
 ## Currently
 
-I will be at Ciridae [TODO: add link] from June 2026. Helping companies transform themselves with technology.
+I will be at [Ciridae](https://www.ciridae.com) from June 2026. Helping companies transform themselves with technology.
 
 ## Education
 
