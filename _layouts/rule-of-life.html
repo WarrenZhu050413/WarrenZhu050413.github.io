@@ -1,0 +1,186 @@
+---
+layout: default
+---
+<article class="page-content rol-page">
+  {% if page.title %}
+  <header class="page-header">
+    <h1 class="page-title">{{ page.title | escape }}</h1>
+    {% if page.subtitle %}<p class="page-subtitle">{{ page.subtitle }}</p>{% endif %}
+  </header>
+  {% endif %}
+
+  <div class="page-body">
+    {{ content }}
+  </div>
+</article>
+
+<style>
+  .rol-page { max-width: 38rem; }
+  .rol-subtitle {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--kala-mountain);
+    margin-bottom: var(--space-8);
+    line-height: 1.5;
+  }
+  .rol-chat { display: flex; flex-direction: column; gap: var(--space-6); }
+  .rol-transcript {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    min-height: 6rem;
+  }
+  .rol-bubble {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  .rol-bubble--user {
+    color: var(--kala-sea);
+    font-style: italic;
+  }
+  .rol-bubble--user::before { content: "you  "; color: var(--kala-mountain); font-style: normal; }
+  .rol-bubble--assistant { color: var(--ink); }
+  .rol-bubble--assistant::before { content: "me   "; color: var(--kala-mountain); }
+  .rol-bubble--cancelled { opacity: 0.6; }
+  .rol-bubble--cancelled::after {
+    content: " (cancelled)";
+    color: var(--vermillion);
+    font-size: var(--text-xs);
+  }
+  .rol-form {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-end;
+    border-top: 1px solid var(--kala-mountain);
+    padding-top: var(--space-5);
+  }
+  #rol-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--ink);
+    resize: none;
+    outline: none;
+    padding: var(--space-3) 0;
+  }
+  #rol-input::placeholder { color: var(--kala-mountain); font-style: italic; }
+  #rol-send {
+    background: var(--vermillion);
+    color: var(--paper);
+    border: none;
+    width: 2rem; height: 2rem;
+    font-size: var(--text-lg);
+    cursor: pointer;
+  }
+  #rol-send:disabled { background: var(--kala-mountain); cursor: not-allowed; }
+  .rol-footnote {
+    font-size: var(--text-xs);
+    color: var(--kala-mountain);
+    font-family: var(--font-body);
+  }
+  .rol-footnote a { color: var(--kala-sea); }
+  /* Model picker in footnote */
+  #rol-model {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--kala-mountain);
+    background: transparent;
+    border: none;
+    border-bottom: 1px dotted var(--kala-mountain);
+    padding: 0 0.25rem;
+    cursor: pointer;
+  }
+  #rol-model:focus { outline: 2px solid var(--vermillion); outline-offset: 2px; }
+  #rol-custom-model {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: var(--text-xs);
+    color: var(--kala-mountain);
+    background: transparent;
+    border: none;
+    border-bottom: 1px dotted var(--kala-mountain);
+    padding: 0 0.25rem;
+    width: 12rem;
+    margin-left: 0.25rem;
+  }
+  #rol-custom-model:focus { outline: 2px solid var(--vermillion); outline-offset: 2px; }
+
+  /* ---- Key dialog: explicit colors so dark mode doesn't break it ---- */
+  dialog#rol-key-dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    max-width: 32rem;
+    width: min(90vw, 32rem);
+    max-height: 85vh;
+    padding: 2rem;
+    background: #f5f1e8;
+    color: #141414;
+    border: 1px solid #8b7b7b;
+    box-shadow: 0 12px 48px rgba(20, 20, 20, 0.35);
+    font-family: var(--font-body);
+    color-scheme: light;
+  }
+  dialog#rol-key-dialog::backdrop { background: rgba(20, 20, 20, 0.65); }
+  dialog#rol-key-dialog h3 {
+    font-family: var(--font-display);
+    font-size: 1.563rem;
+    margin: 0 0 1rem;
+    color: #141414;
+  }
+  dialog#rol-key-dialog p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin: 0 0 1rem;
+    color: #141414;
+  }
+  dialog#rol-key-dialog a {
+    color: #7ba3a3;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  dialog#rol-key-dialog a:hover,
+  dialog#rol-key-dialog a:focus { color: #c8442e; }
+  dialog#rol-key-dialog code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85em;
+    background: #ece7d8;
+    padding: 0 0.25rem;
+    color: #141414;
+  }
+  #rol-key-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #8b7b7b;
+    background: #ffffff;
+    color: #141414;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  #rol-key-input:focus {
+    outline: 2px solid #c8442e;
+    outline-offset: 2px;
+    border-color: #c8442e;
+  }
+  .rol-key-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+  .rol-key-actions button {
+    padding: 0.55rem 1.1rem;
+    border: 1px solid #8b7b7b;
+    background: #f5f1e8;
+    color: #141414;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .rol-key-actions button:focus {
+    outline: 2px solid #c8442e;
+    outline-offset: 2px;
+  }
+  #rol-key-save { background: #c8442e; color: #f5f1e8; border-color: #c8442e; }
+  #rol-key-save:hover { background: #b73a26; }
+</style>
