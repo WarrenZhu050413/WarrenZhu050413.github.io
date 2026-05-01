@@ -20,9 +20,9 @@ I will be an Engineer at [Ciridae](https://www.ciridae.com) from June 2026, work
 
 ## Education
 
-- **Harvard University** (Class of 2026)
-  - B.A. in Computer Science
-  - M.S. in Statistics
+**Harvard University ('26)**  
+B.A. in Computer Science  
+M.S. in Statistics
 
 ## Research
 
