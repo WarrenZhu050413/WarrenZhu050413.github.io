@@ -64,7 +64,7 @@ wide: true
 This is written as part of my graduation, and also for the final project of HSEMR-LE 76: Holy Envy. The formatting is partially done with Claude Opus 4.7 (Reasoning Effort High). The images attached are ones of significance to me, arranged in chronological order (except for the works of art, which I have decided the ordering).
 </aside>
 
-I’m almost 22. No longer 21. I’m not “just legal”, but “legal”. A legal entity is capable of taking on more responsibilities, and one of the things that he is foremost responsible for is his own story. Here are some stories from my past four years.
+I’m almost 22. No longer 21. I’m not “just legal”, but “legal”. Here are some stories from my past four years.
 
 <div class="aside-row right" markdown="1">
 <img class="aside-img" src="/assets/post_pictures/west-of-eden/2023-11-sunset.jpg" alt="Sunset, late 2023">
