@@ -115,10 +115,10 @@ I listen to a lot of *Goldberg Variations*, [*Async*](https://www.youtube.com/wa
 <div class="aside-row left" markdown="1">
 <img class="aside-img" src="/assets/post_pictures/west-of-eden/2025-01-nice.jpg" alt="Nice, France — January 2025">
 
-Upon reflection, I do not feel any Holy Envy. I do feel Holiness, and I’m glad to take them as they come. Throughout the class I’ve never envious—only glad. I don’t feel religious nor atheist, but take the truths of the goodness of the religious experience as self-evident.
+Upon reflection, I do not feel any Holy Envy. I do feel Holiness, and I’m glad to take them as they come. Throughout the class I’ve never been envious—only glad. I don’t feel religious nor atheist, but take the truths of the goodness of the religious experience as self-evident.
 </div>
 
-I don’t feel affinity with the mythologization of everyday life in *The Myth of Sisyphus*. It elevates reality to too high a plane for me. Similarly, I find the philosophizing about the holiness of the Sabbath boring. I do not particularly care for the illusory of the self or the world and don’t wish to spend much time thinking about it, nor do I find mystical experiences about the Christian God particularly compelling.
+I don’t feel affinity with the mythologization of everyday life in *The Myth of Sisyphus*. It elevates reality to too high a plane for me. Similarly, I find the philosophizing about the holiness of the Sabbath boring. I do not particularly care for the illusoriness of the self or the world and don’t wish to spend much time thinking about it, nor do I find mystical experiences about the Christian God particularly compelling.
 
 <div class="aside-row right" markdown="1">
 <img class="aside-img" src="/assets/post_pictures/west-of-eden/samtavro-interior.jpg" alt="Samtavro Convent, Mtskheta, Georgia — December 2025">
@@ -142,8 +142,8 @@ I takeaway from the class a better understanding of who I am through exposing my
 
 <table class="principles">
 <tr><td>a)</td><td><strong>Rest</strong></td><td>52 days of rest per year. I can allocate it however I want.</td></tr>
-<tr><td>b)</td><td><strong>Service</strong></td><td>For the closest family, I will sacrifice a unit of happiness to give them a unit of happiness. For close family and closest friends, I will sacrifice a unit of happiness to give them 1/3 a unit of happiness. For close-ish family and close friends, I will sacrifice a unit of happiness for 1/7 of their happiness. For other people, I will maintain a healthy British cordiality, which signifies through the magnitude of one’s politeness the finitude of one’s wish to form a continual relationship one with others.</td></tr>
-<tr><td>c)</td><td><strong>Truthfulness</strong></td><td>I will tell the truth for my closest family. I will not lie for my close family and closest friends. I will not lie about the substance of the statements I am uttering for my close-ish family and close friends. For others, I will make us cordial and happy.</td></tr>
+<tr><td>b)</td><td><strong>Service</strong></td><td>For the closest family, I will sacrifice a unit of happiness to give them a unit of happiness. For close family and closest friends, I will sacrifice a unit of happiness to give them 1/3 a unit of happiness. For close-ish family and close friends, I will sacrifice 1/7 of a unit of happiness for a unit of their happiness. For other people, I will maintain a healthy British cordiality, which signifies through the magnitude of one’s politeness the finitude of one’s wish to form a continual relationship one with others.</td></tr>
+<tr><td>c)</td><td><strong>Truthfulness</strong></td><td>I will tell the truth to my closest family. I will not lie to my close family and closest friends. I will not lie about the substance of the statements I am uttering to my close-ish family and close friends. For others, I will make us cordial and happy.</td></tr>
 <tr><td>d)</td><td><strong>Rituals</strong></td><td>Exercise everyday, Sleep before 12, no alarms, Don’t eat processed food, Spend time with my Girlfriend, Don’t casually social Drink (I get bad Asian flush).</td></tr>
 <tr><td>e)</td><td><strong>Work</strong></td><td>For a workday, work 12 hours a day (include Lunch and Dinner/other social events in a work context as work), and then no need to work more.</td></tr>
 <tr><td>f)</td><td><strong>Finance</strong></td><td>Save 50%, spend 10% on luxuriant surprises. Allocate the rest to everyday life. The leftover goes to either surprises or savings.</td></tr>
