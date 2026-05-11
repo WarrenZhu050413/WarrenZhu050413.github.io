@@ -16,7 +16,7 @@ list_title: Writing
 
 ## Currently
 
-I will be an Engineer at [Ciridae](https://www.ciridae.com) from June 2026, working on AI transformations.
+I will be an Engineer at [Ciridae](https://www.ciridae.com) from June 2026.
 
 ## Education
 
