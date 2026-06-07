@@ -8,15 +8,14 @@ list_title: Writing
   <img src="/assets/pictures/profile.png" alt="Warren Zhu" class="about-photo">
   <div class="about-intro">
     <h1>Warren 朱富橙</h1>
-    <p>I'm a senior at Harvard University and grew up in Hong Kong and Shenzhen. I want to build tools that help us understand things, communicate to others, and be happy.</p>
-    <p>I love and hate modern technology, and I am especially skeptical of (social) science. I split my time between playing with new stuff, reading about old things, and being with loved ones.</p>
+    <p>I like learning and writing about the world. I grew up in Hong Kong and Shenzhen. I love and hate modern technology. I am especially skeptical of (social) science. I like moving. I'm trying to talk less. I care about a small set of things very strongly and are not opinionated on most other things.</p>
     <p><strong><a href="/posts/">Latest posts →</a></strong></p>
   </div>
 </div>
 
 ## Currently
 
-I will be an Engineer at [Ciridae](https://www.ciridae.com) from June 2026.
+I've been an Engineer at [Ciridae](https://www.ciridae.com) since June 2026.
 
 ## Education
 
