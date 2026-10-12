@@ -9,7 +9,7 @@ import {
   MeshLambertMaterial, MeshBasicMaterial, ShaderMaterial, HemisphereLight, DirectionalLight,
   BackSide, DoubleSide, CanvasTexture, SpriteMaterial, Sprite, MathUtils, SRGBColorSpace, BufferGeometry,
   Float32BufferAttribute, LineSegments, LineBasicMaterial, Line, PointLight, PCFShadowMap, CatmullRomCurve3, TubeGeometry, Shape, ExtrudeGeometry,
-  ShapeGeometry, Raycaster, Plane, Vector2,
+  ShapeGeometry, Raycaster, Plane, Vector2, AdditiveBlending,
 } from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
 
@@ -388,36 +388,125 @@ function rowingBoat(scene, x, z) {
   return g;
 }
 
-// ---------------------------------------------------------------- Wong: a street seen through dusty glass
+// ---------------------------------------------------------------- Wong: a lane at night, seen through dusty glass
+// 看得到，抓不着. Rain under one lamp, the wet street holding its light; a woman
+// with a thermos passes slowly through it and is gone. On the near glass, dust,
+// and one drop that runs.
+function dustTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 512;
+  const g = c.getContext('2d'), r = (seed => () => (seed = seed * 16807 % 2147483647) / 2147483647)(17);
+  // A film of dust, thicker towards the edges, with fine specks and a few dried drops.
+  const film = g.createRadialGradient(256, 256, 90, 256, 256, 360);
+  film.addColorStop(0, 'rgba(196,190,174,.03)'); film.addColorStop(1, 'rgba(196,190,174,.16)');
+  g.fillStyle = film; g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 420; i++) { g.fillStyle = `rgba(210,205,190,${r() * .1})`; g.fillRect(r() * 512, r() * 512, 1 + r(), 1 + r()); }
+  for (let i = 0; i < 12; i++) { const x = r() * 512, y = r() * 512, w = 1.5 + r() * 2.5; g.strokeStyle = 'rgba(220,214,198,.12)'; g.lineWidth = 1; g.beginPath(); g.ellipse(x, y, w, w * 1.3, 0, 0, 7); g.stroke(); }
+  const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; return t;
+}
+
+function walker(colour) {
+  // A slim figure in a long close dress, a thermos in one hand.
+  const g = new Group(), m = lambert(colour), sphere = new SphereGeometry(1, 14, 10);
+  const dress = add(g, new CylinderGeometry(.24, .2, 1.25, 12), m, 0, .85, 0);
+  add(g, new CylinderGeometry(.2, .27, .5, 12), m, 0, 1.6, 0);
+  add(g, sphere, m, 0, 1.98, 0, .13, .15, .14);
+  add(g, sphere, m, -.08, 2.05, 0, .1, .09, .09);
+  const legs = [-1, 1].map(side => add(g, new CylinderGeometry(.05, .04, .3, 6), m, 0, .15, side * .07));
+  const arm = new Group(); arm.position.set(0, 1.7, .26); g.add(arm);
+  add(arm, new CylinderGeometry(.045, .04, .62, 6), m, 0, -.31, 0);
+  add(arm, new CylinderGeometry(.075, .075, .3, 10), lambert('#6a5e4c'), 0, -.7, 0);
+  return { group: g, legs, arm, dress };
+}
+
 function wong(scene) {
-  scene.fog = new Fog('#9fa29b', 10, 120);
-  skyDome(scene, '#8d938e', '#a5a69e');
-  scene.add(new HemisphereLight(new Color('#bdbab0'), new Color('#33393a'), 1.2));
-  const lamp = new DirectionalLight(new Color('#e9d3a6'), .7);
-  lamp.position.set(10, 20, 10);
-  scene.add(lamp);
-  const water_ = water(scene, 400, '#5f6863'); // the wet street
-  const wall = lambert('#4f5853');
-  const box = new BoxGeometry(1, 1, 1);
-  // Two walls of a narrow street, falling away into the haze.
+  scene.background = new Color('#1d2423');
+  scene.fog = new Fog('#1d2423', 12, 70);
+  scene.add(new HemisphereLight(new Color('#5d6b67'), new Color('#121716'), .7));
+  const lampColour = new Color('#e8c08a');
+  const lamp = new PointLight(lampColour, 120, 26, 1.6); lamp.position.set(3.2, 6.6, -14); scene.add(lamp);
+  const water_ = water(scene, 300, '#2a3231'); // the wet street
+  water_.material.uniforms.uFog.value.set('#1d2423');
+  const wall = lambert('#2e3735'), box = new BoxGeometry(1, 1, 1);
+  // Two walls of a narrow lane falling away into the dark, with a few windows lit.
   for (let i = 0; i < 9; i++) {
-    const z = -i * 14;
-    add(scene, box, wall, -9, rand(9, 15), z, 6, rand(18, 30), 13);
-    add(scene, box, wall, 9, rand(9, 15), z - 6, 6, rand(18, 30), 13);
+    const z = -i * 12;
+    add(scene, box, wall, -8.5, 10, z, 5, 20 + (i % 3) * 3, 11.6);
+    add(scene, box, wall, 8.5, 10, z - 5, 5, 20 + ((i + 1) % 3) * 3, 11.6);
   }
-  const windows = lights(scene, [[-5.9, 6, -4], [5.9, 9, -18], [-5.9, 11, -40], [5.9, 5, -60], [-5.9, 8, -82]], PAL.lamp, [1.2, 1.8]);
-  windows.forEach((w, i) => { w.rotation.y = i % 2 ? -Math.PI / 2 : Math.PI / 2; });
-  const fog = mist(scene, [[0, 1.5, -10, 30, 4], [0, 2, -40, 40, 6]], .25);
+  const windows = lights(scene, [[-5.95, 7.5, -8], [5.95, 10.5, -25], [-5.95, 4.6, -33], [5.95, 6, -52], [-5.95, 9, -61]], '#c9a36d', [1.1, 1.6]);
+  windows.forEach((w, i) => { w.rotation.y = i % 2 ? -Math.PI / 2 : Math.PI / 2; w.material.opacity = .32; });
+  // The lamp on its bracket, and its glow.
+  add(scene, box, lambert('#1f2625'), 5.4, 7.1, -14, 1.6, .12, .12);
+  const glow = new Sprite(new SpriteMaterial({ map: softSprite('#f2d29f'), transparent: true, opacity: .75, depthWrite: false }));
+  glow.position.copy(lamp.position); glow.scale.set(2.6, 2.6, 1); scene.add(glow);
+  // Rain, seen only where the lamp catches it.
+  const drops = 300, seeds = [];
+  for (let i = 0; i < drops; i++) seeds.push([3.2 + rand(-1, 1) * rand(1, 4.5), rand(0, 9), -14 + rand(-1, 1) * rand(1, 6), rand(.85, 1.15)]);
+  const rainGeo = new BufferGeometry(); rainGeo.setAttribute('position', new Float32BufferAttribute(new Float32Array(drops * 6), 3));
+  const rain = rainGeo.attributes.position.array, tint = new Float32Array(drops * 6);
+  // Each drop is only as bright as the lamp is near it.
+  seeds.forEach(([x, , z], i) => { const k = Math.max(0, 1 - Math.hypot(x - 3.2, z + 14) / 5.5) ** 1.6; tint.set([k, k * .92, k * .78, k * .4, k * .37, k * .3], i * 6); });
+  rainGeo.setAttribute('color', new Float32BufferAttribute(tint, 3));
+  const rainLines = new LineSegments(rainGeo, new LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .45, fog: false, blending: AdditiveBlending, depthWrite: false }));
+  rainLines.frustumCulled = false; scene.add(rainLines);
+  // Rings on the street where it lands under the lamp.
+  const rings = Array.from({ length: 14 }, (_, i) => {
+    const m = add(scene, new CylinderGeometry(1, 1, .01, 20, 1, true), new MeshBasicMaterial({ color: new Color('#c9b48d'), transparent: true, opacity: 0, side: DoubleSide }), 0, .03, 0);
+    m.userData = { x: rand(-2, 5.5), z: rand(-18, -9), phase: i / 14 }; return m;
+  });
+  // Signboards hung out over the lane, their colours gone soft in the wet.
+  for (const [x, y, z, c] of [[-5.3, 8.5, -11, '#8d4a43'], [5.3, 11, -30, '#4f7a66'], [-5.3, 9.5, -46, '#8b6c45']]) {
+    add(scene, box, lambert('#1d2322'), x, y, z, .3, 4.2, 1.3);
+    add(scene, box, new MeshBasicMaterial({ color: new Color(c), transparent: true, opacity: .42 }), x + (x < 0 ? .17 : -.17), y, z, .02, 3.8, 1.1);
+  }
+  const her = walker('#2a2e2e'); scene.add(her.group);
+  // The dusty pane we look through, close to us.
+  const pane = new Mesh(new PlaneGeometry(1, 1), new MeshBasicMaterial({ map: dustTexture(), transparent: true, depthWrite: false, fog: false }));
+  scene.add(pane);
+  const run = new Sprite(new SpriteMaterial({ map: softSprite('#e4ddc9'), transparent: true, opacity: .5, depthWrite: false, fog: false }));
+  scene.add(run);
+  const fog = mist(scene, [[1, 1.2, -20, 26, 3], [0, 2, -40, 34, 5]], .12);
+  const camLocal = new Vector3();
   return {
-    target: new Vector3(0, 5, -30), radius: 46, height: 4.5, fov: 34, yaw: 14, pitch: [3, 9], movables: [], water: water_,
-    tick(t) {
-      water_.material.uniforms.uTime.value = t * .6;
-      for (const w of windows) w.material.opacity = .4 + .3 * Math.sin(t * w.userData.speed + w.userData.phase) ** 2;
-      for (const m of fog) m.position.x = m.userData.x0 + Math.sin(t * .05 + m.userData.phase) * 4;
+    target: new Vector3(.8, 4, -22), radius: 30, height: 3.4, fov: 34, yaw: 12, pitch: [2, 7], water: water_, still: 16,
+    tick(t, s) {
+      water_.material.uniforms.uTime.value = t * .6 + s * .25;
+      lamp.intensity = 120 + Math.sin(s * 13.1) * 2 + Math.sin(s * 3.7) * 3;
+      for (let i = 0; i < drops; i++) {
+        const [x, y0, z, v] = seeds[i], y = 9 - ((9 - y0 + s * 7 * v) % 9);
+        rain.set([x, y, z, x - .02, y - .32, z], i * 6);
+      }
+      rainGeo.attributes.position.needsUpdate = true;
+      for (const r of rings) {
+        const u = r.userData, k = (s * .7 + u.phase) % 1;
+        r.position.set(u.x + Math.floor(s * .7 + u.phase) * 1.7 % 5, .03, u.z);
+        r.scale.set(.05 + k * .45, 1, .05 + k * .45); r.material.opacity = .35 * (1 - k);
+      }
+      // She comes out of the dark on the right, under the lamp, and away up the lane.
+      const k = clamp01((s - 1.5) / 13), e = k * k * (3 - 2 * k) * .7 + k * .3;
+      her.group.position.set(mix3(6.4, -1.5, e), 0, mix3(-9, -24, e));
+      her.group.rotation.y = Math.atan2(-(-24 + 9), -1.5 - 6.4) * -1 + Math.PI / 2 * 0;
+      her.group.lookAt(her.group.position.x - 7.9, 0, her.group.position.z - 15);
+      her.group.visible = s > 1.4 && k < 1;
+      const stride = Math.sin(s * 5.2);
+      her.legs[0].position.x = stride * .06; her.legs[1].position.x = -stride * .06;
+      her.dress.rotation.z = stride * .03;
+      her.arm.rotation.z = Math.sin(s * 5.2 + 1) * .08;
+      for (const m of fog) m.position.x = m.userData.x0 + Math.sin(s * .05 + m.userData.phase) * 2;
     },
-    camUniform: water_.material.uniforms.uCam,
+    // The pane sits just in front of the lens, whichever way it has turned.
+    camUniform: { value: { copy(p) {
+      camLocal.copy(p);
+      pane.position.copy(p).lerp(new Vector3(.8, 4, -22), .055);
+      pane.lookAt(p); const d = pane.position.distanceTo(p);
+      pane.scale.set(d * 1.6, d * .95, 1);
+      run.position.copy(pane.position).add(new Vector3(.3 * d * .1, (.12 - ((performance.now() / 1000 * .02) % .3)) * d, 0));
+      run.scale.set(d * .012, d * .02, 1);
+      water_.material.uniforms.uCam.value.copy(p);
+    } } },
   };
 }
+const mix3 = (a, b, t) => a + (b - a) * t;
 
 // ---------------------------------------------------------------- helpers for lit rooms and long things
 function shade(obj, cast = true, receive = true) { obj.traverse(o => { if (o.isMesh) { o.castShadow = cast; o.receiveShadow = receive; } }); return obj; }
@@ -675,7 +764,7 @@ function burns(scene) {
   const mouth = new Vector3();
   const birds = rooks(scene, new Vector3(-4, 7, -22));
   return {
-    target: new Vector3(-.6, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 30,
+    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 30,
     tick(t, s) {
       const gust = Math.sin(s * .3) * .5 + .5;
       for (const st of stalks) st.rotation.z = st.userData.base + Math.sin(s * 1.4 + st.position.x * .4 + st.userData.phase * .3) * .09 * (.4 + gust);

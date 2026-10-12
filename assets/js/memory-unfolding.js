@@ -366,7 +366,8 @@
       // Earlier prints recede while another passage needs the reading space.
       const collected=current>=scenes.length-.1;
       const restingOpacity=collected?.44:.035;
-      const opacity=mix(mix(0,.68,smooth(p/.16)),restingOpacity,settling);
+      // The present's dark room stays faint behind the poem until the end draws it in.
+      const opacity=mix(mix(0,s.id==='present'?.4:.68,smooth(p/.16)),restingOpacity,settling);
       s.art.style.transform=`translate3d(${x-s.width/2}px,${y-s.width*9/32}px,0) rotate(${rotation}deg) scale(${scale})`;
       s.art.style.opacity=String(opacity);
       s.art.style.pointerEvents=p<.95||collected?'auto':'none';
