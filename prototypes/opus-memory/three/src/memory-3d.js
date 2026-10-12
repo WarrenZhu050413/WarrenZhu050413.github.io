@@ -1346,7 +1346,7 @@ function mountTrain() {
     // From where the picture is read (its focus on the page), not where it happens to be mid-arrival.
     const sx = .27, sy = .5;
     const screen = [[sx, sy], [sx - .07, sy - .11], [Math.max(.05, sx - .17), sy - .02], [Math.max(.07, sx - .13), sy + .2],
-      [sx + .02, .84], [.36, .9], [.56, .91], [.75, .86], [.9, .8], [1.02, .88], [1.16, 1.08]];
+      [sx + .02, .86], [.36, .92], [.56, .93], [.74, .91], [.88, .89], [1.0, .95], [1.14, 1.12]];
     curve = new CatmullRomCurve3(screen.map(([x, y]) => onFloor(x, y)), false, 'centripetal');
     length = curve.getLength();
     uniforms = { uHead: { value: 0 }, uTail: { value: -1 }, uFog: { value: paper }, uFogRange: { value: new Vector2(30, 110) } };
