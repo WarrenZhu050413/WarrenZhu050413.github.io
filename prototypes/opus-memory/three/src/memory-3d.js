@@ -586,18 +586,26 @@ function thackeray(scene) {
     for (let k = 0; k <= 8; k++) { const v = a.clone().lerp(b, k / 8); v.y -= Math.sin(Math.PI * k / 8) * .7; seg.push(v); }
     wires.push(scene.add(line(seg, '#4a524e', .7)).children.at(-1));
   }
-  // One person on the crest, looking over to the other side.
+  // One person climbs the bank, and stands on the crest looking over to the other side.
   const watcher = figure('#2c3330', 1.7);
-  const wp = curve.getPointAt(.53); watcher.position.set(wp.x, 6, wp.z); watcher.rotation.y = Math.PI;
+  const wp = curve.getPointAt(.53), wt = curve.getTangentAt(.53), wn = new Vector3(-wt.z, 0, wt.x).normalize();
+  const bank = off => off <= 2.2 ? 6 : Math.max(0, 6 * (11 - off) / 8.8);
   scene.add(watcher);
   // The old world on this side: a hedge and two trees, already half gone in the mist.
-  add(scene, new BoxGeometry(160, 2.2, 2.2), lambert('#59635c'), -80, 1.1, 38);
-  woods(scene, [[-46, 44, 4], [-20, 58, 5]], '#56615a');
+  // A cottage and its trees, the old world on this side, half gone in the mist.
+  woods(scene, [[62, 2, 4], [84, 8, 5], [104, 0, 4], [130, 12, 6]], '#5f6a62');
+  add(scene, new BoxGeometry(5, 3.2, 4), lambert('#646d67'), 95, 1.6, 10);
+  add(scene, new ConeGeometry(3.6, 2.2, 4), lambert('#59625c'), 95, 4.3, 10).rotation.y = Math.PI / 4;
+  // The scene is seen along the bank, so that it runs away from us into nothing.
+  scene.rotation.y = .62;
   return {
-    target: new Vector3(0, 5, -18), radius: 92, height: 3, fov: 30, yaw: 30, pitch: [2, 17], still: 20,
+    target: new Vector3(-14, 4, -4), radius: 70, height: 2.6, fov: 32, yaw: 24, pitch: [2, 12], still: 20,
     tick(t, s) {
       // Only the wires move a little; the train has gone out of this picture.
       wires.forEach((w, i) => { w.position.y = Math.sin(s * .8 + i * .7) * .03; });
+      const climb = seg(s, 1.5, 16), off = 15 - climb * 14.4, walking = climb > 0 && climb < 1;
+      watcher.position.copy(wp).addScaledVector(wn, off).setY(bank(off) + (walking ? Math.abs(Math.sin(s * 3.6)) * .06 : 0));
+      watcher.rotation.z = walking && off > 2.2 ? -.18 : 0;
     },
   };
 }
@@ -764,7 +772,7 @@ function burns(scene) {
   const mouth = new Vector3();
   const birds = rooks(scene, new Vector3(-4, 7, -22));
   return {
-    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 30,
+    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6,
     tick(t, s) {
       const gust = Math.sin(s * .3) * .5 + .5;
       for (const st of stalks) st.rotation.z = st.userData.base + Math.sin(s * 1.4 + st.position.x * .4 + st.userData.phase * .3) * .09 * (.4 + gust);
@@ -1220,11 +1228,13 @@ function mount(art, build) {
   apply();
 }
 
+const stillness = matchMedia('(prefers-reduced-motion: reduce)');
 for (const art of document.querySelectorAll('.memory-essay[data-visuals="living"] .memory-art')) {
   const key = Object.keys(WORLDS).find(k => art.classList.contains(k));
   if (!key) continue;
+  // Without motion each world is still drawn once, at the moment its story rests, and printed.
   const ready = () => {
-    if (art.dataset.state !== 'present') return;
+    if (art.dataset.state !== 'present' && !(stillness.matches && art.dataset.state === 'set')) return;
     watcher.disconnect();
     mount(art, WORLDS[key]);
   };
