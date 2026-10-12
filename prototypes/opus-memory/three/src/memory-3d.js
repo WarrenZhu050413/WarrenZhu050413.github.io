@@ -660,7 +660,7 @@ function fieldMouse(colour = '#7d837b') {
   const tmp = new Vector3();
   // sit: 0 on all fours, 1 sitting up; paws: 'groom', 'hold' or 'hang'.
   function pose({ phase = 0, moving = 0, sit = 0, paws = 'hold', s = 0, hang = 0, look = 0 }) {
-    pivot.rotation.z = sit * .95 - hang * .12;
+    pivot.rotation.z = sit * .95 - hang * .3;
     head.rotation.z = -sit * .55 + look;
     for (const leg of legs) {
       const hip = new Vector3(leg.x, .4, leg.z);
@@ -806,9 +806,10 @@ function burns(scene) {
         mouse.pose({ phase: go * (M0.distanceTo(M1) / .3) / .3, moving: go > 0 && go < 1 ? 1 : 0, sit, paws: s < 3.4 ? 'groom' : 'hold', s,
           look: sit > .5 ? Math.sin(s * 3.1) * .04 : Math.max(0, Math.sin(s * 2.3)) ** 8 * .2 });
       } else {
-        const scruff = new Vector3(0, .26, 0);
+        const scruff = new Vector3(0, .3, 0);
         mouse.root.position.copy(ground).lerp(mouth.clone().sub(scruff), lift);
-        mouse.root.rotation.set(0, Math.PI + lift * (heading - Math.PI - heading1 * 0), 0);
+        // Held across the mouth, as a cat carries a kitten.
+        mouse.root.rotation.set(0, Math.PI + lift * (heading + Math.PI / 2 - Math.PI), 0);
         mouse.pose({ s, hang: lift, sit: 0 });
       }
       for (const b of birds) {
