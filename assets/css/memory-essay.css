@@ -1,0 +1,96 @@
+/* A continuous essay, with faded, duotone impressions of each passage. */
+.memory-page::before,.memory-page::after{display:none}
+.container--memory{max-width:1480px;padding:0 36px 70px}
+.memory-post{color:var(--ink);--print-ink:#8a969b;--print-sky:#819d9d;--print-earth:#b5a2a0;--print-silver:#c3bcb0;--print-green:#87a293}
+.memory-post .post-header{max-width:740px;margin:auto;padding:60px 0 30px;border:0}
+.memory-post .post-title{font-size:clamp(44px,5.5vw,76px);font-weight:400;line-height:1.1}
+.memory-post .post-meta{font-size:14px;color:var(--ink-muted)}
+.memory-post .memory-essay p,.memory-post .memory-essay blockquote{font-family:"Source Serif 4","Noto Serif SC",serif;font-size:20px;line-height:1.85;font-weight:400;font-style:normal;color:inherit;letter-spacing:normal}
+.memory-post .memory-essay p{margin:0 0 1.3em}
+.memory-post .memory-essay p:last-child{margin-bottom:0}
+.memory-post .memory-essay blockquote{padding:0;border:0;margin:0}
+.memory-post .memory-essay figure{display:flex;flex-direction:column;margin:0;scroll-margin-top:85px}
+.memory-post .memory-essay figcaption{display:none}
+.memory-poem-link,.memory-poem-link:visited{color:inherit!important;text-decoration:none!important;border:0!important}
+.memory-poem-link:hover{text-decoration:underline!important;text-decoration-color:var(--print-ink)!important;text-underline-offset:6px}
+.memory-post .memory-essay cite{font-style:normal}
+.memory-chapter{border:0;padding:0}
+.memory-anchor{max-width:650px;margin:110px auto 70px}
+.memory-anchor-core{position:relative}
+.memory-stream{margin:0}
+/* The centre belongs to the essay; quotations occupy the outer reading lanes. */
+.memory-passage{width:100%;max-width:none;margin:0 0 120px}
+.memory-post .memory-essay .quotation blockquote,.memory-post .memory-essay .quotation blockquote p{font-size:18px;line-height:1.75;font-weight:400}
+.memory-post .memory-essay .quotation blockquote{position:relative;width:44%;max-width:540px;margin:0;padding:0 0 0 32px;box-sizing:border-box}
+.memory-post .quotation[data-side="left"] blockquote{align-self:flex-start}
+.memory-post .quotation[data-side="right"] blockquote{align-self:flex-end}
+.memory-post .quotation .memory-art{width:60%;align-self:flex-start}
+.memory-post .quotation[data-side="right"] .memory-art{align-self:flex-end}
+.memory-opening{max-width:760px;margin:55px auto 120px}
+.memory-anchor:has(.quotation){max-width:none;margin:0 0 120px}
+.memory-art{order:-1;position:relative;isolation:isolate;overflow:hidden;margin:0 -12px 40px;color:var(--print-ink);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 35%,rgba(0,0,0,.92) 56%,rgba(0,0,0,.4) 77%,transparent 100%);--passage:0;--veil:.12;--blur:0px;--clear-x:-200px;--clear-y:-200px;--clear-radius:0px}
+.memory-art svg{display:block;width:100%;height:auto;overflow:visible}
+.memory-art::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(117deg,rgba(162,174,174,.02) 22%,rgba(175,188,185,.12) 51%,rgba(116,126,143,.07));backdrop-filter:blur(var(--blur));opacity:var(--veil);mask-image:radial-gradient(circle var(--clear-radius) at var(--clear-x) var(--clear-y),transparent 50%,#000 100%);transition:opacity .5s,backdrop-filter .6s}
+.memory-art.is-clearing::after{opacity:.8}
+.memory-art.art-wong{--veil:.8;--blur:3px;cursor:crosshair}
+.is-motion .memory-art{cursor:ew-resize}
+.is-motion .memory-art.art-wong{cursor:crosshair}
+.memory-art:focus-visible{outline:1px solid var(--print-ink);outline-offset:2px}
+.print-impression{fill:none;stroke:var(--print-ink);stroke-width:.7;stroke-linecap:round;stroke-linejoin:round}
+.print-grain{opacity:.09;mix-blend-mode:soft-light;pointer-events:none}
+.print-dust{fill:var(--print-silver);opacity:.25;pointer-events:none}
+.ink-line,.land-line,.page-line,.branch-line,.nest-line,.water-line,.sleeper-line{fill:none;stroke:var(--print-ink);stroke-width:.65}
+.land-line{opacity:.45}.page-line{opacity:.45}.water-line{opacity:.4;stroke:var(--print-sky)}.nest-line{opacity:.55}
+.ink-wash,.building-wash,.book-wash{fill:var(--print-silver);fill-opacity:.1;stroke-width:.7}
+.earth-wash{fill:var(--print-sky);fill-opacity:.1;stroke:none}
+.leaf-wash{fill:var(--print-green);fill-opacity:.26;stroke:var(--print-green);stroke-opacity:.35;stroke-width:.4}
+.window-mark{stroke:var(--print-ink);stroke-width:.9;fill:var(--print-ink);fill-opacity:.12}
+.tree-stem{stroke:var(--print-ink);stroke-width:1.5;fill:none}
+.empty-room{fill:var(--print-ink);fill-opacity:.16;stroke-width:.4}
+.tea-stain{fill:none;stroke:var(--print-earth);stroke-width:3;stroke-opacity:.42}
+.spill-line{fill:none;stroke:var(--print-earth);stroke-width:1.8;stroke-opacity:.5}
+.window-frame,.bridge-line,.pane-bar{stroke:var(--print-ink);stroke-width:1.5;fill:none;opacity:.7}
+.glass-outline,.pane-edge{stroke:var(--print-silver);stroke-width:.8;opacity:.45;fill:none}
+.cup-line{stroke:var(--print-silver);stroke-width:1.2;fill:var(--print-silver);fill-opacity:.03}
+.rail-line{stroke:var(--print-ink);stroke-width:2.2;fill:none}.sleeper-line{stroke-width:1.3;opacity:.6}
+.dock-line,.oar-line{stroke:var(--print-ink);stroke-width:.9;fill:none}
+.boat-wash,.mouse-mark{fill:var(--print-ink);fill-opacity:.8;stroke-width:.5}
+.wing-wash{stroke:var(--print-sky);stroke-width:1;fill:var(--print-sky);fill-opacity:.27}
+.falling-leaf{stroke:var(--print-earth);fill:var(--print-earth);fill-opacity:.27}
+.green-light{stroke:none;fill:var(--print-green);filter:drop-shadow(0 0 5px var(--print-green))}
+.print-far{opacity:.55}.print-reflection{opacity:.2;filter:blur(1.2px)}
+.print-away{opacity:calc(1 - var(--passage) * .65);filter:blur(calc(var(--passage) * 1.8px));transition:opacity .35s,filter .35s}
+.print-growing{transform-origin:474px 292px;transform:scale(calc(.85 + var(--passage) * .15));transition:transform .5s}
+.print-travel{transform:translateX(calc(var(--passage) * 12px));transition:transform .4s}
+.print-boat{transform:translateX(calc(var(--passage) * -55px));transition:transform .4s}
+.print-cup{transform:translateX(calc(var(--passage) * 7px));opacity:calc(1 - var(--passage) * .25)}
+.is-motion .memory-art .butterfly-mark{animation:print-breath 4s ease-in-out infinite alternate;transform-origin:360px 137px}
+@keyframes print-breath{from{opacity:.65}to{opacity:1}}
+.memory-essay:not(.is-motion) .print-away,.memory-essay:not(.is-motion) .print-cup{opacity:1;filter:none}
+.memory-essay:not(.is-motion) .memory-art::after{backdrop-filter:none;opacity:.15}
+.memory-art.is-kept::after{opacity:0;backdrop-filter:none}
+.memory-art.is-kept .print-away,.memory-art.is-kept .print-cup{opacity:1;filter:none}
+.kept-sheet{fill:var(--print-silver);fill-opacity:.025;stroke:var(--print-silver);stroke-opacity:.3;stroke-width:.7;transform:translate(calc(var(--passage) * var(--sheet) * -3px),calc(var(--passage) * var(--sheet) * -2px));transition:transform .5s}
+.writing-line{fill:none;stroke:var(--print-ink);stroke-width:1;stroke-dasharray:1;stroke-dashoffset:calc(1 - clamp(0,calc(var(--passage) * 3 - var(--line) * .13),1));transition:stroke-dashoffset .6s}
+.memory-art.is-kept .writing-line,.memory-essay:not(.is-motion) .writing-line{stroke-dashoffset:0}
+@media(max-width:760px){.container--memory{padding:0 24px 40px}.memory-post .post-header{padding-top:30px}.memory-anchor{margin:70px 0 50px}.memory-passage{margin-bottom:80px}.memory-art{margin-left:0;margin-right:0}}
+
+.memory-post .memory-own p{font-weight:450}
+.memory-post .memory-essay blockquote{color:color-mix(in srgb,var(--ink) 87%,var(--ink-muted))}
+.is-motion .memory-own p,.is-motion blockquote p{opacity:var(--clarity,1);transform:translateY(calc((1 - var(--clarity,1)) * 9px));transition:opacity 1.2s,transform 1.2s}
+
+@media(max-width:900px){
+ .memory-post .memory-essay .quotation blockquote{width:85%;max-width:540px}
+ .memory-post .quotation .memory-art{width:100%}
+}
+
+/* Encounters are faint traces within the scene, using its existing passage. */
+.memory-encounter{position:absolute;z-index:5;pointer-events:none;opacity:0;animation:memory-encounter 3.6s ease-out forwards}
+.memory-encounter-text{width:260px;max-width:40%;color:var(--ink);font-family:"Source Serif 4","Noto Serif SC",serif;font-size:15px;line-height:1.6;transform:translate(-30%,-115%);text-shadow:0 1px 12px var(--bg)}
+.memory-encounter-ripple{width:70px;height:20px;margin:-10px 0 0 -35px;border:1px solid var(--print-ink);border-radius:50%}
+@keyframes memory-encounter{0%{opacity:0;filter:blur(3px)}20%{opacity:.68;filter:blur(0)}65%{opacity:.45}100%{opacity:0;filter:blur(3px)}}
+.memory-art[data-state="present"] .memory-movable{cursor:grab;pointer-events:all;touch-action:none}
+.memory-art.memory-dragging,.memory-art.memory-dragging .memory-movable{cursor:grabbing}
+.memory-art[data-state="set"] .memory-movable{pointer-events:none}
+@media(prefers-reduced-motion:reduce){.memory-encounter{display:none}}
+.memory-art svg rect[filter]{pointer-events:none}

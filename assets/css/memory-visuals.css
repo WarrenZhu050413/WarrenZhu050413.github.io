@@ -1,0 +1,111 @@
+/* Living scenes: each picture is alive only while it is the reader's present.
+   Once read past it sets on the frame it was left at, cures to a silver print,
+   and glass forms over it. State lives in data-state: unseen | present | set. */
+.memory-essay[data-visuals="living"] .memory-art{
+  --look-x:0;--look-y:0;position:relative;isolation:isolate;overflow:visible;cursor:default;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120' preserveAspectRatio='none'%3E%3Cfilter id='f' x='-30%25' y='-30%25' width='160%25' height='160%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.03 .05' numOctaves='3' seed='5'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='18' xChannelSelector='R' yChannelSelector='G'/%3E%3CfeGaussianBlur stdDeviation='10 6'/%3E%3C/filter%3E%3Cg filter='url(%23f)'%3E%3Cellipse cx='100' cy='60' rx='66' ry='37'/%3E%3Cellipse cx='60' cy='62' rx='30' ry='26'/%3E%3Cellipse cx='140' cy='58' rx='30' ry='27'/%3E%3Cellipse cx='100' cy='42' rx='56' ry='22'/%3E%3C/g%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120' preserveAspectRatio='none'%3E%3Cfilter id='f' x='-30%25' y='-30%25' width='160%25' height='160%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.03 .05' numOctaves='3' seed='5'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='18' xChannelSelector='R' yChannelSelector='G'/%3E%3CfeGaussianBlur stdDeviation='10 6'/%3E%3C/filter%3E%3Cg filter='url(%23f)'%3E%3Cellipse cx='100' cy='60' rx='66' ry='37'/%3E%3Cellipse cx='60' cy='62' rx='30' ry='26'/%3E%3Cellipse cx='140' cy='58' rx='30' ry='27'/%3E%3Cellipse cx='100' cy='42' rx='56' ry='22'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.memory-essay[data-visuals="living"] .memory-art svg{display:block;width:100%;height:auto;transform:none;
+  transition:filter 2.8s ease,opacity 1.6s ease}
+
+/* Film grain over every scene, in all states. */
+.memory-essay[data-visuals="living"] .memory-art::before{display:block;content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .44 0 0 0 0 .4 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+
+/* The glass: invisible until the scene sets. Replaces the old veil entirely. */
+.memory-essay[data-visuals="living"] .memory-art::after{display:block;content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  -webkit-backdrop-filter:none;backdrop-filter:none;-webkit-mask-image:none;mask-image:none;opacity:0;transition:opacity 2.6s ease 0.4s;
+  background:
+    linear-gradient(112deg,transparent 26%,rgba(255,255,255,.2) 38%,rgba(255,255,255,.05) 45%,transparent 52%,rgba(255,255,255,.1) 68%,transparent 74%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 .97 0 0 0 16 -13.4'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23d)'/%3E%3C/svg%3E"),
+    linear-gradient(rgba(214,222,219,.16),rgba(214,222,219,.16))}
+
+.memory-essay[data-visuals="living"] .memory-art[data-state="unseen"] svg{filter:saturate(.55) contrast(.9) brightness(1.05);opacity:.6}
+.memory-essay[data-visuals="living"] .memory-art[data-state="present"] svg{filter:none;opacity:1}
+.memory-essay[data-visuals="living"] .memory-art[data-state="set"] svg{filter:grayscale(.86) sepia(.24) contrast(.88) brightness(1.06) blur(.35px);opacity:.92}
+.memory-essay[data-visuals="living"] .memory-art[data-state="set"]::after{display:block;opacity:1}
+
+/* Depth: layers answer the pointer only while present; when set they stay where they were. */
+.memory-art .mv-d0,.memory-art .mv-d1,.memory-art .mv-d2,.memory-art .mv-d3,.memory-art .mv-d4{transition:transform 5.5s cubic-bezier(.2,.75,.25,1)}
+.memory-art .mv-d0{transform:translate(calc(var(--look-x) * -10px + var(--pass,.5) * 12px),calc(var(--look-y) * -6px))}
+.memory-art .mv-d1{transform:translate(calc(var(--look-x) * -26px + var(--pass,.5) * 24px),calc(var(--look-y) * -10px))}
+.memory-art .mv-d2{transform:translate(calc(var(--look-x) * -54px + var(--pass,.5) * 44px),calc(var(--look-y) * -16px))}
+.memory-art .mv-d3{transform:translate(calc(var(--look-x) * -96px + var(--pass,.5) * 80px),calc(var(--look-y) * -26px))}
+.memory-art .mv-d4{transform:translate(calc(var(--look-x) * -170px + var(--pass,.5) * 150px - 75px),calc(var(--look-y) * -40px))}
+
+/* Breath on the glass, and the marks a touch leaves there. */
+/* One faint breath follows the pointer instead of accumulating fog stamps. */
+.mv-breath{position:absolute;z-index:4;width:160px;height:110px;margin:-55px 0 0 -80px;pointer-events:none;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(238,240,235,.18),rgba(238,240,235,.07) 55%,transparent);filter:blur(10px);
+  opacity:0;transition:opacity 1.2s ease}
+.mv-breath.is-visible{opacity:1}
+.mv-print{position:absolute;z-index:4;width:46px;height:58px;margin:-29px 0 0 -23px;pointer-events:none;opacity:0;animation:mv-print 1.2s ease-out forwards}
+@keyframes mv-print{to{opacity:.5}}
+
+/* Brideshead opens wider than the reading column. */
+.memory-passage:has(.art-waugh2){max-width:none}
+.memory-post .memory-essay[data-visuals="living"] .art-waugh2{width:min(1320px,calc(100vw - 40px));align-self:center;margin:0 0 34px}
+
+@media (prefers-reduced-motion:reduce){
+  .memory-essay[data-visuals="living"] .memory-art svg,.memory-essay[data-visuals="living"] .memory-art::after,
+  .memory-art .mv-d0,.memory-art .mv-d1,.memory-art .mv-d2,.memory-art .mv-d3,.memory-art .mv-d4{transition:none}
+  .memory-art .mv-d0,.memory-art .mv-d1,.memory-art .mv-d2,.memory-art .mv-d3,.memory-art .mv-d4{transform:none}
+  .mv-breath{display:none}
+}
+
+/* The same lifecycle for 3D worlds: the canvas takes the SVG's place and its states. */
+.memory-essay[data-visuals="living"] .memory-art .mv-world{display:block;width:100%;height:auto;transition:filter 2.8s ease,opacity 1.6s ease}
+.memory-essay[data-visuals="living"] .memory-art[data-state="unseen"] .mv-world{filter:saturate(.55) contrast(.9) brightness(1.05);opacity:.6}
+.memory-essay[data-visuals="living"] .memory-art[data-state="set"] .mv-world{filter:grayscale(.86) sepia(.24) contrast(.88) brightness(1.06) blur(.35px);opacity:.92}
+/* A touch on living water leaves the passage's first words, briefly, then nothing. */
+.mv-trace{position:absolute;z-index:4;max-width:360px;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;
+  font:17px/1.5 "Source Serif 4","Noto Serif SC",serif;color:rgba(242,240,233,.9);text-shadow:0 0 12px rgba(60,68,64,.35);
+  animation:mv-trace 4.8s ease-out forwards}
+@keyframes mv-trace{0%{opacity:0;transform:translate(-50%,-30%)}18%{opacity:1}100%{opacity:0;transform:translate(-50%,-110%)}}
+@media (prefers-reduced-motion:reduce){.mv-trace{display:none}}
+/* The two closing scenes carry no text of their own; let them open wide like Brideshead. */
+.memory-passage:has(.art-gatsby),.memory-passage:has(.art-thackeray){max-width:none}
+.memory-post .memory-essay[data-visuals="living"] .art-gatsby,.memory-post .memory-essay[data-visuals="living"] .art-thackeray{width:min(1180px,calc(100vw - 40px));align-self:center}
+
+/* A passage and its painting share one place on the page. */
+.memory-post .memory-essay figure.quotation{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);align-items:center;gap:0;max-width:1240px;margin:0 auto}
+.memory-post .memory-essay figure.quotation[data-side="left"]{grid-template-columns:minmax(260px,1fr) minmax(0,1.7fr)}
+.memory-post .memory-essay figure.quotation .memory-art{grid-row:1;grid-column:1;width:100%;margin:0;align-self:center}
+.memory-post .memory-essay figure.quotation blockquote{grid-row:1;grid-column:2;align-self:center;width:100%;max-width:420px;padding:0;margin:0;transform:translateX(-28px)}
+.memory-post .memory-essay figure.quotation[data-side="left"] .memory-art{grid-column:2}
+.memory-post .memory-essay figure.quotation[data-side="left"] blockquote{grid-column:1;transform:translateX(28px)}
+.memory-post .memory-essay figure.quotation.gatsby{display:block;max-width:1180px}
+@media(max-width:800px){
+ .memory-post .memory-essay figure.quotation,.memory-post .memory-essay figure.quotation[data-side="left"]{display:flex;gap:12px}
+ .memory-post .memory-essay figure.quotation blockquote,.memory-post .memory-essay figure.quotation[data-side="left"] blockquote{transform:none;width:90%;align-self:center}
+}
+
+/* The butterfly belongs to the page, outside the painting's dissolving mask. */
+.memory-butterfly{position:fixed;left:0;top:0;width:80px;height:68px;z-index:30;pointer-events:none;opacity:0;will-change:transform;--wing:1}
+.memory-butterfly svg{position:relative;z-index:1;width:100%;height:100%;overflow:visible;filter:saturate(.65) contrast(.85) blur(.45px)}
+/* A local film of glass, with no hard edge or disk behind the insect. */
+.memory-butterfly::after{content:"";position:absolute;inset:-19px -25px;z-index:2;pointer-events:none;
+ background:linear-gradient(118deg,transparent 28%,rgba(194,207,207,.14) 46%,transparent 66%);
+ -webkit-backdrop-filter:blur(.7px);backdrop-filter:blur(.7px);
+ -webkit-mask-image:radial-gradient(ellipse,black 12%,transparent 67%);mask-image:radial-gradient(ellipse,black 12%,transparent 67%)}
+.memory-butterfly-right{filter:brightness(.96)}
+.memory-mouse{position:fixed;left:0;top:0;width:50px;height:37.5px;z-index:29;pointer-events:none;opacity:0;color:#8e9990;filter:blur(.2px);will-change:transform}
+.memory-mouse svg{display:block;width:100%;height:100%;overflow:visible}
+.memory-mouse-volume{display:block;width:100%;height:100%;filter:blur(.2px)}
+.memory-page:has(.memory-world-dialog[open]) > .memory-mouse{visibility:hidden}
+@media(prefers-reduced-motion:reduce){.memory-mouse{display:none}}
+@media(prefers-reduced-motion:reduce){.memory-butterfly{will-change:auto}.memory-butterfly-wing{transform:none}}
+
+.memory-train{position:fixed;left:0;top:0;z-index:20;pointer-events:none;color:#818d83;opacity:0;filter:blur(1.2px);will-change:transform}
+.memory-train svg{display:block;width:100%;height:auto}
+.memory-page:has(.memory-world-dialog[open]) .memory-train{visibility:hidden}
+@media(prefers-reduced-motion:reduce){.memory-train{display:none}}
+
+/* Shadows share the cradle's ground plane, without a separate surface. */
+.memory-creature-shadow,.memory-mouse-shadow{position:fixed;left:0;top:0;width:68px;height:58px;z-index:4;pointer-events:none;opacity:0;color:#a2b0a1;filter:blur(2px);will-change:transform}
+.memory-mouse-shadow{width:50px;height:37.5px}
+.memory-creature-shadow svg,.memory-mouse-shadow svg{display:block;width:100%;height:100%}
+.memory-page:has(.memory-world-dialog[open]) :is(.memory-creature-shadow,.memory-mouse-shadow){visibility:hidden}
+.memory-art .is-inhabitant{will-change:auto;z-index:1;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.memory-creature-shadow,.memory-mouse-shadow{display:none}}
