@@ -190,6 +190,10 @@ function brideshead(scene) {
   add(house, new CylinderGeometry(3.3, 3.4, 3.2, 16), stone, 0, 10.8, -6);
   add(house, new SphereGeometry(3.35, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), lead, 0, 12.4, -6, 1, 1.18, 1);
   const dome = house.children[house.children.length - 1];
+  // When the lantern goes, the crown of the dome goes in with it.
+  const broken = new Group(); broken.position.set(0, 12.4, -6); broken.scale.set(1, 1.18, 1); broken.visible = false; house.add(broken);
+  add(broken, new SphereGeometry(3.35, 24, 12, Math.PI / 2 + .55, Math.PI * 2 - 1.1, .5, Math.PI / 2 - .5), lead, 0, 0, 0);
+  add(broken, new SphereGeometry(3.2, 20, 10, 0, Math.PI * 2, .5, Math.PI / 2 - .5), new MeshLambertMaterial({ color: new Color('#2b312e'), side: BackSide }), 0, 0, 0);
   // What falls first: the lantern, the stacks along the roofs, the statues.
   const falls = [];
   const fall = (m, at) => { m.userData.fall = { at, y: m.position.y, h: m.scale.y * (m.geometry.parameters.height || 1), tilt: rand(-.5, .5) }; falls.push(m); return m; };
@@ -289,7 +293,8 @@ function brideshead(scene) {
         m.rotation.z = f.tilt * k;
         m.visible = k < 1;
       }
-      dome.scale.y = 1.18 - seg(s, 16.5, 23) * .32;
+      const caved = s > 17.2;
+      dome.visible = !caved; broken.visible = caved;
       for (const m of ivy) m.scale.set(m.userData.r, m.userData.r * .8, .25).multiplyScalar(Math.max(.001, seg(s, m.userData.at, m.userData.at + 2.5)));
       stone.color.copy(stoneFresh).lerp(stoneOld, seg(s, 3, 26));
       const lit = 1 - seg(s, 6, 22);
