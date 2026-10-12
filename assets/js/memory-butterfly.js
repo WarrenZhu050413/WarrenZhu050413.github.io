@@ -22,7 +22,6 @@
   const mouseShadow=mouse.cloneNode(true);
   mouseShadow.className='memory-mouse-shadow';document.body.append(mouseShadow);
   let started = false, ended = false, elapsed = 0, previous = 0, frameId = null;
-  const burns=document.querySelector('.art-burns');
   let gait=0;
   const mousePosition={x:.43,y:.65,vx:0,facing:1};
   let motionSeed=47,nextBout=1.2,pace=1,groundOffset=0,strideScale=1,strideIndex=0;
@@ -57,7 +56,8 @@
     if(!event.target.matches?.('.memory-world-dialog'))return;
     covered=event.target.open;previous=0;schedule();
   },true);
-  const duration = 60000;
+  // The opening keeps the essay's clock (the music's time), so it lasts as long as its phrases.
+  const duration = 52000;
   const cubic = (a,b,c,d,t) => (1-t)**3*a+3*(1-t)**2*t*b+3*(1-t)*t*t*c+t**3*d;
   // Quick flights alternate with drifting hovers, giving the mouse time to
   // close the distance. The whole encounter still occupies the same minute.
@@ -102,7 +102,8 @@
     }
     if (started && !document.hidden && !covered) {
       const dt=previous?Math.min(64,now-previous)/1000:0;
-      elapsed += dt*1000;
+      const shared=window.memoryTimeline?.time?.();
+      elapsed = shared===undefined ? elapsed+dt*1000 : Math.min(duration,shared*1000);
       const p = Math.min(1,elapsed/duration);
       openingLine?.style.setProperty('--opening-ink',String(smooth((p-.025)/.18))); 
       // One coordinate system for the cradle, the mouse and the butterfly.
@@ -229,10 +230,11 @@
     openWings();
     ended=true;openingLine?.style.setProperty('--opening-ink','1');
     if(frameId!==null)cancelAnimationFrame(frameId);frameId=null;
-    // Retain both inhabitants in their own prints; neither leaves the essay.
+    // The encounter stays where it happened, in the cradle's print. The field
+    // that follows has its own mouse and its own small story.
     for(const [element,parent,left,top,width,ratio] of [
       [butterfly,art,'55%','35%','10%','92/78'],
-      [mouse,burns,`${mousePosition.x*100}%`,`${mousePosition.y*100}%`,'6.1%','80/60']
+      [mouse,art,`${mousePosition.x*100}%`,`${mousePosition.y*100}%`,'6.1%','80/60']
     ]){
       if(!parent){element.remove();continue}
       parent.append(element);element.classList.add('is-inhabitant');

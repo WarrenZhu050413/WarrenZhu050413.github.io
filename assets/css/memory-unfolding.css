@@ -8,7 +8,7 @@
 .memory-essay[data-active-scene="pushkin"]{--memory-colour-a:#987d88;--memory-colour-b:#ad9294}
 .memory-essay[data-active-scene="wong"]{--memory-colour-a:#7f818f;--memory-colour-b:#918990}
 .memory-essay[data-active-scene="thackeray"]{--memory-colour-a:#7a858a;--memory-colour-b:#8d8f8e}
-.memory-essay[data-active-scene="present"],.memory-essay[data-active-scene="collected"]{--memory-colour-a:#8a8e8d;--memory-colour-b:#a19d93}
+.memory-essay[data-active-scene="present"],.memory-essay[data-active-scene="collected"],.memory-essay[data-active-scene="finale"]{--memory-colour-a:#8a8e8d;--memory-colour-b:#a19d93}
 .memory-colour-word{color:#bdccd0;background:linear-gradient(105deg,#cbd2d0 3%,#d1d3cc 38%,#d3cdcd 70%,#d1d0cb 100%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none}
 .is-unfolding .memory-stage::before,.memory-world-dialog::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(118deg,color-mix(in srgb,var(--memory-colour-a) 13%,transparent),transparent 65%),linear-gradient(300deg,color-mix(in srgb,var(--memory-colour-b) 9%,transparent),transparent 70%)}
 .memory-unfolding{position:relative}
@@ -156,10 +156,15 @@ html:has(.memory-page .is-unfolding)::-webkit-scrollbar{display:none}
 
 /* Recording attribution belongs to the completed poem, at its lower edge. */
 .memory-stage > .memory-music-credit{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:7;width:min(720px,90vw);max-width:none;text-align:center;font-size:10px;opacity:0;visibility:hidden;pointer-events:none}
-.memory-essay[data-active-scene="collected"] .memory-stage > .memory-music-credit{opacity:.65;visibility:visible;pointer-events:auto}
+.memory-essay:is([data-active-scene="collected"],[data-active-scene="finale"]) .memory-stage > .memory-music-credit{opacity:.65;visibility:visible;pointer-events:auto}
 
 /* The second line develops into ink while the first is already present. */
 .is-unfolding:not(.is-static) .memory-growing-poem .memory-poem-line:nth-child(2){opacity:calc(var(--reveal,0)*var(--opening-ink,0));filter:blur(calc((1 - var(--opening-ink,0))*3px))}
 
 /* The opening is already there. Only the eventual separation travels. */
 .memory-post .is-unfolding[data-opening="joined"] .memory-scene-layer .memory-art.is-opening-duet{transition:none}
+
+/* The end: a small dark centre, the present's light in it, and everything read turning round it. */
+.memory-abyss{position:absolute;left:50%;top:50%;z-index:0;width:min(26vw,360px);aspect-ratio:3/2;border-radius:50%;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.3);background:radial-gradient(closest-side,rgba(24,29,27,.9),rgba(24,29,27,.55) 48%,rgba(24,29,27,.12) 78%,transparent);filter:blur(5px)}
+.memory-post .is-unfolding .memory-scene-layer figure blockquote.is-orbiting{max-width:none;overflow:hidden;-webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent);transform-origin:50% 50%;cursor:default}
+.is-unfolding[data-active-scene="finale"] .memory-stage .memory-growing-poem{transform-origin:50% 50%}

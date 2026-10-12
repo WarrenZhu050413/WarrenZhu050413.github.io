@@ -1,3 +1,8 @@
+// I wish it were not dark. One clock carries the whole reading: the music's own
+// time while it plays, a quiet clock of the same pace while it does not. Each
+// passage arrives on its beat, its painting settles into a small print, and at
+// the end the poem is drawn in among the passages it was read with, all of them
+// turning slowly around a small dark centre with one light in it.
 (() => {
   const essay=document.querySelector('.memory-essay[data-unfolding="true"]');
   if(!essay)return;
@@ -19,7 +24,14 @@
     {id:'thackeray',width:1120,small:280,home:[.3,.1],focus:[.22,.5],side:'right',turn:-2,lines:10},
     {id:'present',width:1000,small:210,home:[.72,.1],focus:[.5,.52],side:'right',turn:0,lines:11}
   ];
-  const scenes=specs.map(s=>({...s,figure:atlas.querySelector(`[data-scene="${s.id}"]`),beat:essay.querySelector(`[data-for="${s.id}"]`)}));
+  // Seconds into the recording at which each passage arrives. The quiet places
+  // in the music carry Brideshead and Nalan; the last rise carries the train.
+  const START={nabokov:0,burns:26,brideshead:70,nalan:92,pushkin:108,wong:126,thackeray:140,present:160};
+  const SEPARATE=52,FINALE=168,SETTLED=178,END=180.72;
+  // The field's own story begins once the opening has separated into two prints.
+  const STORY={burns:SEPARATE+1};
+  const BEATS=[START.burns,SEPARATE,START.brideshead,START.nalan,START.pushkin,START.wong,START.thackeray,START.present,FINALE];
+  const scenes=specs.map(s=>({...s,start:START[s.id],figure:atlas.querySelector(`[data-scene="${s.id}"]`),beat:essay.querySelector(`[data-for="${s.id}"]`)}));
   const entrances={nabokov:[.42,.6],burns:[.7,.78],brideshead:[.5,.56],nalan:[.78,.3],wong:[.5,.5],pushkin:[.66,.8],thackeray:[.7,.5],present:[.5,.52]};
   for(const s of scenes){
     s.art=s.figure.querySelector('.memory-art');s.quote=s.figure.querySelector('blockquote');
@@ -39,12 +51,42 @@
       node.replaceWith(fragment);
     }
   }
-  let top=0,step=0,current=0,target=0,last=0,raf=null,atEnd=false;
-  let opened=null,closing=false;
-  // Each first viewing has its own time. Returning to an earlier scene is free.
-  const durations=[30,30,30,24,36,30,42,24];
-  let unlocked=0,gateStarted=false,gateElapsed=0,gateLast=0,gateTimer=null,queuedForward=false;
-  let butterflyHalfway=false,butterflyFinished=false,trainFinished=false,advanceTimer=null;
+  const clamp=x=>Math.max(0,Math.min(1,x));
+  const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
+  const mix=(a,b,t)=>a+(b-a)*t;
+
+  // ---------------------------------------------------------------- the clock
+  const clock={t:0,last:0,running:false};
+  const soundtrack=document.getElementById('memory-soundtrack');
+  function advanceClock(now){
+    const dt=clock.last?Math.min(.25,(now-clock.last)/1000):0;clock.last=now;
+    if(soundtrack&&!soundtrack.paused&&!soundtrack.seeking&&soundtrack.currentTime>0&&clock.t<END-.5)clock.t=soundtrack.currentTime;
+    else if(clock.running&&!document.hidden)clock.t+=dt;
+  }
+  function setTime(t){
+    clock.t=t;
+    if(soundtrack&&!soundtrack.paused&&t<END-.5)soundtrack.currentTime=t;
+  }
+  // When the music starts late (a first click, or after a pause) it joins the reading where it is.
+  soundtrack?.addEventListener('play',()=>{
+    if(clock.t<END-1&&Math.abs(soundtrack.currentTime-clock.t)>.3)soundtrack.currentTime=clock.t;
+  });
+  let pausedWhileHidden=false;
+  document.addEventListener('visibilitychange',()=>{
+    clock.last=0;
+    if(!soundtrack)return;
+    if(document.hidden&&!soundtrack.paused){pausedWhileHidden=true;soundtrack.pause()}
+    else if(!document.hidden&&pausedWhileHidden){pausedWhileHidden=false;soundtrack.play().catch(()=>{})}
+  });
+  window.memoryTimeline={
+    time:()=>clock.t,
+    sceneTime(id){const start=STORY[id]??START[id];return start===undefined?null:Math.max(0,clock.t-start)}
+  };
+  function frontier(){let f=0;for(let i=0;i<scenes.length;i++)if(clock.t>=scenes[i].start)f=i;return f}
+
+  // ---------------------------------------------------------------- cues
+  let top=0,step=0,current=0,target=0,atEnd=false,opened=null,closing=false,lastBeat=-1;
+  let butterflyFinished=false,loopId=null;
   const scrollCue=document.createElement('button');
   scrollCue.type='button';scrollCue.className='memory-scroll-cue';
   scrollCue.setAttribute('aria-label','Continue reading');
@@ -59,12 +101,14 @@
   previousCue.setAttribute('aria-label','Previous passage');
   previousCue.setAttribute('aria-hidden','true');previousCue.tabIndex=-1;
   stage.append(previousCue);
-  function canContinue(){
-    return !reduced.matches&&!opened&&current>=0&&current<scenes.length-.02&&Math.floor(current)<unlocked;
-  }
-  function canSkip(){
-    return !reduced.matches&&!opened&&gateStarted&&Math.floor(current)===unlocked;
-  }
+  // The figures leave the static atlas for the stage, where they are composed.
+  stage.append(poem);for(const s of scenes)layer.append(s.figure);
+  const abyss=document.createElement('div');abyss.className='memory-abyss';abyss.setAttribute('aria-hidden','true');
+  layer.append(abyss);
+  const nextBeat=()=>BEATS.find(b=>b>clock.t+.05);
+  // Behind the music, the reader may go forward freely; at its edge, the cue skips ahead.
+  function canContinue(){return !reduced.matches&&!opened&&current<frontier()-.02}
+  function canSkip(){return !reduced.matches&&!opened&&!canContinue()&&clock.t<FINALE&&current<scenes.length-.1}
   function updateCue(){
     const canGoBack=!reduced.matches&&!opened&&current>=1;
     previousCue.classList.toggle('is-visible',canGoBack);
@@ -72,112 +116,68 @@
     const waiting=canSkip(),ready=canContinue(),visible=waiting||ready;
     scrollCue.classList.toggle('is-ready',ready);scrollCue.classList.toggle('is-waiting',waiting);
     scrollCue.setAttribute('aria-hidden',String(!visible));scrollCue.tabIndex=visible?0:-1;
-    const seconds=Number(essay.dataset.sceneRemaining||0);
-    scrollCue.style.setProperty('--scene-progress',waiting?String(1-seconds/durations[unlocked]):'1');
-    scrollCue.setAttribute('aria-label',waiting?(unlocked===0?'Continue to the mouse':'Skip to the next scene'):'Continue reading');
+    const next=nextBeat()??FINALE,previous=[0,...BEATS].filter(b=>b<=clock.t).pop()??0;
+    scrollCue.style.setProperty('--scene-progress',waiting?String(clamp((clock.t-previous)/(next-previous))):'1');
+    scrollCue.setAttribute('aria-label',waiting?(clock.t<START.burns?'Continue to the mouse':'Skip to the next scene'):'Continue reading');
   }
-  function releaseGate(skipped=false){
-    if(!gateStarted)return;
-    const id=scenes[unlocked].id,advance=skipped||(queuedForward&&current>=unlocked+.5);
-    if(gateTimer!==null)clearTimeout(gateTimer);gateTimer=null;
-    unlocked++;gateStarted=false;gateElapsed=0;queuedForward=false;
-    delete essay.dataset.waitingFor;delete essay.dataset.sceneRemaining;
-    if(skipped)dispatchEvent(new CustomEvent('memory-scene-skip',{detail:{id}}));
-    updateCue();
-    if(skipped)advanceScene();
-    else if(advance)advanceTimer=setTimeout(advanceScene,1900);
-    schedule();
-  }
-  function advanceScene(){
-    if(advanceTimer!==null)clearTimeout(advanceTimer);advanceTimer=null;
-    if(document.hidden)return;
-    if(canSkip()){releaseGate(true);return}
-    if(!canContinue())return;
-    const next=Math.floor(current)+1;
-    scrollTo({top:top+step*(next<scenes.length?next+.4:scenes.length),behavior:'smooth'});
-  }
-  scrollCue.addEventListener('click',advanceScene);
+  function goTo(position){scrollTo({top:top+step*position,behavior:'smooth'})}
+  scrollCue.addEventListener('click',()=>{
+    if(canContinue()){goTo(Math.floor(current)+1+.4);return}
+    if(!canSkip())return;
+    const next=nextBeat();
+    if(next===undefined)return;
+    // Skipping moves the music and the paintings on together.
+    const leaving=scenes[frontier()].id;
+    dispatchEvent(new CustomEvent('memory-scene-skip',{detail:{id:leaving}}));
+    setTime(next);
+  });
   previousCue.addEventListener('click',()=>{
     if(opened||current<1)return;
-    if(advanceTimer!==null)clearTimeout(advanceTimer);advanceTimer=null;
     if(essay.dataset.opening==='joined'){
       essay.dataset.opening='revisiting';
-      for(const s of scenes.slice(0,2)){
-        s.art.classList.remove('is-opening-duet');
-        s.figure.dataset.side=s.side;
-      }
+      for(const s of scenes.slice(0,2)){s.art.classList.remove('is-opening-duet');s.figure.dataset.side=s.side}
     }
-    scrollTo({top:top+step*(Math.floor(current)-1+.4),behavior:'smooth'});
+    goTo(Math.ceil(current-.45)-1+.4);
   });
+
+  // ---------------------------------------------------------------- beats
   function separateOpening(){
     if(essay.dataset.opening!=='joined')return;
     essay.dataset.opening='separated';
-    if(unlocked===1&&gateStarted){queuedForward=false;releaseGate()}
     for(const s of scenes.slice(0,2)){
       s.figure.dataset.side=s.side;
-      if(s.id==='burns'){s.art.style.opacity='0.44'}
       setTimeout(()=>s.art.classList.remove('is-opening-duet'),6000);
     }
-    scrollTo({top:top+step*1.98,behavior:'smooth'});
-    schedule();
+    // The field is now its own picture, with its own small story.
+    if(current<2)goTo(1.4);
   }
   addEventListener('memory-butterfly-halfway',()=>{
-    butterflyHalfway=true;
-    if(unlocked>1||(unlocked===0&&!gateStarted))return;
+    if(essay.dataset.opening!=='joined'&&essay.dataset.opening)return;
     essay.dataset.opening='joined';
-    for(const s of scenes.slice(0,2)){
-      s.art.classList.add('is-opening-duet');
-    }
-    queuedForward=false;
-    if(unlocked===0)releaseGate();
-    scrollTo({top:top+step*1.4,behavior:'smooth'});
+    for(const s of scenes.slice(0,2))s.art.classList.add('is-opening-duet');
+    if(current<1.4)goTo(1.4);
   });
   addEventListener('memory-butterfly-finished',()=>{butterflyFinished=true;separateOpening()});
-  addEventListener('memory-train-finished',()=>{trainFinished=true});
-  document.addEventListener('visibilitychange',()=>{gateLast=performance.now()});
-  function gateTick(){
-    gateTimer=null;
-    if(!gateStarted||reduced.matches||unlocked>=scenes.length)return;
-    const now=performance.now();
-    if(!document.hidden&&!opened)gateElapsed+=(now-gateLast)/1000;
-    gateLast=now;
-    essay.dataset.waitingFor=scenes[unlocked].id;
-    let remaining=Math.max(0,durations[unlocked]-gateElapsed);
-    const opening=unlocked<2;
-    const visual=opening?document.querySelector('.memory-butterfly'):scenes[unlocked].id==='thackeray'?document.querySelector('.memory-train'):null;
-    if(visual){
-      const progress=Number(visual.dataset.progress||0);
-      const visualRemaining=opening?Math.max(0,(unlocked===0?.5:1)-progress)*60:(1-progress)*durations[unlocked];
-      remaining=Math.max(remaining,visualRemaining);
+  function onBeat(beat){
+    if(beat===SEPARATE){
+      if(!butterflyFinished)dispatchEvent(new CustomEvent('memory-scene-skip',{detail:{id:'burns'}}));
+      return;
     }
-    essay.dataset.sceneRemaining=String(Math.ceil(remaining));
-    updateCue();
-    if(essay.dataset.opening==='joined')render();
-    const visualDone=unlocked===0?butterflyHalfway:unlocked===1?butterflyFinished:scenes[unlocked].id==='thackeray'?trainFinished:true;
-    if(gateElapsed>=durations[unlocked]&&visualDone){releaseGate();return}
-    gateTimer=setTimeout(gateTick,200);
+    if(beat===FINALE){
+      dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:'finale',duration:(END-FINALE)*1000}}));
+      if(!opened&&current>=scenes.length-1.1)goTo(scenes.length);
+      return;
+    }
+    const i=scenes.findIndex(s=>s.start===beat);
+    const after=BEATS.find(b=>b>beat)??END;
+    dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:scenes[i].id,duration:(after-beat)*1000}}));
+    if(i>1&&!opened&&current>=i-1.1)goTo(i+.4);
   }
-  function beginGate(index){
-    if(reduced.matches||gateStarted||index!==unlocked)return;
-    gateStarted=true;gateLast=performance.now();
-    dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:scenes[index].id,duration:durations[index]*1000}}));
-    gateTick();
+  function beats(){
+    while(lastBeat+1<BEATS.length&&clock.t>=BEATS[lastBeat+1]){lastBeat++;onBeat(BEATS[lastBeat])}
   }
-  function atGate(){return !reduced.matches&&!opened&&unlocked<scenes.length&&scrollY>=top+step*(unlocked+.64)-2}
-  addEventListener('wheel',event=>{
-    if(event.deltaY>0&&atGate()){event.preventDefault();queuedForward=true}
-  },{passive:false});
-  addEventListener('keydown',event=>{
-    if(!['ArrowDown','PageDown','End',' '].includes(event.key)||event.target.closest?.('a,button,input,textarea,select,[role="button"]'))return;
-    if(atGate()){event.preventDefault();queuedForward=true}
-  });
-  let touchY=0;
-  addEventListener('touchstart',event=>{touchY=event.touches[0]?.clientY||0},{passive:true});
-  addEventListener('touchmove',event=>{
-    const y=event.touches[0]?.clientY||0;
-    if(y<touchY&&atGate()){event.preventDefault();queuedForward=true}
-    touchY=y;
-  },{passive:false});
+
+  // ---------------------------------------------------------------- opening a world
   const dialog=document.createElement('dialog');
   dialog.className='memory-world-dialog';
   const closeButton=document.createElement('button');
@@ -187,7 +187,6 @@
   closeButton.innerHTML='<img src="/assets/images/memory/cursor-close.svg?v=2" width="36" height="36" alt="">';
   dialog.append(closeButton);
   essay.append(dialog);
-
   function zoom(art,from,to,reverse=false){
     if(reduced.matches)return null;
     const transform=`translate(${from.left-to.left}px,${from.top-to.top}px) scale(${from.width/to.width},${from.height/to.height})`;
@@ -199,10 +198,9 @@
     state(s,'set');
     const origin=s.art.getBoundingClientRect();
     opened={s,origin,parent:s.figure.parentNode,next:s.figure.nextSibling,artStyle:s.art.getAttribute('style'),quoteStyle:s.quote?.getAttribute('style'),overflow:document.documentElement.style.overflow};
-    if(raf!==null)cancelAnimationFrame(raf);raf=null;last=0;
     s.art.getAnimations().forEach(a=>a.cancel());
     s.art.style.removeProperty('transform');s.art.style.removeProperty('opacity');
-    s.quote?.style.removeProperty('transform');s.quote?.style.removeProperty('opacity');
+    if(s.quote)for(const p of ['transform','opacity','left','top','width','max-height','z-index'])s.quote.style.removeProperty(p);
     s.art.setAttribute('aria-expanded','true');
     s.art.tabIndex=-1;
     if(s.quote){s.quote.inert=false;s.quote.removeAttribute('aria-hidden')}
@@ -235,7 +233,7 @@
     document.documentElement.style.overflow=saved.overflow;
     opened=null;closing=false;
     s.art.focus({preventScroll:true});
-    schedule();
+    requestScroll();
   }
   closeButton.addEventListener('click',closeWorld);
   dialog.addEventListener('cancel',event=>{event.preventDefault();closeWorld()});
@@ -251,9 +249,6 @@
       if(event.key==='Enter'||event.key===' '){event.preventDefault();openWorld(s)}
     });
   }
-  const clamp=x=>Math.max(0,Math.min(1,x));
-  const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
-  const mix=(a,b,t)=>a+(b-a)*t;
   function state(s,value){
     if(s.art.dataset.state===value)return;
     // A developed print stays a print, including when the reader scrolls back.
@@ -263,13 +258,82 @@
     if(value==='present'&&!reduced.matches&&s.art.dataset.world!=='3d')svg?.unpauseAnimations?.();
     else svg?.pauseAnimations?.();
   }
-  function place(end){
-    if(atEnd===end)return;
-    atEnd=end;
-    stage.append(poem);for(const s of scenes)layer.append(s.figure)
+
+  // ---------------------------------------------------------------- the ring at the end
+  // The passages and the poem turn one way, the prints the other, around the small light.
+  const rings=[...scenes.filter(s=>s.quote).map(s=>({el:s.quote,focus:0,hover:false})),{el:poem,focus:0,hover:false,poem:true}];
+  for(const item of rings){
+    item.el.addEventListener('pointerenter',()=>{item.hover=true});
+    item.el.addEventListener('pointerleave',()=>{item.hover=false});
   }
-  function render(){
-    place(current>=scenes.length+.04);
+  let finaleWas=false;
+  function clearFinale(){
+    if(!finaleWas)return;
+    finaleWas=false;
+    for(const item of rings){
+      for(const p of ['left','top','width','max-height','z-index','transform','opacity','pointer-events'])item.el.style.removeProperty(p);
+      item.el.classList.remove('is-orbiting');
+    }
+    abyss.style.opacity='0';
+  }
+  function finale(dt){
+    const e=smooth((clock.t-FINALE)/(SETTLED-FINALE));
+    if(e<=0){clearFinale();return false}
+    finaleWas=true;
+    const W=innerWidth,H=innerHeight,cx=W/2,cy=H/2;
+    const spin=(clock.t-FINALE)*Math.PI*2/300;
+    const swirl=(1-e)**2*1.6;
+    // Prints on the outer ellipse; the light of the present at the centre.
+    const outer=scenes.slice(0,7);
+    outer.forEach((s,i)=>{
+      const home=s.homeAt,angle=-Math.PI/2+i/7*Math.PI*2+spin+swirl;
+      const rx=W*.42,ry=H*.405;
+      const hr=Math.hypot(home.x-cx,(home.y-cy)*rx/ry),ha=Math.atan2((home.y-cy)*rx/ry,home.x-cx);
+      let da=angle-ha;da=Math.atan2(Math.sin(da),Math.cos(da));
+      const r=mix(hr,rx,e),a=ha+da*e;
+      const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r*ry/rx;
+      const scale=s.small/s.width*mix(1,.82,e);
+      s.art.style.transform=`translate3d(${x-s.width/2}px,${y-s.width*9/32}px,0) rotate(${s.turn*.55*(1-e)}deg) scale(${scale})`;
+      s.art.style.opacity=String(mix(.44,.62,e));
+    });
+    const p=scenes[7];
+    const centreScale=mix(p.small/p.width,.2,e);
+    p.art.style.transform=`translate3d(${cx-p.width/2}px,${cy-p.width*9/32}px,0) scale(${centreScale})`;
+    p.art.style.opacity=String(mix(.44,.95,e));
+    abyss.style.opacity=String(e*.9);
+    abyss.style.transform=`translate(-50%,-50%) scale(${mix(.3,1,e)})`;
+    // The passages, and the poem drawn in to become one of them.
+    const n=rings.length,rx=W*.265,ry=H*.29;
+    rings.forEach((item,k)=>{
+      item.focus+=((item.hover?1:0)-item.focus)*(1-Math.exp(-dt/.45));
+      const angle=-Math.PI/2+(k+.5)/n*Math.PI*2-spin*1.3-swirl*.6;
+      let x=cx+Math.cos(angle)*rx,y=cy+Math.sin(angle)*ry,scale=mix(.38,.95,item.focus),opacity=mix(.5,.97,item.focus);
+      if(item.poem){
+        // It goes in towards the centre first, turning, and then out to its place.
+        const out=smooth((e-.42)/.58),turn=(1-e)*Math.PI*1.4;
+        const a=angle-turn,r=out;
+        x=mix(cx,cx+Math.cos(a)*rx,r);y=mix(cy,cy+Math.sin(a)*ry,r);
+        scale=mix(mix(1,.3,smooth(e/.5)),mix(.3,.85,item.focus),out);
+        opacity=mix(mix(1,.55,smooth(e/.5)),mix(.66,1,item.focus),out);
+        item.el.style.transform=`translate(calc(${x-cx}px - 50%),calc(${y-cy}px - 50%)) scale(${scale}) rotate(${-(1-e)*e*40}deg)`;
+        item.el.style.opacity=String(opacity);
+        item.el.style.pointerEvents=e>.9?'auto':'none';
+        item.el.style.zIndex=item.focus>.05?'8':'';
+        return;
+      }
+      item.el.classList.add('is-orbiting');
+      item.el.style.left='0px';item.el.style.top='0px';item.el.style.width='320px';item.el.style.maxHeight='330px';
+      item.el.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%) scale(${scale})`;
+      item.el.style.opacity=String(opacity*smooth((e-.2-k*.04)/.4));
+      item.el.style.zIndex=item.focus>.05?'8':'';
+      item.el.inert=false;item.el.setAttribute('aria-hidden','false');
+    });
+    return true;
+  }
+
+  // ---------------------------------------------------------------- one frame
+  function render(dt=0){
+    atEnd=current>=scenes.length-.05;
     const joined=essay.dataset.opening==='joined';
     const flight=Number(document.querySelector('.memory-butterfly')?.dataset.progress||0);
     const blend=smooth((flight-.5)/.22);
@@ -283,9 +347,9 @@
       s.art.tabIndex=reached&&(p<.95||current>=scenes.length-.1)?0:-1;
       s.figure.setAttribute('aria-hidden',String(!reached));
       if(!reached)continue;
-      if(p>=.06)beginGate(i);
       if(opened?.s===s)continue;
-      if(joined&&i<2||p<.87)state(s,'present');else state(s,'set');
+      // The present is never developed into a print; it stays alive to the end.
+      if(joined&&i<2||p<.87||s.id==='present')state(s,'present');else state(s,'set');
       const entering=smooth(p/.28),settling=smooth((p-.7)/.3);
       // A broad translucent arrival crosses the page, then becomes a small print.
       const approach=s.id==='wong'?1.7:1.35;
@@ -297,8 +361,9 @@
       let y=mix(mix(entry[1],s.focus[1],entering),s.home[1],settling)*innerHeight;
       const arc=Math.sin(clamp(p)*Math.PI*2)*(s.id==='wong'?45:18)*baseScale*(1-settling);
       y+=arc;
+      s.homeAt={x,y};
       const rotation=mix(s.turn*(1-entering),s.turn*.55,settling);
-      // Earlier prints recede while another quote needs the reading space.
+      // Earlier prints recede while another passage needs the reading space.
       const collected=current>=scenes.length-.1;
       const restingOpacity=collected?.44:.035;
       const opacity=mix(mix(0,.68,smooth(p/.16)),restingOpacity,settling);
@@ -308,7 +373,7 @@
       s.art.classList.toggle('is-settled',p>=1);
       s.art.style.setProperty('--pass',String(clamp(p)));
       s.figure.style.zIndex=p<1?'2':'1';
-      if(s.quote){
+      if(s.quote&&!(atEnd&&clock.t>=FINALE)){
         const alpha=smooth((p-.16)/.15)*(1-smooth((p-.72)/.18));
         s.quote.style.opacity=String(alpha);
         s.quote.setAttribute('aria-hidden',String(alpha<.05));
@@ -333,63 +398,79 @@
     for(let i=0;i<lines.length;i++)lines[i].style.setProperty('--reveal',String(clamp(count-i)));
     essay.dataset.poemLines=String(Math.floor(count));
     poem.style.setProperty('--visible-lines',String(Math.max(2,Math.ceil(count))));
-    essay.dataset.activeScene=atEnd?'collected':scenes[Math.min(scenes.length-1,Math.max(0,Math.floor(current)))].id;
+    const ending=atEnd&&finale(dt);
+    if(!ending)clearFinale();
+    essay.dataset.activeScene=atEnd?(ending?'finale':'collected'):scenes[Math.min(scenes.length-1,Math.max(0,Math.floor(current)))].id;
     updateCue();
   }
-  function animate(now){
-    raf=null;
+  function loop(now){
+    loopId=null;
+    if(reduced.matches)return;
     const dt=last?Math.min(.1,(now-last)/1000):.016;last=now;
-    current+= (target-current)*(1-Math.exp(-dt/.32));
+    advanceClock(now);
+    beats();
+    current+=(target-current)*(1-Math.exp(-dt/.32));
     if(Math.abs(target-current)<.0005)current=target;
-    render();
-    if(current!==target)raf=requestAnimationFrame(animate);
-    else last=0;
+    if(!opened)render(dt);
+    loopId=requestAnimationFrame(loop);
   }
-  function schedule(){
+  let last=0;
+  function start(){if(loopId===null&&!reduced.matches){last=0;clock.last=0;loopId=requestAnimationFrame(loop)}}
+  // The reader cannot scroll past the passage the music has reached.
+  function requestScroll(){
     if(reduced.matches||opened)return;
-    const ceiling=unlocked<scenes.length?unlocked+.64:Infinity;
+    const ceiling=clock.t>=FINALE?Infinity:frontier()+.64;
     const requested=(scrollY-top)/step;
-    if(advanceTimer!==null&&requested<current-.02){clearTimeout(advanceTimer);advanceTimer=null}
-    if(requested>ceiling+.001){
-      queuedForward=true;
-      scrollTo({top:top+step*ceiling,behavior:'instant'});
-    }
+    if(requested>ceiling+.001)scrollTo({top:top+step*ceiling,behavior:'instant'});
     target=Math.max(-.1,Math.min(requested,ceiling));
-    if(raf===null)raf=requestAnimationFrame(animate);
   }
+  function atCeiling(){return !reduced.matches&&!opened&&clock.t<FINALE&&scrollY>=top+step*(frontier()+.64)-2}
+  addEventListener('wheel',event=>{if(event.deltaY>0&&atCeiling())event.preventDefault()},{passive:false});
+  addEventListener('keydown',event=>{
+    if(!['ArrowDown','PageDown','End',' '].includes(event.key)||event.target.closest?.('a,button,input,textarea,select,[role="button"]'))return;
+    if(atCeiling())event.preventDefault();
+  });
+  let touchY=0;
+  addEventListener('touchstart',event=>{touchY=event.touches[0]?.clientY||0},{passive:true});
+  addEventListener('touchmove',event=>{
+    const y=event.touches[0]?.clientY||0;
+    if(y<touchY&&atCeiling())event.preventDefault();
+    touchY=y;
+  },{passive:false});
   function resize(){
     if(reduced.matches){journey.style.height='100svh';render();return}
     top=journey.getBoundingClientRect().top+scrollY;
     step=innerHeight*1.35;
     journey.style.height=`${step*scenes.length+innerHeight}px`;
     for(let i=0;i<scenes.length;i++)scenes[i].beat.style.top=`${step*(i+.5)}px`;
-    schedule();
+    requestScroll();
   }
   async function mode(){
     if(opened)await closeWorld();
-    if(raf!==null)cancelAnimationFrame(raf);raf=null;
     if(reduced.matches){
+      if(loopId!==null)cancelAnimationFrame(loopId);loopId=null;
+      clock.running=false;clearFinale();
       delete essay.dataset.opening;
       for(const s of scenes.slice(0,2))s.art.classList.remove('is-opening-duet');
-      if(advanceTimer!==null)clearTimeout(advanceTimer);advanceTimer=null;
-      if(gateTimer!==null)clearTimeout(gateTimer);gateTimer=null;gateStarted=false;unlocked=scenes.length;
-      delete essay.dataset.waitingFor;delete essay.dataset.sceneRemaining;
       essay.classList.add('is-unfolding','is-static');
-      current=target=scenes.length+.05;atEnd=false;
+      current=target=scenes.length+.05;
       for(const s of scenes){state(s,'set');s.beat.style.top='0'}
-      resize();return;
+      resize();render();return;
     }
     if(!butterflyFinished){
       essay.dataset.opening='joined';
-      for(const s of scenes.slice(0,2)){s.art.classList.add('is-opening-duet')}
+      for(const s of scenes.slice(0,2))s.art.classList.add('is-opening-duet');
     }
     essay.classList.remove('is-static');
-    essay.classList.add('is-unfolding');atEnd=true;place(false);resize();
+    essay.classList.add('is-unfolding');
+    clock.running=true;
+    resize();start();
   }
-  addEventListener('scroll',schedule,{passive:true});
+  addEventListener('scroll',requestScroll,{passive:true});
   addEventListener('resize',resize);
   reduced.addEventListener('change',mode);
   mode();
+  dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:'nabokov',duration:START.burns*1000}}));
   // Native fragment links still lead to the intended reading beat.
   const hash=decodeURIComponent(location.hash.slice(1));
   if(hash&&scenes.some(s=>s.id===hash))requestAnimationFrame(()=>document.getElementById(hash)?.scrollIntoView());

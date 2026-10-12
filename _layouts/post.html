@@ -51,8 +51,6 @@ layout: default
 <script src="{{ '/assets/js/memory-music.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 <script src="{{ '/assets/js/memory-visuals.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% if page.memory_unfolding %}
-<template id="memory-train-template">{% include memory-art/train.svg %}</template>
-<script src="{{ '/assets/js/memory-train.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 <script src="{{ '/assets/js/memory-unfolding.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 {% if page.memory_3d %}
