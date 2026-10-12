@@ -14,24 +14,35 @@
     {id:'burns',width:650,small:155,home:[.88,.16],focus:[.76,.55],side:'left',turn:6,lines:2},
     {id:'brideshead',width:1120,small:290,home:[.12,.38],focus:[.22,.52],side:'right',turn:-3,lines:4},
     {id:'nalan',width:680,small:180,home:[.89,.4],focus:[.78,.5],side:'left',turn:7,lines:6},
-    {id:'li',width:670,small:175,home:[.13,.86],focus:[.22,.51],side:'right',turn:-6,lines:8},
     {id:'pushkin',width:740,small:190,home:[.87,.87],focus:[.78,.53],side:'left',turn:5,lines:9},
     {id:'wong',width:1080,small:245,home:[.88,.66],focus:[.79,.54],side:'left',turn:4,lines:10},
     {id:'thackeray',width:1120,small:280,home:[.3,.1],focus:[.22,.5],side:'right',turn:-2,lines:10},
     {id:'present',width:1000,small:210,home:[.72,.1],focus:[.5,.52],side:'right',turn:0,lines:11}
   ];
   const scenes=specs.map(s=>({...s,figure:atlas.querySelector(`[data-scene="${s.id}"]`),beat:essay.querySelector(`[data-for="${s.id}"]`)}));
-  const entrances={nabokov:[.42,.6],burns:[.7,.78],brideshead:[.5,.56],nalan:[.78,.3],wong:[.5,.5],li:[.2,.8],pushkin:[.66,.8],thackeray:[.7,.5],present:[.5,.52]};
+  const entrances={nabokov:[.42,.6],burns:[.7,.78],brideshead:[.5,.56],nalan:[.78,.3],wong:[.5,.5],pushkin:[.66,.8],thackeray:[.7,.5],present:[.5,.52]};
   for(const s of scenes){
     s.art=s.figure.querySelector('.memory-art');s.quote=s.figure.querySelector('blockquote');
     s.figure.style.setProperty('--scene-width',`${s.width}px`);
-    s.figure.style.setProperty('--quote-left',s.side==='right'?'71vw':'3vw');
-    s.figure.style.setProperty('--quote-width','27vw');
+    s.figure.dataset.side=s.side;
+  }
+  for(const s of scenes){
+    if(!s.quote)continue;
+    const walker=document.createTreeWalker(s.quote,NodeFilter.SHOW_TEXT);
+    const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    for(const node of nodes){
+      const fragment=document.createDocumentFragment();
+      for(const token of node.textContent.match(/\p{Script=Han}|[^\s\p{Script=Han}]+|\s+/gu)||[]){
+        if(/^\s+$/.test(token)){fragment.append(token);continue}
+        const word=document.createElement('span');word.className='memory-quote-word';word.textContent=token;fragment.append(word);
+      }
+      node.replaceWith(fragment);
+    }
   }
   let top=0,step=0,current=0,target=0,last=0,raf=null,atEnd=false;
   let opened=null,closing=false;
   // Each first viewing has its own time. Returning to an earlier scene is free.
-  const durations=[30,30,30,24,36,36,30,42,24];
+  const durations=[30,30,30,24,36,30,42,24];
   let unlocked=0,gateStarted=false,gateElapsed=0,gateLast=0,gateTimer=null,queuedForward=false;
   let butterflyHalfway=false,butterflyFinished=false,trainFinished=false,advanceTimer=null;
   const scrollCue=document.createElement('button');
@@ -93,7 +104,7 @@
       essay.dataset.opening='revisiting';
       for(const s of scenes.slice(0,2)){
         s.art.classList.remove('is-opening-duet');
-        s.figure.style.setProperty('--quote-left',s.side==='right'?'71vw':'3vw');
+        s.figure.dataset.side=s.side;
       }
     }
     scrollTo({top:top+step*(Math.floor(current)-1+.4),behavior:'smooth'});
@@ -103,7 +114,7 @@
     essay.dataset.opening='separated';
     if(unlocked===1&&gateStarted){queuedForward=false;releaseGate()}
     for(const s of scenes.slice(0,2)){
-      s.figure.style.setProperty('--quote-left',s.side==='right'?'71vw':'3vw');
+      s.figure.dataset.side=s.side;
       if(s.id==='burns'){s.art.style.opacity='0.44'}
       setTimeout(()=>s.art.classList.remove('is-opening-duet'),6000);
     }
@@ -116,7 +127,6 @@
     essay.dataset.opening='joined';
     for(const s of scenes.slice(0,2)){
       s.art.classList.add('is-opening-duet');
-      s.figure.style.setProperty('--quote-left','71vw');
     }
     queuedForward=false;
     if(unlocked===0)releaseGate();
@@ -270,7 +280,7 @@
       if(p>=0)count=Math.max(count,mix(previous,s.lines,smooth((p-.12)/.34)));
       const reached=p>=0||(joined&&i===1);
       s.figure.classList.toggle('is-reached',reached);
-      s.art.tabIndex=reached?0:-1;
+      s.art.tabIndex=reached&&(p<.95||current>=scenes.length-.1)?0:-1;
       s.figure.setAttribute('aria-hidden',String(!reached));
       if(!reached)continue;
       if(p>=.06)beginGate(i);
@@ -288,10 +298,13 @@
       const arc=Math.sin(clamp(p)*Math.PI*2)*(s.id==='wong'?45:18)*baseScale*(1-settling);
       y+=arc;
       const rotation=mix(s.turn*(1-entering),s.turn*.55,settling);
-      const opacity=mix(mix(0,.68,smooth(p/.16)),.44,settling);
+      // Earlier prints recede while another quote needs the reading space.
+      const collected=current>=scenes.length-.1;
+      const restingOpacity=collected?.44:.035;
+      const opacity=mix(mix(0,.68,smooth(p/.16)),restingOpacity,settling);
       s.art.style.transform=`translate3d(${x-s.width/2}px,${y-s.width*9/32}px,0) rotate(${rotation}deg) scale(${scale})`;
       s.art.style.opacity=String(opacity);
-      s.art.style.pointerEvents='auto';
+      s.art.style.pointerEvents=p<.95||collected?'auto':'none';
       s.art.classList.toggle('is-settled',p>=1);
       s.art.style.setProperty('--pass',String(clamp(p)));
       s.figure.style.zIndex=p<1?'2':'1';
@@ -319,6 +332,7 @@
     }
     for(let i=0;i<lines.length;i++)lines[i].style.setProperty('--reveal',String(clamp(count-i)));
     essay.dataset.poemLines=String(Math.floor(count));
+    poem.style.setProperty('--visible-lines',String(Math.max(2,Math.ceil(count))));
     essay.dataset.activeScene=atEnd?'collected':scenes[Math.min(scenes.length-1,Math.max(0,Math.floor(current)))].id;
     updateCue();
   }
@@ -367,7 +381,7 @@
     }
     if(!butterflyFinished){
       essay.dataset.opening='joined';
-      for(const s of scenes.slice(0,2)){s.art.classList.add('is-opening-duet');s.figure.style.setProperty('--quote-left','71vw')}
+      for(const s of scenes.slice(0,2)){s.art.classList.add('is-opening-duet')}
     }
     essay.classList.remove('is-static');
     essay.classList.add('is-unfolding');atEnd=true;place(false);resize();

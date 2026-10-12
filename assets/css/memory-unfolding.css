@@ -5,7 +5,6 @@
 .memory-essay[data-active-scene="burns"]{--memory-colour-a:#647c76;--memory-colour-b:#868b70}
 .memory-essay[data-active-scene="brideshead"]{--memory-colour-a:#78857b;--memory-colour-b:#988681}
 .memory-essay[data-active-scene="nalan"]{--memory-colour-a:#83867a;--memory-colour-b:#a08b80}
-.memory-essay[data-active-scene="li"]{--memory-colour-a:#948879;--memory-colour-b:#9e7e82}
 .memory-essay[data-active-scene="pushkin"]{--memory-colour-a:#987d88;--memory-colour-b:#ad9294}
 .memory-essay[data-active-scene="wong"]{--memory-colour-a:#7f818f;--memory-colour-b:#918990}
 .memory-essay[data-active-scene="thackeray"]{--memory-colour-a:#7a858a;--memory-colour-b:#8d8f8e}
@@ -14,7 +13,7 @@
 .is-unfolding .memory-stage::before,.memory-world-dialog::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(118deg,color-mix(in srgb,var(--memory-colour-a) 13%,transparent),transparent 65%),linear-gradient(300deg,color-mix(in srgb,var(--memory-colour-b) 9%,transparent),transparent 70%)}
 .memory-unfolding{position:relative}
 .memory-growing-poem{max-width:570px;margin:100px auto;text-align:center}
-.memory-post .memory-growing-poem p{font-size:clamp(23px,1.9vw,32px);line-height:1.5;font-weight:400}
+.memory-post .memory-growing-poem p{font-size:clamp(22px,min(1.9vw,3.1vh),32px);line-height:1.5;font-weight:400}
 .memory-poem-line{display:block;text-wrap:balance}
 .memory-poem-line:nth-child(2n+3){margin-top:.8em}
 .memory-atlas{max-width:1280px;margin:auto;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:100px 46px;align-items:start;padding:60px 0 140px}
@@ -27,12 +26,9 @@
 .memory-post .memory-atlas #brideshead-scene{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:center}
 .memory-post .memory-atlas #brideshead-scene .memory-art{margin:0}
 .memory-atlas #nalan-scene{--atlas-span:4;--atlas-art:95%;--atlas-offset:180px}
-.memory-atlas #hemingway-scene{--atlas-span:5;--atlas-art:100%}
 .memory-atlas #wong-scene{--atlas-span:7;--atlas-art:94%;--atlas-offset:90px}
-.memory-atlas #li-scene{--atlas-span:7;--atlas-art:64%}
 .memory-atlas #pushkin-scene{--atlas-span:5;--atlas-art:79%;--atlas-offset:150px}
 .memory-atlas #thackeray-scene{--atlas-span:8;--atlas-art:100%}
-.memory-atlas #gatsby-scene{--atlas-span:4;--atlas-art:100%;--atlas-offset:220px}
 .memory-ending-poem:empty{display:none}
 
 .is-unfolding .memory-unfolding{margin:0 calc((min(1480px,100vw) - 100vw)/2 - 36px);}
@@ -45,15 +41,26 @@
 .memory-post .is-unfolding .memory-scene-layer figure.quotation{position:absolute;inset:0;display:block;width:100%;max-width:none;margin:0;pointer-events:none;visibility:hidden}
 .memory-post .is-unfolding .memory-scene-layer figure.is-reached{visibility:visible}
 .memory-post .is-unfolding .memory-scene-layer figure .memory-art{position:absolute;left:0;top:0;width:var(--scene-width,900px);max-width:none;margin:0;transform-origin:50% 50%;will-change:transform,opacity;pointer-events:auto}
-.memory-post .is-unfolding .memory-scene-layer figure blockquote{position:absolute;left:var(--quote-left,72vw);top:50%;transform:translateY(-50%);width:var(--quote-width,25vw);max-width:510px;margin:0;padding:0;max-height:90svh;opacity:0;color:var(--ink-muted);will-change:opacity,transform}
-.memory-post .is-unfolding .memory-scene-layer figure blockquote p{font-size:18px;line-height:1.85;opacity:1;transform:none}
-.memory-post .is-unfolding .memory-scene-layer #nabokov-scene blockquote{max-width:510px}
-.memory-post .is-unfolding .memory-scene-layer figure[data-side="right"] blockquote,
+.memory-post .is-unfolding .memory-scene-layer figure blockquote{position:absolute;left:67vw;top:50%;transform:translateY(-50%);width:30vw;max-width:600px;margin:0;padding:0;max-height:86svh;opacity:0;color:var(--ink-muted);will-change:opacity,transform}
+.memory-post .is-unfolding .memory-scene-layer figure blockquote p{font-size:19px;line-height:1.9;opacity:1;transform:none}
+/* Quote lanes are independent of the pictures' transformed bounds. */
+.memory-post .is-unfolding .memory-scene-layer figure[data-side="left"] blockquote{left:4.5vw;width:26vw;max-width:550px}
 .memory-post .is-unfolding[data-opening="joined"] .memory-scene-layer :is(#nabokov-scene,#burns-scene) blockquote{left:67vw;width:30vw;max-width:600px}
+.memory-post .is-unfolding .memory-scene-layer figure blockquote{pointer-events:auto}
+.memory-post .is-unfolding .memory-scene-layer #nalan-scene blockquote{left:7vw;width:24vw}
+.memory-post .is-unfolding .memory-scene-layer #nalan-scene blockquote p{font-size:20px;line-height:2.05}
+.memory-post .is-unfolding .memory-scene-layer #wong-scene blockquote p{font-size:20px;line-height:2}
+.memory-post .is-unfolding .memory-scene-layer blockquote p+p{margin-top:1.5em}
+.memory-quote-word{display:inline-block;transition:transform .9s ease,color .9s ease,text-shadow .9s ease}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+ .memory-quote-word:hover{transform:translateY(-1.5px);color:var(--ink);text-shadow:0 0 16px color-mix(in srgb,var(--print-sky) 18%,transparent)}
+}
 .is-unfolding .memory-beats{position:absolute;inset:0;pointer-events:none}
 .is-unfolding .memory-beat{position:absolute;left:0;right:0;height:1px}
 .is-unfolding .memory-ending-poem{min-height:65vh;display:grid;align-items:center}
 .is-unfolding .memory-ending-poem:empty{display:none}
+.is-unfolding[data-active-scene="collected"] .memory-stage .memory-growing-poem{width:min(68vw,900px)}
+.is-unfolding[data-active-scene="collected"] .memory-stage .memory-growing-poem p{font-size:clamp(22px,3vh,30px)}
 .is-unfolding .memory-ending-poem .memory-growing-poem{margin:80px auto}
 .is-unfolding .memory-atlas:empty{padding:0}
 
