@@ -1,0 +1,756 @@
+---
+layout: default
+title: "I wish it were not dark."
+wide: true
+---
+<link rel="stylesheet" href="/prototypes/opus-memory/base.css">
+{% raw %}
+<style>
+/* Fixer: each passage carries a print that develops as you read it and silvers once you pass,
+   unless you hold it long enough to fix it. */
+.fx{max-width:1120px;margin:0 auto}
+.fx-own{max-width:650px;margin:120px auto 90px}
+.fx-passage{max-width:820px;margin:0 0 150px}
+.fx-passage.right{margin-left:auto}
+.fx-passage blockquote{max-width:640px;margin:0 auto}
+.fx-anchor{max-width:1060px;margin:120px auto 150px}
+.fx-anchor blockquote{max-width:650px;margin:0 auto}
+.fx blockquote{color:color-mix(in srgb,var(--ink) 82%,var(--paper));padding-left:2em}
+.fx blockquote a{color:inherit;text-decoration:none}
+.fx p{transition:none}
+.fx-plate{position:relative;margin:0 0 26px}
+.print{position:relative;aspect-ratio:800/460;--dev:0;--fog:0;--tone:0;--hr:0px;--hx:50%;--hy:50%;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;outline:none;isolation:isolate}
+.print.wide{aspect-ratio:1000/520}
+.print>*{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.print .scene{display:block;filter:blur(calc((1 - var(--dev)) * 2.6px)) contrast(calc(1 - var(--fog) * .34))}
+.print .L{opacity:clamp(0,calc(var(--dev) * 2.6),1)}
+.print .M{opacity:clamp(0,calc((var(--dev) - .2) * 2.4),1)}
+.print .D{opacity:clamp(0,calc((var(--dev) - .46) * 2.1),1)}
+.fx-grain{background-image:var(--fx-grain);background-size:180px;mix-blend-mode:multiply;opacity:calc(.38 + var(--fog) * .2)}
+.fx-clump{background-image:var(--fx-clump);background-size:240px;mix-blend-mode:multiply;opacity:calc((1 - var(--dev)) * .95)}
+.fx-grime{background-size:100% 100%;opacity:clamp(0,calc(var(--dev) * 3),.9)}
+.fx-fog{background:radial-gradient(ellipse at 48% 44%,rgba(222,223,219,.5),rgba(199,205,206,.92) 75%);opacity:calc(var(--fog) * .84)}
+.fx-rim{background-size:100% 100%;opacity:var(--fog)}
+.fx-tone{background:#8d6d79;mix-blend-mode:soft-light;opacity:var(--tone);
+  -webkit-mask-image:radial-gradient(circle at var(--hx) var(--hy),#000 0,#000 calc(var(--hr) * .55),transparent var(--hr));
+  mask-image:radial-gradient(circle at var(--hx) var(--hy),#000 0,#000 calc(var(--hr) * .55),transparent var(--hr))}
+.fx-still .print{--dev:1!important;--fog:0!important;--tone:.5!important;--hr:4000px!important}
+[data-theme="dark"] .print{opacity:.84}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .print{opacity:.84}}
+</style>
+{% endraw %}
+<div class="om fx" id="fx">
+  <header class="om-header"><h1 class="om-title">I wish it were not dark.</h1></header>
+
+  <section id="fear">
+    <div class="fx-own"><p>I&#x27;ve learned for myself that the sensibilities I have come from fear. I wish that things could not become dark.</p><p>Most of what I do is to make sure that I don't actually lose the present, that it's somehow there, and that it's kept there somehow.</p></div>
+    <div class="fx-passage" id="burns">
+      <div class="fx-plate"><div class="print" data-scene="burns" data-seed="11" aria-label="A turned-up nest in a stubble field under low November light, a mouse running from it."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="en" cite="https://poets.org/poem/mouse/embed"><p>But Mousie, thou art no thy lane,<br>In proving foresight may be vain:<br>The best-laid schemes o&#x27; mice an&#x27; men,<br>&emsp;&emsp;Gang aft a-gley,<br>An&#x27; lea&#x27;e us nought but grief an&#x27; pain,<br>&emsp;&emsp;For promis&#x27;d joy.</p><p>Still thou are blest, compared wi&#x27; me!<br>The present only toucheth thee:<br>But Och! I backward cast my e&#x27;e,<br>&emsp;&emsp;On prospects drear!<br>An&#x27; forward, tho&#x27; I canna see,<br>&emsp;&emsp;I guess an&#x27; fear!</p></blockquote>
+    </div>
+  </section>
+
+  <section id="present">
+    <div class="fx-own"><p>I don&#x27;t like looking at the past. That is why I grasp so much to the present and what I have and whom I love.</p><p>It is a kind of longing for the past. Or perhaps not longing exactly. It is experiencing the present through memory, while fearing that the present really will become a memory.</p></div>
+    <div class="fx-passage right" id="brideshead">
+      <div class="fx-plate"><div class="print" data-scene="brideshead" data-seed="23" aria-label="Castle Howard above its lake, the house repeated in the water."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="en" cite="https://www.gutenbergca.gutenbergcanada.ca/ebooks/waughe-bridesheadrevisited1945/waughe-bridesheadrevisited1945-00-h.html"><p>I felt that I was leaving part of myself behind, and that wherever I went afterwards I should feel the lack of it, and search for it hopelessly, as ghosts are said to do, frequenting the spots where they buried material treasures without which they cannot pay their way to the nether world.</p></blockquote>
+    </div>
+    <div class="fx-passage" id="nalan">
+      <div class="fx-plate"><div class="print" data-scene="nalan" data-seed="37" aria-label="Low light through a window lattice falling across a wall, with the shadows of leaves."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="zh-Hans"><p>谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳。<br>被酒莫惊春睡重，赌书消得泼茶香，当时只道是寻常。</p></blockquote>
+    </div>
+    <div class="fx-passage right" id="hemingway">
+      <div class="fx-plate"><div class="print" data-scene="hemingway" data-seed="41" aria-label="A Paris quay: mansard roofs across the Seine, a man fishing from the stone parapet."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="en"><p>But this is how Paris was in the early days when we were very poor and very happy.</p></blockquote>
+    </div>
+  </section>
+
+  <section id="glass">
+    <div class="fx-anchor" id="wong">
+      <div class="fx-plate"><div class="print wide" data-scene="wong" data-seed="53" aria-label="Light leaking through a dusty pane."><svg class="scene" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="zh-Hans"><p>那些消逝了的岁月，仿佛隔着一块积着灰尘的玻璃，看得到，抓不着。</p><p>他一直在怀念着过去的一切。如果他能冲破那块积着灰尘的玻璃，他会走回早已消逝的岁月。</p></blockquote>
+    </div>
+    <div class="fx-passage right" id="li">
+      <div class="fx-plate"><div class="print" data-scene="li" data-seed="71" aria-label="Candlelight on paper, and the ring a cup of tea has left."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="zh-Hans"><p>后屏居乡里十年，仰取俯拾，衣食有馀。连守两郡，竭其俸入，以事铅椠。每获一书，即同共勘校，整集签题。得书画、彝鼎，亦摩玩舒卷，指摘疵病，夜尽一烛为率。故能纸札精致，字画完整，冠诸收书家。余性偶强记，每饭罢，坐归来堂烹茶，指堆积书史，言某事在某书某卷第几页第几行，以中否角胜负，为饮茶先后。中即举杯大笑，至茶倾覆怀中，反不得饮而起。甘心老是乡矣，故虽处忧患困穷，而志不屈。</p><p>今日忽阅此书，如见故人。因忆侯在东莱静治堂，装卷初就，芸签缥带，来十卷作一帙。每日晚，吏散，辄校勘二卷，跋题一卷。此二千卷，有题跋者五百卷耳。今手泽如新，而墓木已拱，悲夫！</p></blockquote>
+    </div>
+  </section>
+
+  <section id="continuity">
+    <div class="fx-own"><p>All of this (from literature I consume, movies that I like to watch, things I like to do, the need for my career to compound and go, for my friendships and relationships to stay and go on, to abruptly cut off engagements that I believe will not last) comes from this.</p></div>
+    <div class="fx-passage" id="pushkin">
+      <div class="fx-plate"><div class="print" data-scene="pushkin" data-seed="83" aria-label="Sheets of paper laid one over another, each holding the same eight written lines."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="en" cite="https://buida.ru/text/sindbad-morexod/"><p><a href="https://buida.ru/text/sindbad-morexod/" target="_blank" rel="noopener">Every day, from 11 November 1945, she copied out the same Pushkin poem by hand.</a></p><p><a href="https://max.mmlc.northwestern.edu/mdenner/Demo/texts/loved_you_once.htm" target="_blank" rel="noopener">I loved you once: perhaps that love has yet<br>To die down thoroughly within my soul;<br>But let it not dismay you any longer;<br>I have no wish to cause you any sorrow.<br>I loved you wordlessly, without a hope,<br>By shyness tortured, or by jealousy.<br>I loved you with such tenderness and candor<br>And pray God grants you to be loved that way again.</a></p></blockquote>
+    </div>
+    <div class="fx-passage right" id="thackeray">
+      <div class="fx-plate"><div class="print" data-scene="thackeray" data-seed="97" aria-label="A railway embankment across an old lane and cottage; beyond the rails, nothing."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+      <blockquote lang="en"><p>We elderly people have lived in that praerailroad world, which has passed into limbo and vanished from under us. I tell you it was firm under our feet once, and not long ago. They have raised those railroad embankments up, and shut off the old world that was behind them. Climb up that bank on which the irons are laid, and look to the other side—it is gone. There IS no other side. Try and catch yesterday. Where is it? Here is a Times newspaper, dated Monday 26th, and this is Tuesday 27th. Suppose you deny there was such a day as yesterday?</p></blockquote>
+    </div>
+    <div class="fx-passage" id="gatsby">
+      <div class="fx-plate"><div class="print" data-scene="gatsby" data-seed="101" aria-label="Night across the bay: a figure on the lawn reaching toward a small green light at the end of a dock."><svg class="scene" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg></div></div>
+    </div>
+  </section>
+
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="om-b1" filterUnits="userSpaceOnUse" x="-300" y="-300" width="1600" height="1200"><feGaussianBlur stdDeviation="1"/></filter>
+    <filter id="om-b2" filterUnits="userSpaceOnUse" x="-300" y="-300" width="1600" height="1200"><feGaussianBlur stdDeviation="2"/></filter>
+    <filter id="om-b4" filterUnits="userSpaceOnUse" x="-300" y="-300" width="1600" height="1200"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="om-b8" filterUnits="userSpaceOnUse" x="-300" y="-300" width="1600" height="1200"><feGaussianBlur stdDeviation="8"/></filter>
+    <filter id="om-b16" filterUnits="userSpaceOnUse" x="-300" y="-300" width="1600" height="1200"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="om-b28" filterUnits="userSpaceOnUse" x="-300" y="-300" width="1600" height="1200"><feGaussianBlur stdDeviation="28"/></filter>
+  </defs>
+</svg>
+
+{% raw %}
+<script>
+(() => {
+const root = document.getElementById('fx');
+const NS = 'http://www.w3.org/2000/svg';
+const T = {p0:'#eeeae1',p1:'#e2dfd5',l1:'#d3d1c7',l2:'#bfbfb5',m1:'#a2a59e',m2:'#868b86',m3:'#6e7571',d1:'#555d5a',d2:'#3e4644',d3:'#2a302f'};
+const GREEN = '#87a293';
+const r1 = n => Math.round(n * 10) / 10;
+const r2 = n => Math.round(n * 100) / 100;
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const pick = (R, a) => a[Math.floor(R() * a.length)];
+const lerp = (a, b, t) => a + (b - a) * t;
+const lp = (A, B, t) => [lerp(A[0], B[0], t), lerp(A[1], B[1], t)];
+function E(p, tag, a = {}) { const e = document.createElementNS(NS, tag); for (const k in a) if (a[k] != null) e.setAttribute(k, a[k]); p.appendChild(e); return e; }
+const G = (p, cls, a = {}) => E(p, 'g', cls ? {class: cls, ...a} : a);
+const defs = s => s.querySelector('defs') || E(s, 'defs');
+function lin(s, id, stops, x1 = 0, y1 = 0, x2 = 0, y2 = 1, user) {
+  const g = E(defs(s), 'linearGradient', user ? {id, x1, y1, x2, y2, gradientUnits: 'userSpaceOnUse'} : {id, x1, y1, x2, y2});
+  for (const [o, c, op = 1] of stops) E(g, 'stop', {offset: o, 'stop-color': c, 'stop-opacity': op});
+  return `url(#${id})`;
+}
+function rad(s, id, stops, cx, cy, r) {
+  const g = E(defs(s), 'radialGradient', {id, cx, cy, r, gradientUnits: 'userSpaceOnUse'});
+  for (const [o, c, op = 1] of stops) E(g, 'stop', {offset: o, 'stop-color': c, 'stop-opacity': op});
+  return `url(#${id})`;
+}
+const poly = (p, pts, a) => E(p, 'polygon', {points: pts.map(q => r1(q[0]) + ',' + r1(q[1])).join(' '), ...a});
+const line = (p, x1, y1, x2, y2, stroke, w, op = 1, extra = {}) => E(p, 'line', {x1: r1(x1), y1: r1(y1), x2: r1(x2), y2: r1(y2), stroke, 'stroke-width': r2(w), opacity: r2(op), 'stroke-linecap': 'round', ...extra});
+function leaf(p, x, y, len, wid, ang, fill, op = 1, rib) {
+  const tr = `translate(${r1(x)} ${r1(y)}) rotate(${r1(ang)})`;
+  E(p, 'path', {d: `M0 0C${r1(len * .3)} ${r1(-wid)} ${r1(len * .72)} ${r1(-wid * .9)} ${r1(len)} 0C${r1(len * .72)} ${r1(wid * .9)} ${r1(len * .3)} ${r1(wid)} 0 0Z`, fill, opacity: r2(op), transform: tr});
+  if (rib) E(p, 'path', {d: `M${r1(len * .06)} 0L${r1(len * .9)} 0`, stroke: rib, 'stroke-width': .5, opacity: r2(.45 * op), transform: tr});
+}
+function bumpy(R, x0, x1, base, minH, maxH, step, bottom) {
+  let d = `M${x0} ${bottom}L${x0} ${base}`, x = x0;
+  while (x < x1) { const nx = x + step * (.6 + R() * .8); d += `Q${r1((x + nx) / 2)} ${r1(base - (minH + R() * (maxH - minH)) * 2)} ${r1(nx)} ${r1(base - R() * minH)}`; x = nx; }
+  return d + `L${x1} ${bottom}Z`;
+}
+function bareTree(p, R, x, y, h, col) {
+  (function br(x, y, len, a, w, dep) {
+    const x2 = x + Math.cos(a) * len, y2 = y + Math.sin(a) * len;
+    line(p, x, y, x2, y2, col, w, 1);
+    if (dep > 0) { const n = 2 + (R() < .45 ? 1 : 0); for (let i = 0; i < n; i++) br(x2, y2, len * (.6 + R() * .22), a + (R() - .5) * 1.25, w * .64, dep - 1); }
+  })(x, y, h * .36, -Math.PI / 2 + (R() - .5) * .12, Math.max(.5, h * .045), 5);
+}
+function clump(p, R, cx, base, w, h, n, tones, hi) {
+  for (let i = 0; i < n; i++) {
+    const u = R() * 2 - 1, x = cx + u * w / 2, y = base - R() * h * (1 - Math.abs(u) * .55), r = 9 + R() * 20;
+    E(p, 'circle', {cx: r1(x), cy: r1(y), r: r1(r), fill: pick(R, tones)});
+    if (hi && R() < .55) E(p, 'circle', {cx: r1(x - r * .25), cy: r1(y - r * .3), r: r1(r * .55), fill: hi, opacity: .32});
+  }
+}
+
+const scenes = {
+burns(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 232, fill: lin(s, 'b-sky', [[0, T.l2], [.72, T.p1], [1, T.p0]])});
+  E(L, 'rect', {y: 212, width: 800, height: 248, fill: T.l1});
+  E(L, 'ellipse', {cx: 190, cy: 214, rx: 300, ry: 56, fill: '#f4f1e8', filter: 'url(#om-b16)'});
+  for (const [y, o] of [[58, .22], [92, .15], [146, .12], [176, .1]]) E(M, 'path', {d: `M-20 ${y}C200 ${y - 8} 460 ${y + 10} 820 ${y - 6}L820 ${y + 8}C520 ${y + 18} 240 ${y + 11} -20 ${y + 13}Z`, fill: T.m1, opacity: o, filter: 'url(#om-b4)'});
+  E(M, 'path', {d: bumpy(R, -10, 810, 213, 1.5, 5, 16, 222), fill: T.m2});
+  for (const [x, h] of [[96, 26], [548, 36], [572, 30], [690, 44], [745, 24]]) bareTree(M, R, x, 212, h, T.m3);
+  E(M, 'rect', {y: 212, width: 800, height: 248, fill: lin(s, 'b-field', [[0, T.m1, .2], [.45, T.m3, .45], [1, T.d2, .82]])});
+  const cp = E(defs(s), 'clipPath', {id: 'b-plough'}); poly(cp, [[440, 213], [820, 213], [820, 470], [150, 470]]);
+  const F = G(M, null, {'clip-path': 'url(#b-plough)'});
+  E(F, 'rect', {y: 212, width: 800, height: 260, fill: T.d1, opacity: .14});
+  const VP = [1180, 206];
+  for (let xb = -760; xb < 1000; xb += 22) {
+    poly(F, [VP, [xb, 470], [xb + 9, 470]], {fill: T.d1, opacity: .5});
+    poly(F, [VP, [xb + 10, 470], [xb + 15, 470]], {fill: T.p1, opacity: .32});
+  }
+  const S = G(D), edge = y => 440 - (y - 212) / 258 * 290;
+  for (let i = 0; i < 1300; i++) {
+    const y = 214 + 246 * Math.pow(R(), 1.25), s1 = (y - 212) / 248, x = R() * (edge(y) - 3);
+    const h = 1.4 + s1 * 15 * (.7 + R() * .6), lean = (R() - .5) * (1 + s1 * 4);
+    line(S, x, y, x + h * 1.5, y + h * .32, T.m3, .4 + s1 * 1.1, .2 + .1 * s1);
+    line(S, x, y, x + lean, y - h, T.d2, .3 + s1 * 1.1, .4 + .45 * s1);
+    if (R() < .35) line(S, x + lean * .7, y - h * .7, x + lean, y - h, T.p1, .3 + s1 * .6, .55);
+  }
+  const N = G(D);
+  E(N, 'ellipse', {cx: 360, cy: 410, rx: 76, ry: 9, fill: T.d2, opacity: .38, filter: 'url(#om-b4)'});
+  E(N, 'path', {d: 'M258 404C258 380 284 362 318 360C350 358 372 374 378 398C360 410 300 413 258 404Z', fill: T.d2});
+  E(N, 'path', {d: 'M266 392C274 374 296 364 318 362C334 361 346 365 356 371', stroke: T.l1, 'stroke-width': 1.6, fill: 'none', opacity: .6});
+  for (let i = 0; i < 26; i++) E(N, 'circle', {cx: r1(270 + R() * 100), cy: r1(368 + R() * 34), r: r1(.8 + R() * 2.2), fill: pick(R, [T.m3, T.d1, T.d3]), opacity: .7});
+  E(N, 'ellipse', {cx: 306, cy: 405, rx: 27, ry: 9, fill: T.d3});
+  for (let i = 0; i < 110; i++) {
+    const a = R() * Math.PI * 2, r = 14 + R() * 24, span = .4 + R() * 1.1, sq = .42;
+    const p = t => [306 + Math.cos(t) * r * 1.25, 403 + Math.sin(t) * r * sq];
+    const [x1, y1] = p(a), [x2, y2] = p(a + span), [cx, cy] = p(a + span / 2);
+    E(N, 'path', {d: `M${r1(x1)} ${r1(y1)}Q${r1(cx + (R() - .5) * 8)} ${r1(cy - 4 - R() * 6)} ${r1(x2)} ${r1(y2)}`, stroke: pick(R, [T.l1, T.l2, T.p1, T.m1]), 'stroke-width': r2(.5 + R() * .8), fill: 'none', opacity: r2(.65 + R() * .35)});
+  }
+  for (let i = 0; i < 30; i++) { const x = 228 + R() * 70, y = 400 + R() * 30, a = R() * Math.PI, l = 5 + R() * 10; line(N, x, y, x + Math.cos(a) * l, y + Math.sin(a) * l * .4, T.l2, .7, .8); }
+  const Mo = G(D);
+  E(Mo, 'ellipse', {cx: 200, cy: 424, rx: 13, ry: 2.4, fill: T.d2, opacity: .45, filter: 'url(#om-b1)'});
+  E(Mo, 'path', {d: 'M188 417C190 411 198 410 206 411C213 412 216 417 214 421C206 423 194 423 188 421Z', fill: T.d3});
+  E(Mo, 'path', {d: 'M190 416C186 414 182 414 179 416.5C182 418.5 186 419.5 190 419Z', fill: T.d3});
+  E(Mo, 'circle', {cx: 188.5, cy: 413, r: 2.3, fill: T.d2});
+  E(Mo, 'path', {d: 'M213 419Q226 425 238 417', stroke: T.d3, 'stroke-width': .8, fill: 'none'});
+},
+
+brideshead(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 290, fill: lin(s, 'w-sky', [[0, T.l2], [.8, T.p1], [1, T.p0]])});
+  for (const [y, o] of [[46, .16], [84, .12], [120, .1]]) E(L, 'path', {d: `M-20 ${y}C240 ${y - 10} 520 ${y + 8} 820 ${y - 4}L820 ${y + 10}C520 ${y + 22} 240 ${y + 6} -20 ${y + 14}Z`, fill: T.m1, opacity: o, filter: 'url(#om-b8)'});
+  E(L, 'rect', {y: 284, width: 800, height: 176, fill: lin(s, 'w-lake', [[0, T.l2], [.5, T.l1], [1, T.m1]])});
+  const woods = G(M, null, {id: 'w-woods'});
+  E(woods, 'path', {d: bumpy(R, -10, 810, 206, 6, 16, 26, 240), fill: T.m1});
+  E(woods, 'path', {d: bumpy(R, -10, 810, 218, 3, 9, 18, 240), fill: T.m2, opacity: .8});
+  E(M, 'path', {d: 'M-10 252C200 244 300 232 400 231C500 232 600 244 810 252L810 286L-10 286Z', fill: lin(s, 'w-lawn', [[0, T.l1], [1, T.m1]])});
+  const H = G(M, null, {id: 'w-house'}), stone = T.l1, shade = T.m1;
+  const rect = (x, y, w, h, fill, op = 1) => E(H, 'rect', {x, y, width: w, height: h, fill, opacity: op});
+  rect(228, 190, 124, 42, stone); rect(448, 190, 124, 42, stone);
+  rect(206, 181, 28, 51, T.p1); rect(566, 181, 28, 51, stone);
+  rect(230, 181, 4, 51, shade, .7); rect(590, 181, 4, 51, shade, .7);
+  rect(352, 166, 96, 66, T.p1); rect(366, 156, 68, 10, stone);
+  rect(383, 122, 34, 36, T.l2);
+  E(H, 'path', {d: 'M378 124C378 99 391 87 400 85C409 87 422 99 422 124Z', fill: T.m2});
+  E(H, 'path', {d: 'M384 120C384 103 391 93 397 89', stroke: T.l1, 'stroke-width': 1.2, fill: 'none', opacity: .7});
+  rect(395, 72, 10, 14, T.l1);
+  E(H, 'path', {d: 'M393.5 72Q400 63 406.5 72Z', fill: T.m2});
+  line(H, 400, 57, 400, 65, T.m3, .8);
+  for (const x of [388, 397, 406]) E(H, 'path', {d: `M${x} 146L${x} 134Q${x + 2.5} 130 ${x + 5} 134L${x + 5} 146Z`, fill: T.m3});
+  for (const x of [361, 377, 423, 439]) line(H, x, 168, x, 232, T.m1, 1.2, .8);
+  E(H, 'path', {d: 'M384 196L400 186L416 196Z', fill: 'none', stroke: T.m2, 'stroke-width': 1});
+  rect(395, 206, 10, 26, T.d2);
+  for (const [x0, x1] of [[232, 348], [452, 568]]) for (const y of [197, 214]) for (let x = x0 + 3; x < x1 - 4; x += 10.5) rect(r1(x), y, 4.6, 9, T.d1, .72);
+  for (const y of [172, 192]) for (const x of [368, 384, 411, 427]) rect(x, y, 5, 10, T.d1, .72);
+  for (const x of [210, 222, 570, 582]) for (const y of [190, 210]) rect(x, y, 4.4, 9, T.d1, .72);
+  for (const [x0, x1, y] of [[228, 352, 190], [448, 572, 190], [206, 234, 181], [566, 594, 181], [352, 448, 166]]) {
+    line(H, x0, y, x1, y, T.m2, 1.4, .9);
+    for (let x = x0 + 4; x < x1; x += 13) E(H, 'circle', {cx: r1(x), cy: y - 2.4, r: 1.6, fill: T.m2});
+  }
+  E(H, 'path', {d: 'M376 232L424 232L430 238L370 238Z', fill: T.l2});
+  const trees = G(D, null, {id: 'w-trees'});
+  clump(trees, R, 80, 262, 230, 130, 70, [T.d1, T.d2, T.m3], T.m2);
+  clump(trees, R, 720, 262, 220, 118, 66, [T.d1, T.d2, T.m3], T.m2);
+  clump(trees, R, 262, 240, 60, 40, 12, [T.m3, T.d1], T.m2);
+  clump(trees, R, 548, 240, 54, 34, 10, [T.m3, T.d1], T.m2);
+  const refl = G(M, null, {transform: 'matrix(1 0 0 -1 0 571)', opacity: .4, filter: 'url(#om-b2)'});
+  for (const id of ['w-woods', 'w-house', 'w-trees']) E(refl, 'use', {href: '#' + id});
+  line(M, 0, 285.5, 800, 285.5, T.d1, 1, .35);
+  const Rp = G(L);
+  for (let i = 0; i < 260; i++) {
+    const y = 288 + Math.pow(R(), 1.3) * 172, k = (y - 285) / 175, x = R() * 820 - 10, w = 14 + R() * 70 * (.4 + k);
+    line(Rp, x, y, x + w, y, T.p0, .5 + k * 1.1, .35 + R() * .4);
+  }
+  for (let i = 0; i < 40; i++) { const x = R() < .7 ? R() * 150 : 650 + R() * 150, h = 30 + R() * 70, b = (R() - .5) * 26; E(D, 'path', {d: `M${r1(x)} 462Q${r1(x + b * .3)} ${r1(462 - h * .6)} ${r1(x + b)} ${r1(462 - h)}`, stroke: T.d2, 'stroke-width': r2(.6 + R() * .8), fill: 'none'}); }
+},
+
+nalanOld(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 362, fill: rad(s, 'n-wall', [[0, T.p0], [.55, T.l1], [1, T.l2]], 600, 200, 620)});
+  E(M, 'rect', {y: 360, width: 800, height: 100, fill: lin(s, 'n-floor', [[0, T.m1], [1, T.m2]])});
+  line(M, 0, 360.5, 800, 360.5, T.m3, 1, .6);
+  E(L, 'rect', {x: 480, y: 70, width: 250, height: 250, fill: '#f3f0e8'});
+  const wc = E(defs(s), 'clipPath', {id: 'n-win'}); E(wc, 'rect', {x: 480, y: 70, width: 250, height: 250});
+  const behind = G(M, null, {'clip-path': 'url(#n-win)', filter: 'url(#om-b2)'});
+  E(behind, 'path', {d: 'M742 96C690 130 640 170 600 222C580 248 560 272 520 300', stroke: T.m1, 'stroke-width': 4, fill: 'none', opacity: .45});
+  E(behind, 'path', {d: 'M650 160C680 150 700 132 720 128', stroke: T.m1, 'stroke-width': 2.4, fill: 'none', opacity: .4});
+  for (let i = 0; i < 22; i++) leaf(behind, 520 + R() * 210, 90 + R() * 200, 12 + R() * 8, 4 + R() * 2, R() * 360, T.m1, .25 + R() * .25);
+  const patch = [[64, 158], [292, 120], [312, 362], [86, 380]];
+  const pq = (u, v) => lp(lp(patch[0], patch[1], u), lp(patch[3], patch[2], u), v);
+  poly(L, patch, {fill: T.p0, opacity: .62, filter: 'url(#om-b2)'});
+  const PL = G(M, null, {filter: 'url(#om-b1)'});
+  for (const u of [.25, .5, .75]) { const a = pq(u, 0), b = pq(u, 1); line(PL, a[0], a[1], b[0], b[1], T.l2, 3.4, .75); }
+  for (const v of [.25, .5, .75]) { const a = pq(0, v), b = pq(1, v); line(PL, a[0], a[1], b[0], b[1], T.l2, 3.4, .75); }
+  for (let i = 0; i < 8; i++) { const [x, y] = pq(R(), R()); leaf(PL, x, y, 10 + R() * 6, 3.5, R() * 360, T.l2, .5); }
+  const W = G(D);
+  E(W, 'rect', {x: 480, y: 70, width: 250, height: 250, fill: 'none', stroke: T.d2, 'stroke-width': 11});
+  for (const x of [542.5, 605, 667.5]) line(W, x, 70, x, 320, T.m3, 3.4, .95);
+  for (const y of [132.5, 195, 257.5]) line(W, 480, y, 730, y, T.m3, 3.4, .95);
+  for (const [x, y] of [[542.5, 132.5], [667.5, 132.5], [542.5, 257.5], [667.5, 257.5], [605, 195]]) E(W, 'rect', {x: x - 9, y: y - 9, width: 18, height: 18, fill: 'none', stroke: T.m3, 'stroke-width': 2});
+  E(W, 'rect', {x: 464, y: 322, width: 282, height: 10, fill: T.d1});
+  line(W, 464, 322.5, 746, 322.5, T.l2, 1, .7);
+  leaf(W, 512, 320, 16, 5, -10, T.m2, 1, T.l2); leaf(W, 690, 320, 13, 4.4, 196, T.m3, 1, T.l2);
+  for (const [x, y, a] of [[560, 396, 20], [612, 418, -40], [520, 430, 150], [700, 402, 80]]) leaf(W, x, y, 15, 5, a, T.m3, .9, T.l2);
+  const TB = G(D);
+  E(TB, 'ellipse', {cx: 255, cy: 420, rx: 200, ry: 10, fill: T.d1, opacity: .35, filter: 'url(#om-b8)'});
+  E(TB, 'path', {d: 'M66 330L430 330L452 346L88 346Z', fill: T.d1});
+  E(TB, 'rect', {x: 88, y: 346, width: 364, height: 9, fill: T.d2});
+  for (const x of [100, 430]) E(TB, 'rect', {x, y: 355, width: 10, height: 66, fill: T.d2});
+  for (let i = 0; i < 2; i++) {
+    const x = 108 + i * 6, y = 318 - i * 11, w = 104 - i * 8;
+    E(TB, 'path', {d: `M${x} ${y}L${x + w} ${y}L${x + w + 10} ${y + 6}L${x + 10} ${y + 6}Z`, fill: T.m3});
+    E(TB, 'rect', {x: x + 10, y: y + 6, width: w, height: 6, fill: T.l1});
+    for (let k = 1; k < 3; k++) line(TB, x + 10, y + 6 + k * 2, x + 10 + w, y + 6 + k * 2, T.m1, .4, .7);
+    E(TB, 'rect', {x: x + 22, y: y + 1, width: 14, height: 3.4, fill: T.l2});
+  }
+  E(TB, 'path', {d: 'M238 338C226 336 214 338 210 341C222 344 252 345 268 343C286 342 306 338 312 335C296 333 270 336 238 338Z', fill: T.d3, opacity: .9});
+  E(TB, 'path', {d: 'M226 339C238 339 252 339 262 338', stroke: T.l2, 'stroke-width': 1, fill: 'none', opacity: .55});
+  line(TB, 212, 346, 211, 362, T.d3, 1.4, .7); E(TB, 'ellipse', {cx: 210, cy: 421, rx: 14, ry: 2.4, fill: T.d3, opacity: .45});
+  E(TB, 'path', {d: 'M300 322L318 316L326 332L308 338Z', fill: T.l2}); E(TB, 'ellipse', {cx: 312.5, cy: 335.5, rx: 4, ry: 8.5, transform: 'rotate(-64 312.5 335.5)', fill: T.m3});
+  E(TB, 'path', {d: 'M362 312L392 312L389 328Q377 333 365 328Z', fill: T.l2}); E(TB, 'ellipse', {cx: 377, cy: 312, rx: 15, ry: 3, fill: T.m3});
+  for (const [x, c] of [[370, -8], [380, 6], [386, -4]]) E(L, 'path', {d: `M${x} 306C${x + c} 296 ${x - c} 286 ${x + c * .6} 274C${x + c * 1.2} 264 ${x} 256 ${x + c * .4} 246`, stroke: T.p0, 'stroke-width': 1.3, fill: 'none', opacity: .7, filter: 'url(#om-b1)'});
+},
+
+hemingway(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 272, fill: lin(s, 'h-sky', [[0, T.l2], [1, T.p0]])});
+  const nd = G(L, null, {opacity: .85});
+  E(nd, 'rect', {x: 640, y: 98, width: 22, height: 140, fill: T.l2}); E(nd, 'rect', {x: 676, y: 98, width: 22, height: 140, fill: T.l2});
+  E(nd, 'rect', {x: 660, y: 152, width: 90, height: 86, fill: T.l2}); line(nd, 722, 152, 724, 82, T.l2, 2);
+  E(L, 'rect', {y: 266, width: 800, height: 160, fill: lin(s, 'h-river', [[0, T.l1], [1, T.l2]])});
+  const B = G(M), RF = G(M, null, {filter: 'url(#om-b2)', opacity: .45});
+  let x = -12;
+  while (x < 812) {
+    const w = 48 + R() * 40, top = 120 + R() * 46, man = 18 + R() * 8, base = 244, fac = pick(R, [T.l1, '#cbc9bf', T.l2]);
+    E(B, 'rect', {x: r1(x), y: r1(top + man), width: r1(w), height: r1(base - top - man), fill: fac});
+    poly(B, [[x - 1, top + man], [x + 5, top], [x + w - 5, top], [x + w + 1, top + man]], {fill: T.m3});
+    for (let i = 0, n = Math.floor((w - 14) / 14); i < n; i++) { const dx = x + 10 + i * 14; E(B, 'rect', {x: r1(dx), y: r1(top + 7), width: 6, height: 8, fill: T.m1}); poly(B, [[dx - 1, top + 7], [dx + 3, top + 3], [dx + 7, top + 7]], {fill: T.m2}); }
+    for (let i = 0, n = 1 + Math.floor(R() * 3); i < n; i++) { const cx = x + 4 + R() * (w - 14), ch = 8 + R() * 8; E(B, 'rect', {x: r1(cx), y: r1(top - ch), width: r1(5 + R() * 5), height: r1(ch), fill: T.d1}); }
+    let row = 0;
+    for (let y = top + man + 7; y < base - 12; y += 15, row++) {
+      for (let wx = x + 6; wx < x + w - 6; wx += 11) E(B, 'rect', {x: r1(wx), y: r1(y), width: 4.5, height: 8, fill: T.m2, opacity: .72});
+      if (row === 1 || row === 4) line(B, x + 3, y + 9, x + w - 3, y + 9, T.d1, .8, .7);
+    }
+    line(B, x, top + man, x, base, T.m1, .7, .6);
+    E(RF, 'rect', {x: r1(x), y: 268, width: r1(w), height: r1((base - top) * .55), fill: fac});
+    E(RF, 'rect', {x: r1(x + 4), y: r1(268 + (base - top - man) * .55), width: r1(w - 8), height: r1(man * .5), fill: T.m3});
+    x += w;
+  }
+  for (let i = 0; i < 70; i++) E(M, 'circle', {cx: r1(R() * 800), cy: r1(234 + R() * 16), r: r1(6 + R() * 9), fill: pick(R, [T.m2, T.m3]), opacity: .85});
+  E(M, 'rect', {y: 248, width: 800, height: 20, fill: T.m1}); line(M, 0, 248.5, 800, 248.5, T.l1, 1.5);
+  for (let i = 0; i < 300; i++) { const y = 270 + Math.pow(R(), 1.2) * 130, w = 10 + R() * 60; const xx = R() * 820 - 10; line(L, xx, y, xx + w, y, T.p0, .5 + (y - 270) / 130, .4 + R() * .45); }
+  const Q = G(D), yc = x => 344 + x / 560 * 29 - (x > 560 ? (x - 560) / 260 * 9 : 0);
+  E(Q, 'path', {d: 'M0 350L560 378L820 398L820 470L0 470Z', fill: lin(s, 'h-quay', [[0, T.m3], [1, T.d2]])});
+  E(Q, 'path', {d: 'M0 343L560 372L820 392L820 398L560 378L0 350Z', fill: T.l2});
+  for (let k = 1; k < 9; k++) {
+    E(Q, 'path', {d: `M0 ${350 + k * 14}L560 ${r1(378 + k * 12)}L820 ${r1(398 + k * 9)}`, stroke: T.d1, 'stroke-width': .8, fill: 'none', opacity: .35});
+    for (let jx = (k % 2) * 30; jx < 820; jx += 60) { const y0 = jx < 560 ? 350 + k * 14 + jx / 560 * (28 - k * 2) : 378 + k * 12; line(Q, jx, y0, jx, y0 + 12, T.d1, .7, .3); }
+  }
+  for (let bx = 150; bx < 330; bx += 44) { const y = yc(bx); E(Q, 'rect', {x: bx, y: r1(y - 13), width: 36, height: 12, fill: T.d1}); poly(Q, [[bx - 1, y - 13], [bx + 37, y - 13], [bx + 34, y - 17], [bx + 2, y - 17]], {fill: T.m3}); }
+  const fy = yc(470);
+  E(Q, 'path', {d: `M466 ${r1(fy)}C465 ${r1(fy - 8)} 468 ${r1(fy - 16)} 472 ${r1(fy - 19)}L477 ${r1(fy - 18)}C478 ${r1(fy - 10)} 478 ${r1(fy - 4)} 478 ${r1(fy)}Z`, fill: T.d3});
+  E(Q, 'circle', {cx: 474, cy: r1(fy - 22.5), r: 3.6, fill: T.d3}); E(Q, 'path', {d: `M469.5 ${r1(fy - 24)}L478.5 ${r1(fy - 24)}L476 ${r1(fy - 27.5)}L472 ${r1(fy - 27.5)}Z`, fill: T.d2});
+  E(Q, 'path', {d: `M477 ${r1(fy - 14)}Q540 ${r1(fy - 62)} 612 ${r1(fy - 74)}`, stroke: T.d2, 'stroke-width': .9, fill: 'none'});
+  line(Q, 612, fy - 74, 616, fy - 34, T.d1, .5, .5);
+  const ly = yc(640);
+  E(Q, 'rect', {x: 638, y: 300, width: 4, height: r1(ly - 300), fill: T.d2});
+  E(Q, 'path', {d: 'M631 286L649 286L646 300L634 300Z', fill: T.d2}); E(Q, 'path', {d: 'M634.5 288.5L645.5 288.5L643.5 298L636.5 298Z', fill: T.l1});
+  E(Q, 'path', {d: 'M629 286L640 279L651 286Z', fill: T.d3});
+  E(D, 'path', {id: 'h-trunk-path', d: 'M44 470C58 360 66 250 82 140C90 90 94 40 98 -10L134 -10C126 50 120 110 116 160C108 260 110 360 106 470Z', fill: T.m3});
+  const tc = E(defs(s), 'clipPath', {id: 'h-trunk'}); E(tc, 'path', {d: 'M44 470C58 360 66 250 82 140C90 90 94 40 98 -10L134 -10C126 50 120 110 116 160C108 260 110 360 106 470Z'});
+  const bark = G(D, null, {'clip-path': 'url(#h-trunk)'});
+  for (let i = 0; i < 46; i++) E(bark, 'ellipse', {cx: r1(50 + R() * 80), cy: r1(R() * 470), rx: r1(5 + R() * 12), ry: r1(8 + R() * 22), fill: pick(R, [T.l1, T.l2, T.m1, T.d1]), opacity: .7});
+  E(bark, 'path', {d: 'M104 470C110 360 108 260 116 160C120 110 126 50 134 -10L140 -10L140 470Z', fill: T.d2, opacity: .5});
+  E(D, 'path', {d: 'M108 46C150 30 200 14 250 -10', stroke: T.d1, 'stroke-width': 6, fill: 'none'});
+  E(D, 'path', {d: 'M96 92C60 70 30 50 -10 34', stroke: T.d1, 'stroke-width': 5, fill: 'none'});
+  for (let i = 0; i < 26; i++) { const lx = R() * 300 - 20, ly2 = R() * 70 - 10, a = 60 + R() * 60; for (const o of [-34, 0, 34]) leaf(D, lx, ly2, 14 + R() * 6, 6, a + o, T.d2, .85); }
+},
+
+wongOld(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  const VP = [560, 250], f = d => 1 / (1 + d * .32), Y = h => 600 - 1100 * h;
+  const P = (X, Yv, d) => [VP[0] + (X - VP[0]) * f(d), VP[1] + (Yv - VP[1]) * f(d)];
+  const wall = (p, X, d0, d1, h0, h1, a) => poly(p, [P(X, Y(h0), d0), P(X, Y(h0), d1), P(X, Y(h1), d1), P(X, Y(h1), d0)], a);
+  const mix = (a, b, t) => { const c = x => parseInt(x, 16); const A = [1, 3, 5].map(i => c(a.substr(i, 2))), B = [1, 3, 5].map(i => c(b.substr(i, 2))); return '#' + A.map((v, i) => Math.round(lerp(v, B[i], t)).toString(16).padStart(2, '0')).join(''); };
+  E(L, 'rect', {width: 1000, height: 520, fill: lin(s, 'k-sky', [[0, T.p0], [1, T.l1]])});
+  poly(M, [P(-80, 600, 0), P(1150, 600, 0), P(1150, 600, 60), P(-80, 600, 60)], {fill: lin(s, 'k-road', [[0, T.m1], [1, T.m3]], 0, 1, 0, 0)});
+  const ds = [0, .5, 1, 1.6, 2.3, 3.1, 4, 5, 6.2, 7.6, 9.2, 11, 13.5, 16.5, 20, 25, 32, 40, 60];
+  for (let i = 0; i < ds.length - 1; i++) {
+    const t = Math.min(1, ds[i] / 18);
+    wall(M, -80, ds[i], ds[i + 1] + .02, 0, 1.05, {fill: mix(T.m3, T.l2, t)});
+    wall(M, 1150, ds[i], ds[i + 1] + .02, .34, 1.05, {fill: mix(T.m2, T.l2, t)});
+  }
+  wall(D, 1150, 0, 60, 0, .34, {fill: T.d3, opacity: .92});
+  const floors = [.3, .45, .6, .75, .9];
+  for (const h of floors) {
+    for (let d = .6; d < 22; d += 1.5) {
+      const lit = R() < .1;
+      wall(M, -80, d, d + .8, h + .035, h + .12, {fill: lit ? T.l1 : T.d2, opacity: lit ? .8 : .55});
+      wall(M, 1150, d + .3, d + 1, h + .035, h + .12, {fill: R() < .08 ? T.l1 : T.d2, opacity: .5});
+    }
+    poly(D, [P(-80, Y(h), 0), P(30, Y(h), 0), P(30, Y(h), 60), P(-80, Y(h), 60)], {fill: T.d1, opacity: .9});
+    poly(D, [P(30, Y(h), 0), P(30, Y(h), 60), P(30, Y(h + .045), 60), P(30, Y(h + .045), 0)], {fill: T.d2, opacity: .55});
+    for (let d = 0; d < 26; d += .45) { const a = P(30, Y(h), d), b = P(30, Y(h + .045), d); line(D, a[0], a[1], b[0], b[1], T.d2, 1.6 * f(d), .7); }
+  }
+  for (const [d, h0, h1, X0, X1, tone] of [[1.8, .36, .6, -40, 150, T.l1], [3.7, .38, .62, -40, 140, T.l2], [6.4, .33, .53, -40, 140, T.p1], [10.5, .4, .6, -40, 140, T.l2], [17, .36, .56, -40, 140, T.l1], [2.6, .4, .63, 950, 1140, T.l2], [7.5, .38, .58, 960, 1140, T.l1]]) {
+    const a = P(X0, Y(h0), d), b = P(X1, Y(h1), d), w = b[0] - a[0], hh = a[1] - b[1];
+    E(L, 'rect', {x: r1(a[0]), y: r1(b[1]), width: r1(w), height: r1(hh), fill: tone});
+    E(D, 'rect', {x: r1(a[0]), y: r1(b[1]), width: r1(w), height: r1(hh), fill: 'none', stroke: T.d1, 'stroke-width': r2(3 * f(d)), opacity: .8});
+    const cols = 1 + (w > 70 ? 1 : 0), gh = w / (cols + 1.2);
+    for (let c = 0; c < cols; c++) for (let g = 0; g < 4; g++) {
+      const gx = a[0] + w * (c + 1) / (cols + 1) - gh * .3, gy = b[1] + hh * .1 + g * hh * .22;
+      if (gy + gh * .6 > a[1] - hh * .06) break;
+      for (let k = 0; k < 3; k++) { const hor = R() < .5, ox = R() * gh * .6, oy = R() * gh * .6, l = gh * (.25 + R() * .35); line(D, gx + ox, gy + oy, gx + ox + (hor ? l : 0), gy + oy + (hor ? 0 : l), T.d1, Math.max(.6, 2.2 * f(d)), .75); }
+    }
+    E(L, 'rect', {x: r1(a[0]), y: 520 - (520 - a[1]) * .25, width: r1(w), height: r1(Math.min(120, hh * 1.4)), fill: tone, opacity: .22, filter: 'url(#om-b4)'});
+  }
+  for (let d = 0; d < 40; d += 2.2) {
+    const a = P(1040, Y(0), d), b = P(1080, Y(.34), d);
+    E(M, 'rect', {x: r1(a[0]), y: r1(b[1]), width: r1(b[0] - a[0]), height: r1(a[1] - b[1]), fill: mix(T.m3, T.l2, Math.min(1, d / 18))});
+    line(M, a[0], a[1], a[0], b[1], T.l2, 1.5 * f(d), .7);
+  }
+  poly(D, [P(1040, Y(.34), 0), P(1150, Y(.34), 0), P(1150, Y(.34), 60), P(1040, Y(.34), 60)], {fill: T.d2});
+  const lb = P(60, Y(0), 3), lt = P(60, Y(.5), 3), lh = P(150, Y(.48), 3), sc = f(3);
+  line(D, lb[0], lb[1], lt[0], lt[1], T.d2, 9 * sc);
+  E(D, 'path', {d: `M${r1(lt[0])} ${r1(lt[1])}Q${r1((lt[0] + lh[0]) / 2)} ${r1(lt[1] - 20 * sc)} ${r1(lh[0])} ${r1(lh[1])}`, stroke: T.d2, 'stroke-width': r2(5 * sc), fill: 'none'});
+  E(L, 'circle', {cx: r1(lh[0]), cy: r1(lh[1] + 8 * sc), r: 70, fill: T.p0, opacity: .6, filter: 'url(#om-b16)'});
+  E(D, 'path', {d: `M${r1(lh[0] - 18 * sc)} ${r1(lh[1] + 14 * sc)}L${r1(lh[0] + 18 * sc)} ${r1(lh[1] + 14 * sc)}L${r1(lh[0] + 8 * sc)} ${r1(lh[1])}L${r1(lh[0] - 8 * sc)} ${r1(lh[1])}Z`, fill: T.d2});
+  E(L, 'ellipse', {cx: r1(lh[0]), cy: r1(lh[1] + 16 * sc), rx: r1(12 * sc), ry: r1(4 * sc), fill: '#f6f3ec'});
+  E(L, 'rect', {x: r1(lh[0] - 14), y: r1(lb[1] + 6), width: 28, height: r1(520 - lb[1]), fill: T.p0, opacity: .45, filter: 'url(#om-b8)'});
+  const fb = P(600, Y(0), 8), fsc = f(8) * 1100 / 520;
+  const fig = G(D, null, {transform: `translate(${r1(fb[0])} ${r1(fb[1])}) scale(${r2(fsc)})`});
+  E(fig, 'path', {d: 'M-4 0L-3 -34L-9 -36L-8 -72L8 -72L9 -36L3 -34L4 0L1 0L0 -30L-1 0Z', fill: T.d3});
+  E(fig, 'circle', {cx: 0, cy: -78, r: 5.5, fill: T.d3});
+  E(fig, 'path', {d: 'M-30 -82Q0 -112 30 -82Q15 -86 0 -84Q-15 -86 -30 -82Z', fill: T.d3}); line(fig, 0, -98, 2, -64, T.d3, 1.4);
+  E(fig, 'rect', {x: -8, y: 2, width: 16, height: 40, fill: T.d3, opacity: .25, filter: 'url(#om-b2)'});
+  E(D, 'rect', {x: 292, y: -20, width: 16, height: 560, fill: T.d3, opacity: .92, filter: 'url(#om-b2)'});
+  E(D, 'rect', {x: -20, y: 476, width: 1040, height: 12, fill: T.d3, opacity: .85, filter: 'url(#om-b2)'});
+  const dust = G(L);
+  for (let i = 0; i < 1500; i++) {
+    const edge = R() < .45, x = edge ? (R() < .5 ? R() * 120 : 880 + R() * 120) : R() * 1000, y = edge ? 300 + R() * 220 : R() * 520;
+    E(dust, 'circle', {cx: r1(x), cy: r1(y), r: r2(.3 + R() * 1.3), fill: pick(R, [T.p0, T.p0, T.l1, T.m1]), opacity: r2(.2 + R() * .45)});
+  }
+  for (let i = 0; i < 14; i++) { const x = R() * 1000, y = R() * 160, l = 50 + R() * 170; E(dust, 'path', {d: `M${r1(x)} ${r1(y)}Q${r1(x + (R() - .5) * 8)} ${r1(y + l / 2)} ${r1(x + (R() - .5) * 6)} ${r1(y + l)}`, stroke: T.p0, 'stroke-width': r2(2 + R() * 4), fill: 'none', opacity: .2, filter: 'url(#om-b2)'}); }
+},
+
+gui(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 460, fill: lin(s, 'g-wall', [[0, T.l2], [.5, T.l1], [1, T.p1]])});
+  for (let i = 0; i < 18; i++) E(L, 'ellipse', {cx: r1(330 + R() * 470), cy: r1(R() * 400), rx: r1(20 + R() * 60), ry: r1(10 + R() * 40), fill: T.m1, opacity: r2(.08 + R() * .1), filter: 'url(#om-b8)'});
+  for (let i = 0; i < 10; i++) { const x = 340 + R() * 450; line(L, x, 300 + R() * 40, x + (R() - .5) * 4, 400, T.m1, 1 + R() * 2, .12, {filter: 'url(#om-b1)'}); }
+  E(M, 'ellipse', {cx: 540, cy: 236, rx: 250, ry: 60, fill: T.m1, opacity: .35, filter: 'url(#om-b16)'});
+  E(M, 'rect', {y: 408, width: 800, height: 52, fill: lin(s, 'g-ground', [[0, T.m1], [1, T.m2]])});
+  for (let x = -20; x < 820; x += 70) line(M, x, 408, x - 40, 460, T.m2, .8, .5);
+  line(M, 0, 430, 800, 430, T.m2, .8, .45);
+  E(M, 'ellipse', {cx: 540, cy: 432, rx: 240, ry: 16, fill: T.d1, opacity: .35, filter: 'url(#om-b8)'});
+  const S = G(M);
+  poly(S, [[-10, 126], [334, 140], [334, 410], [-10, 410]], {fill: T.l2});
+  poly(S, [[-10, 386], [340, 386], [346, 412], [-10, 412]], {fill: T.m1}); line(S, -10, 386, 340, 386, T.l1, 1.2);
+  E(S, 'rect', {x: 70, y: 190, width: 180, height: 140, fill: T.l1});
+  for (let x = 88; x < 250; x += 18) line(S, x, 190, x, 330, T.m3, 1.4, .9);
+  for (let y = 205; y < 330; y += 18) line(S, 70, y, 250, y, T.m3, 1.4, .9);
+  E(S, 'rect', {x: 70, y: 190, width: 180, height: 140, fill: 'none', stroke: T.d1, 'stroke-width': 7});
+  line(S, 62, 337, 258, 337, T.d1, 4);
+  E(S, 'rect', {x: 70, y: 190, width: 180, height: 140, fill: T.d1, opacity: .1});
+  const Rf = G(D);
+  poly(Rf, [[-10, 36], [334, 70], [334, 120], [-10, 106]], {fill: T.m3});
+  for (let x = -6; x < 334; x += 8.5) { const t = (x + 10) / 344; line(Rf, x, 36 + t * 34, x + 2, 106 + t * 14, T.d1, .9, .8); }
+  poly(Rf, [[-10, 106], [334, 120], [334, 142], [-10, 128]], {fill: T.d2, opacity: .75});
+  for (let x = -6; x < 336; x += 8.5) { const t = (x + 10) / 344; E(Rf, 'circle', {cx: r1(x + 2), cy: r1(107 + t * 14), r: 4, fill: T.d1}); E(Rf, 'circle', {cx: r1(x + 1.4), cy: r1(106.2 + t * 14), r: 1.6, fill: T.m2, opacity: .7}); }
+  const tr = G(D);
+  E(tr, 'path', {d: 'M524 462C530 400 534 330 528 270C524 236 528 212 534 196L546 196C542 214 540 238 544 272C552 334 554 400 556 462Z', fill: T.d1});
+  E(tr, 'path', {d: 'M546 196C544 214 542 238 546 272C552 334 554 400 556 462L548 462C546 400 544 334 540 272C536 238 538 214 542 196Z', fill: T.d2, opacity: .7});
+  for (const [x2, y2, w] of [[400, 150, 6], [460, 104, 5], [540, 84, 5], [620, 110, 5], [700, 150, 5], [350, 196, 4], [744, 196, 4]]) E(tr, 'path', {d: `M540 ${r1(214 + R() * 20)}Q${r1((540 + x2) / 2 + (R() - .5) * 30)} ${r1((214 + y2) / 2 + 12)} ${x2} ${y2}`, stroke: T.d1, 'stroke-width': w, fill: 'none', 'stroke-linecap': 'round'});
+  const pts = [];
+  for (let i = 0; i < 700 && pts.length < 120; i++) { const x = 540 + (R() * 2 - 1) * 270, y = 40 + R() * 190; if (((x - 540) / 270) ** 2 + ((y - 162) / 122) ** 2 < 1 && y > 46) pts.push([x, y]); }
+  pts.sort((a, b) => b[1] - a[1]);
+  const C = G(D);
+  for (const [x, y] of pts) {
+    const top = y < 112, n = 6 + Math.floor(R() * 3);
+    for (let k = 0; k < n; k++) { const a = 90 + (k / (n - 1) - .5) * 230 + (R() - .5) * 20; leaf(C, x, y, 22 + R() * 14, 4.8 + R() * 2, a, top ? pick(R, [T.m2, T.m3, T.m3, T.d1]) : pick(R, [T.d1, T.d2, T.d2, T.m3]), 1, T.l2); }
+  }
+  for (let i = 0; i < 7; i++) { const [x, y] = pick(R, pts); for (let k = 0; k < 5; k++) E(C, 'circle', {cx: r1(x + (R() - .5) * 10), cy: r1(y + 6 + R() * 10), r: 2.8, fill: T.l2, opacity: .85}); }
+},
+
+liOld(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(M, 'rect', {width: 800, height: 300, fill: lin(s, 'l-wall', [[0, T.m2], [1, T.m1]])});
+  E(M, 'rect', {y: 296, width: 800, height: 164, fill: lin(s, 'l-table', [[0, T.m1], [1, T.m3]])});
+  line(M, 0, 296.5, 800, 296.5, T.d1, 1, .5);
+  E(L, 'circle', {cx: 640, cy: 200, r: 210, fill: T.p0, opacity: .55, filter: 'url(#om-b28)'});
+  E(L, 'ellipse', {cx: 600, cy: 330, rx: 240, ry: 44, fill: T.p0, opacity: .35, filter: 'url(#om-b16)'});
+  E(D, 'ellipse', {cx: 640, cy: 290, rx: 34, ry: 6, fill: T.d2}); E(D, 'rect', {x: 636, y: 276, width: 8, height: 14, fill: T.d2}); E(D, 'ellipse', {cx: 640, cy: 278, rx: 16, ry: 3.6, fill: T.d1});
+  E(L, 'path', {d: 'M632 278L632 196Q640 192 648 196L648 278Z', fill: T.p1});
+  E(L, 'path', {d: 'M645 197Q646 214 644 224Q643 214 642 198Z', fill: T.l2});
+  E(L, 'circle', {cx: 640, cy: 176, r: 16, fill: T.p0, opacity: .9, filter: 'url(#om-b4)'});
+  E(L, 'path', {d: 'M640 160C644 170 646 178 644 184C642 188 638 188 636 184C634 178 636 170 640 160Z', fill: '#f8f6f0'});
+  line(D, 640, 190, 640, 196, T.d2, 1);
+  const book = (p, x, y, w, h, cover) => {
+    poly(p, [[x, y], [x + w, y], [x + w + 26, y - 12], [x + 26, y - 12]], {fill: cover});
+    E(p, 'rect', {x: r1(x), y: r1(y), width: r1(w), height: r1(h), fill: T.l1});
+    for (let k = 1; k < 4; k++) line(p, x, y + h * k / 4, x + w, y + h * k / 4, T.m1, .4, .6);
+    line(p, x, y, x + w, y, T.d2, 1.6); line(p, x, y + h, x + w, y + h, T.d2, 1.6);
+    poly(p, [[x + w, y], [x + w + 26, y - 12], [x + w + 26, y - 12 + h], [x + w, y + h]], {fill: T.m2});
+    for (let k = 0; k < 4; k++) E(p, 'circle', {cx: r1(x + w + 4 + k * 6.4), cy: r1(y - 2 - k * 2.9 + h / 2), r: .8, fill: T.d2});
+  };
+  const stack = (x0, base, n, w0) => { let y = base; for (let i = 0; i < n; i++) { const h = 10 + R() * 5; y -= h; book(D, x0 + (R() - .5) * 10, y, w0 + (R() - .5) * 20, h, pick(R, [T.d1, T.m3, T.d2])); } return y; };
+  const ty = stack(70, 312, 6, 210);
+  poly(D, [[150, ty - 3], [172, ty - 3], [178, ty - 9], [156, ty - 9]], {fill: T.l2});
+  stack(260, 316, 3, 150);
+  const sc = G(D);
+  E(sc, 'rect', {x: 372, y: 412, width: 236, height: 16, fill: T.l2}); line(sc, 372, 416, 608, 416, T.p1, 2, .8); line(sc, 372, 426, 608, 426, T.m1, 1, .7);
+  for (const x of [368, 612]) E(sc, 'ellipse', {cx: x, cy: 420, rx: 4, ry: 10, fill: T.d2});
+  E(sc, 'path', {d: 'M488 428C492 440 480 446 492 456', stroke: T.m3, 'stroke-width': 2, fill: 'none'});
+  E(D, 'ellipse', {cx: 530, cy: 346, rx: 26, ry: 4, fill: T.d1, opacity: .4, filter: 'url(#om-b2)'});
+  E(D, 'path', {d: 'M512 318L548 318L544 338Q530 346 516 338Z', fill: T.l2}); E(D, 'ellipse', {cx: 530, cy: 318, rx: 18, ry: 3.6, fill: T.m3});
+  E(D, 'path', {d: 'M360 392C330 390 300 394 286 400C296 408 340 410 380 406C410 404 432 398 436 392C420 386 392 390 360 392Z', fill: T.d1, opacity: .88});
+  E(D, 'path', {d: 'M302 401C320 404 350 405 372 403', stroke: T.l2, 'stroke-width': 1, fill: 'none', opacity: .5});
+  E(L, 'ellipse', {cx: 392, cy: 396, rx: 9, ry: 2, fill: '#f6f3ec', opacity: .75});
+  const cup = G(D, null, {transform: 'rotate(-78 440 378)'});
+  E(cup, 'path', {d: 'M422 366L458 366L454 386Q440 394 426 386Z', fill: T.l2}); E(cup, 'ellipse', {cx: 440, cy: 366, rx: 18, ry: 3.6, fill: T.d1});
+},
+
+nalan(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 460, fill: rad(s, 'n2-wall', [[0, T.p0], [.6, T.p1], [1, T.l1]], 470, 220, 520)});
+  const patch = [[170, 80], [610, 40], [650, 410], [200, 440]];
+  const pq = (u, v) => lp(lp(patch[0], patch[1], u), lp(patch[3], patch[2], u), v);
+  poly(L, patch, {fill: '#f7f4ec', opacity: .8, filter: 'url(#om-b8)'});
+  const PL = G(M, null, {filter: 'url(#om-b2)'});
+  for (const u of [.33, .66]) { const a = pq(u, 0), b = pq(u, 1); line(PL, a[0], a[1], b[0], b[1], T.l2, 5, .55); }
+  for (const v of [.33, .66]) { const a = pq(0, v), b = pq(1, v); line(PL, a[0], a[1], b[0], b[1], T.l2, 5, .55); }
+  const LV = G(D, null, {filter: 'url(#om-b4)'});
+  E(LV, 'path', {d: 'M700 30C620 110 540 180 470 260C440 296 410 330 380 360', stroke: T.m1, 'stroke-width': 5, fill: 'none', opacity: .4});
+  for (let i = 0; i < 26; i++) { const t = R(), x = lerp(700, 400, t) + (R() - .5) * 140, y = lerp(40, 350, t) + (R() - .5) * 100; leaf(LV, x, y, 22 + R() * 14, 7 + R() * 3, R() * 360, T.m1, .28 + R() * .22); }
+},
+wong(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 1000, height: 520, fill: lin(s, 'k2-bg', [[0, T.p1], [1, T.l1]], 0, 0, 1, 0)});
+  E(M, 'ellipse', {cx: 640, cy: 240, rx: 300, ry: 160, fill: T.l2, opacity: .45, filter: 'url(#om-b28)'});
+  E(M, 'path', {d: 'M560 -40L720 -40L520 560L380 560Z', fill: '#f8f5ee', opacity: .7, filter: 'url(#om-b28)'});
+  E(M, 'path', {d: 'M760 -40L800 -40L640 560L610 560Z', fill: '#f8f5ee', opacity: .5, filter: 'url(#om-b16)'});
+  E(D, 'ellipse', {cx: 230, cy: 380, rx: 200, ry: 120, fill: T.m1, opacity: .25, filter: 'url(#om-b28)'});
+  const dust = G(D);
+  for (let i = 0; i < 1300; i++) { const x = R() * 1000, y = R() * 520; E(dust, 'circle', {cx: r1(x), cy: r1(y), r: r2(.3 + R() * 1.2), fill: pick(R, [T.m1, T.l2, T.p0]), opacity: r2(.15 + R() * .4)}); }
+  for (let i = 0; i < 12; i++) { const x = R() * 1000, y = R() * 140, l = 60 + R() * 200; E(dust, 'path', {d: `M${r1(x)} ${r1(y)}Q${r1(x + (R() - .5) * 8)} ${r1(y + l / 2)} ${r1(x + (R() - .5) * 6)} ${r1(y + l)}`, stroke: T.p0, 'stroke-width': r2(2 + R() * 4), fill: 'none', opacity: .35, filter: 'url(#om-b2)'}); }
+},
+li(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 460, fill: rad(s, 'l2-bg', [[0, '#f7f4ec'], [.5, T.p1], [1, T.l1]], 560, 170, 560)});
+  E(M, 'circle', {cx: 560, cy: 170, r: 150, fill: '#fbf8f1', opacity: .7, filter: 'url(#om-b28)'});
+  for (let k = 0; k < 9; k++) line(M, 120, 120 + k * 26, 120 + 160 + (R() - .5) * 30, 120 + k * 26, T.l2, .8, .35);
+  const ring = G(D, null, {filter: 'url(#om-b1)'});
+  E(ring, 'ellipse', {cx: 430, cy: 330, rx: 62, ry: 22, fill: 'none', stroke: T.m2, 'stroke-width': 3.2, opacity: .45});
+  E(ring, 'ellipse', {cx: 431, cy: 331, rx: 59, ry: 20, fill: T.m1, opacity: .08});
+  E(ring, 'path', {d: 'M370 336C340 346 300 350 270 344C290 356 330 360 372 350Z', fill: T.m2, opacity: .22});
+},
+pushkin(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 460, fill: lin(s, 'p-desk', [[0, T.l1], [1, T.l2]])});
+  const script = (seed, x0, y0, width) => {
+    const r = rng(seed); let d = '', x = x0;
+    while (x < x0 + width) {
+      const n = 3 + Math.floor(r() * 6); d += `M${r1(x)} ${r1(y0)}`;
+      for (let i = 0; i < n; i++) {
+        const up = r() < .22 ? -11 : -4.5 - r() * 2, dn = r() < .12 ? 6 : 0, w = 3.4 + r() * 2.2;
+        d += `C${r1(x + w * .2)} ${r1(y0 + up)} ${r1(x + w * .8)} ${r1(y0 + up)} ${r1(x + w * .55)} ${r1(y0 + 1 + dn)}`;
+        x += w;
+      }
+      x += 6 + r() * 4;
+    }
+    return d;
+  };
+  const sheets = 6;
+  for (let i = 0; i < sheets; i++) {
+    const age = 1 - i / (sheets - 1), x = 64 + i * 78, y = 30 + (i % 2) * 12, rot = -7 + i * 2.6 + (R() - .5) * 2;
+    const g = G(L, null, {transform: `translate(${x} ${y}) rotate(${r1(rot)} 150 195)`});
+    E(g, 'rect', {x: 6, y: 8, width: 300, height: 390, fill: T.m2, opacity: .3, filter: 'url(#om-b4)'});
+    E(g, 'rect', {width: 300, height: 390, fill: lerpHex('#f2efe6', '#d9d3c2', age)});
+    E(g, 'rect', {width: 300, height: 390, fill: 'none', stroke: T.m1, 'stroke-width': .7, opacity: .5});
+    const rules = G(g, 'M'), ink = G(g, 'D');
+    for (let k = 0; k < 8; k++) {
+      const yy = 72 + k * 36 + (k > 3 ? 18 : 0);
+      line(rules, 28, yy, 272, yy, T.l2, .7, .9);
+      const wl = [196, 172, 184, 160, 178, 214, 170, 222][k];
+      E(ink, 'path', {d: script(300 + k, 34, yy - 3, wl), stroke: lerpHex(T.d2, T.m1, age * .8), 'stroke-width': r2(1.1 - age * .3), fill: 'none', 'stroke-linecap': 'round', opacity: r2(1 - age * .45)});
+    }
+  }
+},
+
+thackeray(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(L, 'rect', {width: 800, height: 460, fill: T.p0});
+  E(M, 'rect', {y: 230, width: 800, height: 230, fill: lin(s, 't-field', [[0, T.l2], [1, T.m1]])});
+  for (const [y, h] of [[300, 7], [352, 10], [418, 14]]) E(M, 'path', {d: bumpy(R, -10, 810, y, h * .3, h, 14, y + h * .8), fill: T.m3, opacity: .85});
+  E(M, 'path', {d: 'M300 470C330 420 400 380 430 340C452 310 488 284 510 262L522 262C504 286 474 316 456 344C428 388 380 430 380 470Z', fill: T.p1});
+  E(M, 'path', {d: 'M300 470C330 420 400 380 430 340C452 310 488 284 510 262', stroke: T.m2, 'stroke-width': 1, fill: 'none', opacity: .7});
+  const C = G(D);
+  E(C, 'rect', {x: 140, y: 300, width: 80, height: 40, fill: T.l1});
+  E(C, 'path', {d: 'M132 302C136 278 156 262 180 260C204 262 224 278 228 302Z', fill: T.m3});
+  for (let k = 0; k < 14; k++) line(C, 140 + k * 6, 300, 150 + k * 5, 268, T.d1, .6, .45);
+  E(C, 'rect', {x: 196, y: 254, width: 9, height: 18, fill: T.d1});
+  E(C, 'rect', {x: 172, y: 318, width: 12, height: 22, fill: T.d2}); E(C, 'rect', {x: 150, y: 312, width: 12, height: 10, fill: T.d2}); E(C, 'rect', {x: 198, y: 312, width: 12, height: 10, fill: T.d2});
+  E(L, 'path', {d: 'M200 252C196 236 210 226 206 212C202 198 216 188 214 174C212 164 222 158 226 150', stroke: lin(s, 't-smoke', [[0, T.l2, .8], [1, T.l2, 0]], 0, 252, 0, 150, true), 'stroke-width': 5, fill: 'none', filter: 'url(#om-b2)'});
+  clump(D, R, 650, 340, 120, 90, 30, [T.d1, T.d2, T.m3], T.m2);
+  E(D, 'rect', {x: 645, y: 330, width: 9, height: 40, fill: T.d2});
+  const A = [-20, 150], B = [820, 212], Cc = [-20, 330], Dd = [820, 250], A2 = [-20, 134], B2 = [820, 209];
+  poly(M, [A, B, Dd, Cc], {fill: lin(s, 't-bank', [[0, T.m3], [1, T.m1]], 0, 0, 1, 0)});
+  for (let i = 0; i < 700; i++) {
+    const t = Math.pow(R(), .8), v = R(), p = lp(lp(A, B, t), lp(Cc, Dd, t), v), l = 2 + (1 - t) * 7;
+    line(M, p[0], p[1], p[0] + l * .3, p[1] - l, T.d1, .4 + (1 - t) * .5, .28);
+  }
+  E(M, 'path', {d: 'M520 262C536 240 552 226 560 212', stroke: T.p1, 'stroke-width': 3, fill: 'none', opacity: .7});
+  poly(D, [A2, B2, B, A], {fill: T.m3});
+  const rail = (o1, o2, w) => { const a = lp(A2, A, o1), b = lp(B2, B, o2); line(D, a[0], a[1], b[0], b[1], T.d3, w); };
+  for (let k = 0, t = 0; t < 1; k++, t = 1 - Math.pow(.935, k)) { const a = lp(A2, B2, t), b = lp(A, B, t); line(D, a[0] + 3, a[1] + 1, b[0] - 3, b[1] - 1, T.d2, .5 + (1 - t) * 2.4, .85); }
+  rail(.25, .3, 1.8); rail(.7, .7, 1.8);
+  const poles = [.04, .24, .41, .55, .66, .75, .82, .875, .915, .945];
+  const tops = poles.map(t => { const p = lp(A2, B2, t), h = 128 * (1 - t * .86); line(D, p[0], p[1], p[0], p[1] - h, T.d2, 2.6 * (1 - t * .8)); line(D, p[0] - h * .14, p[1] - h * .93, p[0] + h * .14, p[1] - h * .93, T.d2, 1.6 * (1 - t * .8)); return [p[0], p[1] - h * .93, h]; });
+  for (let i = 0; i < tops.length - 1; i++) for (const o of [-1, 1]) { const [x1, y1, h1] = tops[i], [x2, y2, h2] = tops[i + 1]; const a = [x1 + o * h1 * .12, y1], b = [x2 + o * h2 * .12, y2]; E(D, 'path', {d: `M${r1(a[0])} ${r1(a[1])}Q${r1((a[0] + b[0]) / 2)} ${r1((a[1] + b[1]) / 2 + 10 * (1 - poles[i]))} ${r1(b[0])} ${r1(b[1])}`, stroke: T.d1, 'stroke-width': .6, fill: 'none', opacity: .7}); }
+  const fp = lp(A2, B2, .5), fg = G(D, null, {transform: `translate(${r1(fp[0])} ${r1(fp[1] + 1)})`});
+  E(fg, 'path', {d: 'M-2.4 0L-1.6 -10L-3 -11L-2.2 -20L2.2 -20L3 -11L1.6 -10L2.4 0Z', fill: T.d3}); E(fg, 'circle', {cx: 0, cy: -22.5, r: 2.2, fill: T.d3});
+},
+
+gatsby(s, R) {
+  const L = G(s, 'L'), M = G(s, 'M'), D = G(s, 'D');
+  E(M, 'rect', {width: 800, height: 252, fill: lin(s, 'z-sky', [[0, T.d2], [.6, T.d1], [1, T.m3]])});
+  E(M, 'rect', {y: 248, width: 800, height: 212, fill: lin(s, 'z-water', [[0, T.m3], [.35, T.d1], [1, T.d2]])});
+  for (let i = 0; i < 46; i++) E(L, 'circle', {cx: r1(R() * 800), cy: r1(R() * 180), r: r2(.4 + R() * .8), fill: T.p0, opacity: r2(.15 + R() * .45)});
+  E(L, 'ellipse', {cx: 300, cy: 300, rx: 260, ry: 26, fill: T.m1, opacity: .25, filter: 'url(#om-b16)'});
+  for (let i = 0; i < 240; i++) { const y = 254 + Math.pow(R(), 1.3) * 200, w = 6 + R() * 40 * ((y - 250) / 120), x = R() * 820 - 10; line(L, x, y, x + w, y, T.m1, .5 + (y - 254) / 200, .12 + R() * .3); }
+  E(D, 'path', {d: bumpy(R, -10, 810, 248, 1.5, 6, 18, 254), fill: T.d2});
+  for (let i = 0; i < 14; i++) E(L, 'circle', {cx: r1(380 + R() * 360), cy: r1(241 + R() * 5), r: .9, fill: T.p0, opacity: .5});
+  const Dk = G(D);
+  line(Dk, 488, 249.5, 610, 251, T.d3, 2.2);
+  for (let x = 494; x < 610; x += 12) line(Dk, x, 250, x, 254, T.d3, 1);
+  line(Dk, 492, 249, 492, 236, T.d3, 1.2);
+  const Gr = G(L);
+  E(Gr, 'circle', {cx: 492, cy: 234, r: 26, fill: GREEN, opacity: .18, filter: 'url(#om-b8)'});
+  E(Gr, 'circle', {cx: 492, cy: 234, r: 8, fill: GREEN, opacity: .55, filter: 'url(#om-b2)'});
+  E(Gr, 'circle', {cx: 492, cy: 234, r: 2.2, fill: '#c3e2c6'});
+  for (let y = 256; y < 440; y += 3 + R() * 4) { const k = (y - 256) / 184, w = 3 + k * 26; E(Gr, 'rect', {x: r1(492 - w / 2 + (R() - .5) * 6 * k), y: r1(y), width: r1(w * (.4 + R() * .6)), height: 1.3, fill: GREEN, opacity: r2(.55 * (1 - k) + .05)}); }
+  const Bt = G(D, null, {transform: 'translate(318 326)'});
+  E(Bt, 'path', {d: 'M-22 0Q0 7 24 -1L28 -5L-26 -4Z', fill: T.d3});
+  E(Bt, 'path', {d: 'M-4 -4L-3 -13L3 -14L4 -4Z', fill: T.d3}); E(Bt, 'circle', {cx: 0, cy: -16, r: 2.4, fill: T.d3});
+  line(Bt, -2, -9, -30, 4, T.d3, .9); line(Bt, 2, -9, 30, 4, T.d3, .9);
+  for (let i = 0; i < 6; i++) line(D, 300 + i * 9, 332, 288 + i * 9, 332 + R() * 2, T.m3, .6, .4);
+  E(D, 'path', {d: 'M-10 384C80 386 200 392 300 402C360 410 420 430 470 470L-10 470Z', fill: T.d3});
+  for (let i = 0; i < 160; i++) { const x = R() * 440, y = x < 300 ? 384 + x / 300 * 18 : 402 + (x - 300) / 170 * 60; line(D, x, y + 2, x + (R() - .5) * 3, y - 2 - R() * 4, T.d3, .8, .9); }
+  const fg = G(D, null, {transform: 'translate(204 392)'});
+  E(fg, 'path', {d: 'M-4 0L-3 -22L-6 -24L-5 -46L5 -46L6 -24L3 -22L4 0L1 0L0 -20L-1 0Z', fill: T.d3});
+  E(fg, 'circle', {cx: 0, cy: -50.5, r: 4, fill: T.d3});
+  E(fg, 'path', {d: 'M3 -43L27 -50L28 -48L4 -39Z', fill: T.d3});
+}
+};
+function lerpHex(a, b, t) { const c = (h, i) => parseInt(h.substr(i, 2), 16); return '#' + [1, 3, 5].map(i => Math.round(lerp(c(a, i), c(b, i), t)).toString(16).padStart(2, '0')).join(''); }
+
+/* Emulsion: a hand-coated edge that thins into the page, and its silvered rim. */
+function emulsion(w, h, seed, rim) {
+  const R = rng(seed * 7 + 3), ins = 70;
+  let swipes = '';
+  for (let i = 0; i < 9; i++) {
+    const side = i % 4, along = R();
+    const [cx, cy, rx, ry] = side < 2
+      ? [side ? w - ins - 6 + R() * 18 : ins + 6 - R() * 18, ins + along * (h - 2 * ins), 8 + R() * 14, 30 + R() * 60]
+      : [ins + along * (w - 2 * ins), side === 2 ? ins + 6 - R() * 16 : h - ins - 6 + R() * 16, 40 + R() * 90, 6 + R() * 10];
+    swipes += `<ellipse cx="${r1(cx)}" cy="${r1(cy)}" rx="${r1(rx)}" ry="${r1(ry)}" fill="#fff" opacity="${r2(.5 + R() * .5)}"/>`;
+  }
+  const filt = `<filter id="d" filterUnits="userSpaceOnUse" x="0" y="0" width="${w}" height="${h}"><feTurbulence type="fractalNoise" baseFrequency="0.0075" numOctaves="2" seed="${seed}" result="a"/><feDisplacementMap in="SourceGraphic" in2="a" scale="62" xChannelSelector="R" yChannelSelector="G" result="b"/><feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="${seed + 5}" result="c"/><feDisplacementMap in="b" in2="c" scale="13" xChannelSelector="R" yChannelSelector="G" result="e"/><feGaussianBlur in="e" stdDeviation="${rim ? 7 : 9}"/></filter>`;
+  const metal = `<linearGradient id="m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a9b4b9"/><stop offset=".22" stop-color="#e8ecec"/><stop offset=".45" stop-color="#95a3aa"/><stop offset=".7" stop-color="#dfe5e6"/><stop offset="1" stop-color="#a1adb2"/></linearGradient>`;
+  const body = rim
+    ? `<rect x="${ins}" y="${ins}" width="${w - 2 * ins}" height="${h - 2 * ins}" rx="26" fill="none" stroke="url(#m)" stroke-width="44"/>`
+    : `<rect x="${ins}" y="${ins}" width="${w - 2 * ins}" height="${h - 2 * ins}" rx="26" fill="#fff"/>${swipes}`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="none"><defs>${filt}${metal}</defs><g filter="url(#d)">${body}</g></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+function noise(freq, oct, color, a, b, size) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="${freq}" numOctaves="${oct}" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 ${color[0]} 0 0 0 0 ${color[1]} 0 0 0 0 ${color[2]} 0 0 0 ${a} ${b}"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+root.style.setProperty('--fx-grain', noise(.85, 3, [.16, .18, .17], 1.25, -.5, 180));
+root.style.setProperty('--fx-clump', noise(.22, 2, [.3, .32, .31], 1.8, -.72, 240));
+const grime = (() => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" width="1000" height="520" preserveAspectRatio="none"><filter id="g" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="4" seed="9"/><feColorMatrix values="0 0 0 0 .93 0 0 0 0 .92 0 0 0 0 .89 0 0 0 2.1 -.82"/></filter><rect width="1000" height="520" filter="url(#g)"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+})();
+
+/* Build each print. */
+const KEY = 'fx-kept';
+if (new URLSearchParams(location.search).has('fresh')) localStorage.removeItem(KEY);
+const kept = new Set(JSON.parse(localStorage.getItem(KEY) || '[]'));
+const prints = [...root.querySelectorAll('.print')].map(el => {
+  const svg = el.querySelector('svg'), seed = +el.dataset.seed, [, , w, h] = svg.getAttribute('viewBox').split(' ').map(Number);
+  scenes[el.dataset.scene](svg, rng(seed));
+  const m = emulsion(w, h, seed, false);
+  el.style.webkitMaskImage = m; el.style.maskImage = m;
+  for (const c of ['fx-clump', 'fx-grain', ...(el.dataset.scene === 'wong' ? ['fx-grime'] : []), 'fx-fog', 'fx-rim', 'fx-tone']) {
+    const d = document.createElement('div'); d.className = c;
+    if (c === 'fx-rim') d.style.backgroundImage = emulsion(w, h, seed, true);
+    if (c === 'fx-grime') d.style.backgroundImage = grime;
+    el.appendChild(d);
+  }
+  const id = el.closest('[id]').id, label = el.getAttribute('aria-label');
+  el.tabIndex = 0; el.setAttribute('role', 'button');
+  const p = {el, id, label, dev: 0, fog: 0, hold: 0, holding: false, fixed: kept.has(id), out: ''};
+  if (p.fixed) { p.dev = 1; p.hold = 1; }
+  label_(p);
+  return p;
+});
+function label_(p) {
+  p.el.setAttribute('aria-pressed', String(p.fixed));
+  p.el.setAttribute('aria-label', p.label + (p.fixed ? ' Kept.' : ' Press and hold to keep this print.'));
+}
+function fix(p) {
+  p.fixed = true; p.holding = false; p.hold = 1;
+  kept.add(p.id); localStorage.setItem(KEY, JSON.stringify([...kept]));
+  label_(p);
+}
+for (const p of prints) {
+  const start = (x, y) => { if (!motion || p.fixed) return; p.holding = true; p.el.style.setProperty('--hx', x); p.el.style.setProperty('--hy', y); };
+  const stop = () => { p.holding = false; };
+  p.el.addEventListener('pointerdown', e => {
+    if (e.button) return;
+    const r = p.el.getBoundingClientRect();
+    start(`${r1(e.clientX - r.left)}px`, `${r1(e.clientY - r.top)}px`);
+    p.el.setPointerCapture(e.pointerId);
+  });
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) p.el.addEventListener(ev, stop);
+  p.el.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) { e.preventDefault(); start('50%', '50%'); } });
+  p.el.addEventListener('keyup', e => { if (e.key === 'Enter' || e.key === ' ') stop(); });
+  p.el.addEventListener('blur', stop);
+  p.el.addEventListener('contextmenu', e => e.preventDefault());
+}
+
+/* Develop while seen, silver once passed, fix when held. */
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+let motion = !reduced.matches, last = performance.now();
+function setMotion(v) { motion = v; root.classList.toggle('fx-still', !v); if (!v) for (const t of texts) t.style.opacity = ''; }
+reduced.addEventListener('change', e => setMotion(!e.matches));
+const texts = [...root.querySelectorAll('p')];
+const ease = t => t * t * (3 - 2 * t);
+function frame(now) {
+  const dt = Math.min(.1, (now - last) / 1000); last = now;
+  if (motion) for (const t of texts) {
+    const r = t.getBoundingClientRect(), vh = innerHeight, c = r.top + r.height / 2;
+    if (r.bottom < -50 || r.top > vh + 50) continue;
+    const dist = Math.max(0, Math.abs(c - vh * .5) - r.height * .3) / (vh * .5);
+    const o = (1 - .78 * ease(Math.min(1, Math.max(0, (dist - .25) / .7)))).toFixed(3);
+    if (t.style.opacity !== o) t.style.opacity = o;
+  }
+  if (motion) for (const p of prints) {
+    const r = p.el.getBoundingClientRect(), vh = innerHeight;
+    if (p.fixed) { p.dev = Math.min(1, p.dev + dt * 1.6); p.fog = Math.max(0, p.fog - dt * .9); p.hold = 1; }
+    else {
+      if (r.top < vh * .8 && r.bottom > vh * .1) p.dev = Math.min(1, p.dev + dt / 3.8);
+      if (p.dev > .98 && r.bottom < vh * .4) p.fog = Math.min(1, p.fog + dt / 15);
+      if (p.holding) { p.hold = Math.min(1, p.hold + dt / 1.25); if (p.hold >= 1) fix(p); }
+      else p.hold = Math.max(0, p.hold - dt * 1.6);
+    }
+    const hd = ease(p.hold), dev = Math.max(p.dev, hd), fog = p.fog * (1 - hd);
+    const diag = Math.hypot(r.width, r.height) * 1.15;
+    const out = `${dev.toFixed(3)}|${fog.toFixed(3)}|${(hd * .5).toFixed(3)}|${Math.round(hd * diag)}`;
+    if (out !== p.out) {
+      p.out = out; const s = p.el.style;
+      s.setProperty('--dev', dev.toFixed(3)); s.setProperty('--fog', fog.toFixed(3));
+      s.setProperty('--tone', (hd * .5).toFixed(3)); s.setProperty('--hr', `${Math.round(hd * diag)}px`);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+setMotion(motion);
+requestAnimationFrame(frame);
+})();
+</script>
+{% endraw %}

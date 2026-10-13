@@ -1,0 +1,493 @@
+---
+layout: default
+title: "I wish it were not dark."
+wide: true
+---
+<link rel="stylesheet" href="/prototypes/opus-memory/base.css">
+<style>
+main.container{max-width:1180px}
+.om{--wm-rest:rgba(92,104,102,.13);--wm-tint:#56625f;--wm-tint-a:.2;--wm-glow:#fffcf4;--wm-g:#8db69a;--wm-g-rest:rgba(120,150,130,.32);--wm-quote:color-mix(in srgb,var(--ink) 82%,var(--paper))}
+[data-theme="dark"] .om{--wm-rest:rgba(232,228,220,.07);--wm-tint:#d9cfb8;--wm-tint-a:.09;--wm-glow:#f4ecd8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .om{--wm-rest:rgba(232,228,220,.07);--wm-tint:#d9cfb8;--wm-tint-a:.09;--wm-glow:#f4ecd8}}
+
+.wm-chapter{position:relative;padding:40px 0}
+.wm-own{max-width:620px;margin:110px auto 90px;position:relative;z-index:2}
+.wm-leaf{position:relative;max-width:620px;margin:0 auto 150px;padding:70px 0;outline:none;cursor:default}
+.wm-leaf[data-side="left"]{transform:translateX(150px)}
+.wm-leaf[data-side="right"]{transform:translateX(-150px)}
+.wm-leaf blockquote{position:relative;z-index:2;color:var(--wm-quote);padding-left:2em}
+.wm-leaf.is-anchor{max-width:680px;margin-top:120px}
+.wm-leaf.is-silent{height:420px;margin-top:40px}
+.wm-leaf.is-anchor blockquote{padding-left:0;color:var(--ink)}
+.wm-leaf:focus-visible .wm-sheet{outline:none}
+.wm-sheet{position:absolute;z-index:1;top:50%;left:50%;width:820px;height:560px;overflow:visible;pointer-events:none;transform:translate(calc(-50% + var(--dx,0px)),-50%)}
+.wm-leaf[data-side="left"] .wm-sheet{--dx:-300px}
+.wm-leaf[data-side="right"] .wm-sheet{--dx:300px}
+.wm-rest{color:var(--wm-rest)}
+.wm-lit{color:var(--wm-glow)}
+.wm-sheet .wm-tint{fill:var(--wm-tint);fill-opacity:var(--wm-tint-a)}
+.wm-text{transition:opacity .25s linear}
+@media (prefers-reduced-motion:reduce){.wm-text{transition:none}}
+</style>
+
+<div class="om wm-page">
+  <header class="om-header"><h1 class="om-title">I wish it were not dark.</h1></header>
+
+  <section class="wm-chapter" id="fear">
+    <div class="wm-own wm-text"><p>I&#x27;ve learned for myself that the sensibilities I have come from fear. I wish that things could not become dark.</p><p>Most of what I do is to make sure that I don't actually lose the present, that it's somehow there, and that it's kept there somehow.</p></div>
+    <div class="wm-leaf" data-wm="burns" data-side="left" lang="en"><blockquote cite="https://poets.org/poem/mouse/embed"><p class="wm-text">But Mousie, thou art no thy lane,<br>In proving foresight may be vain:<br>The best-laid schemes o&#x27; mice an&#x27; men,<br>&emsp;&emsp;Gang aft a-gley,<br>An&#x27; lea&#x27;e us nought but grief an&#x27; pain,<br>&emsp;&emsp;For promis&#x27;d joy.</p><p class="wm-text">Still thou are blest, compared wi&#x27; me!<br>The present only toucheth thee:<br>But Och! I backward cast my e&#x27;e,<br>&emsp;&emsp;On prospects drear!<br>An&#x27; forward, tho&#x27; I canna see,<br>&emsp;&emsp;I guess an&#x27; fear!</p></blockquote></div>
+  </section>
+
+  <section class="wm-chapter" id="present">
+    <div class="wm-own wm-text"><p>I don&#x27;t like looking at the past. That is why I grasp so much to the present and what I have and whom I love.</p><p>It is a kind of longing for the past. Or perhaps not longing exactly. It is experiencing the present through memory, while fearing that the present really will become a memory.</p></div>
+    <div class="wm-leaf" data-wm="brideshead" data-side="right" lang="en"><blockquote cite="https://www.gutenbergca.gutenbergcanada.ca/ebooks/waughe-bridesheadrevisited1945/waughe-bridesheadrevisited1945-00-h.html"><p class="wm-text">I felt that I was leaving part of myself behind, and that wherever I went afterwards I should feel the lack of it, and search for it hopelessly, as ghosts are said to do, frequenting the spots where they buried material treasures without which they cannot pay their way to the nether world.</p></blockquote></div>
+    <div class="wm-leaf" data-wm="nalan" data-side="left" lang="zh-Hans"><blockquote><p class="wm-text">谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳。<br>被酒莫惊春睡重，赌书消得泼茶香，当时只道是寻常。</p></blockquote></div>
+    <div class="wm-leaf" data-wm="hemingway" data-side="right" lang="en"><blockquote><p class="wm-text">But this is how Paris was in the early days when we were very poor and very happy.</p></blockquote></div>
+  </section>
+
+  <section class="wm-chapter" id="glass">
+    <div class="wm-leaf is-anchor" data-wm="wong" lang="zh-Hans"><blockquote><p class="wm-text">那些消逝了的岁月，仿佛隔着一块积着灰尘的玻璃，看得到，抓不着。</p><p class="wm-text">他一直在怀念着过去的一切。如果他能冲破那块积着灰尘的玻璃，他会走回早已消逝的岁月。</p></blockquote></div>
+    <div class="wm-leaf" data-wm="li" data-side="left" lang="zh-Hans"><blockquote><p class="wm-text">后屏居乡里十年，仰取俯拾，衣食有馀。连守两郡，竭其俸入，以事铅椠。每获一书，即同共勘校，整集签题。得书画、彝鼎，亦摩玩舒卷，指摘疵病，夜尽一烛为率。故能纸札精致，字画完整，冠诸收书家。余性偶强记，每饭罢，坐归来堂烹茶，指堆积书史，言某事在某书某卷第几页第几行，以中否角胜负，为饮茶先后。中即举杯大笑，至茶倾覆怀中，反不得饮而起。甘心老是乡矣，故虽处忧患困穷，而志不屈。</p><p class="wm-text">今日忽阅此书，如见故人。因忆侯在东莱静治堂，装卷初就，芸签缥带，来十卷作一帙。每日晚，吏散，辄校勘二卷，跋题一卷。此二千卷，有题跋者五百卷耳。今手泽如新，而墓木已拱，悲夫！</p></blockquote></div>
+  </section>
+
+  <section class="wm-chapter" id="continuity">
+    <div class="wm-own wm-text"><p>All of this (from literature I consume, movies that I like to watch, things I like to do, the need for my career to compound and go, for my friendships and relationships to stay and go on, to abruptly cut off engagements that I believe will not last) comes from this.</p></div>
+    <div class="wm-leaf" data-wm="pushkin" data-side="right" lang="en"><blockquote cite="https://buida.ru/text/sindbad-morexod/"><p class="wm-text">Every day, from 11 November 1945, she copied out the same Pushkin poem by hand.</p><p class="wm-text">I loved you once: perhaps that love has yet<br>To die down thoroughly within my soul;<br>But let it not dismay you any longer;<br>I have no wish to cause you any sorrow.<br>I loved you wordlessly, without a hope,<br>By shyness tortured, or by jealousy.<br>I loved you with such tenderness and candor<br>And pray God grants you to be loved that way again.</p></blockquote></div>
+    <div class="wm-leaf" data-wm="thackeray" data-side="left" lang="en"><blockquote><p class="wm-text">We elderly people have lived in that praerailroad world, which has passed into limbo and vanished from under us. I tell you it was firm under our feet once, and not long ago. They have raised those railroad embankments up, and shut off the old world that was behind them. Climb up that bank on which the irons are laid, and look to the other side—it is gone. There IS no other side. Try and catch yesterday. Where is it? Here is a Times newspaper, dated Monday 26th, and this is Tuesday 27th. Suppose you deny there was such a day as yesterday?</p></blockquote></div>
+    <div class="wm-leaf is-silent" data-wm="gatsby" aria-label="A dock and a small green light across the water"></div>
+  </section>
+</div>
+
+<script>
+{% raw %}
+(() => {
+  const W = 820, H = 560, OX = 110, OY = 80; // sheet size; drawings live in a 600x400 field at (OX, OY)
+  const NS = 'http://www.w3.org/2000/svg';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+  // ---------- drawing kit ----------
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const f = n => Math.round(n * 10) / 10;
+  const path = (d, w = .7, extra = '') => `<path d="${d}" stroke-width="${w}" ${extra}/>`;
+  const line = (x1, y1, x2, y2, w = .7, extra = '') => path(`M${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}`, w, extra);
+  // a hand-engraved line: slight wobble along its length
+  function wob(r, pts, amp = .8) {
+    let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+      const mx = (x0 + x1) / 2 + (r() - .5) * amp * 2, my = (y0 + y1) / 2 + (r() - .5) * amp * 2;
+      d += `Q${f(mx)} ${f(my)} ${f(x1)} ${f(y1)}`;
+    }
+    return d;
+  }
+  function seg(r, x1, y1, x2, y2, n = 6, amp = .7) {
+    const pts = []; for (let i = 0; i <= n; i++) pts.push([x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n]);
+    return wob(r, pts, amp);
+  }
+  // parallel hatching clipped into a polygon
+  let clipCount = 0;
+  function hatch(poly, angle, gap, w = .45, defs, uid, extra = '') {
+    const id = `${uid}-c${clipCount++}`;
+    defs.push(`<clipPath id="${id}"><path d="${poly}"/></clipPath>`);
+    const a = angle * Math.PI / 180, cx = 300, cy = 200, L = 800;
+    let s = '';
+    for (let k = -L; k <= L; k += gap) {
+      const ox = cx + Math.cos(a + Math.PI / 2) * k, oy = cy + Math.sin(a + Math.PI / 2) * k;
+      s += `M${f(ox - Math.cos(a) * L)} ${f(oy - Math.sin(a) * L)}L${f(ox + Math.cos(a) * L)} ${f(oy + Math.sin(a) * L)}`;
+    }
+    return `<path d="${s}" stroke-width="${w}" clip-path="url(#${id})" ${extra}/>`;
+  }
+  function tree(r, x, y, len, ang, depth, w) {
+    if (depth === 0 || len < 2) return '';
+    const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
+    let s = path(seg(r, x, y, x2, y2, 3, .4), w);
+    const n = 2 + (r() < .35 ? 1 : 0);
+    for (let i = 0; i < n; i++) s += tree(r, x2, y2, len * (.62 + r() * .18), ang + (r() - .5) * 1.1, depth - 1, Math.max(.35, w * .7));
+    return s;
+  }
+  function leaf(x, y, len, ang, w = .55, vein = true) {
+    const c = Math.cos(ang), s = Math.sin(ang), wd = len * .22;
+    const tip = [x + c * len, y + s * len];
+    const p1 = [x + c * len * .45 - s * wd, y + s * len * .45 + c * wd];
+    const p2 = [x + c * len * .45 + s * wd, y + s * len * .45 - c * wd];
+    let d = `M${f(x)} ${f(y)}Q${f(p1[0])} ${f(p1[1])} ${f(tip[0])} ${f(tip[1])}Q${f(p2[0])} ${f(p2[1])} ${f(x)} ${f(y)}`;
+    if (vein) d += `M${f(x)} ${f(y)}L${f(tip[0])} ${f(tip[1])}`;
+    return path(d, w);
+  }
+  function rows(r, x1, x2, y1, y2, n, w = .5, broken = true) {
+    let s = '';
+    for (let i = 0; i < n; i++) {
+      const t = i / (n - 1), y = y1 + (y2 - y1) * Math.pow(t, 1.6);
+      let x = x1 + r() * 20;
+      while (x < x2) {
+        const len = broken ? 20 + r() * (60 + t * 120) : x2 - x;
+        const e = Math.min(x2, x + len);
+        s += path(seg(r, x, y + (r() - .5), e, y + (r() - .5), 3, .5), w * (.7 + t * .6));
+        x = e + (broken ? 4 + r() * 18 : 0);
+      }
+    }
+    return s;
+  }
+
+  // ---------- the watermarks ----------
+  const MARKS = {
+    burns(r, defs, uid) {
+      let s = '';
+      // hedgerow along the horizon, two bare trees, a low November sun
+      let hd = 'M10 152'; for (let x = 10; x <= 590; x += 8) hd += `Q${x + 4} ${f(146 - r() * 7)} ${x + 8} ${f(151 + (r() - .5) * 2)}`;
+      s += path(hd, .6);
+      s += tree(r, 112, 150, 30, -1.6, 6, 1.1) + tree(r, 478, 151, 24, -1.52, 6, .9);
+      s += `<circle cx="420" cy="104" r="15" fill="none" stroke-width=".6"/>`;
+      for (let i = 0; i < 4; i++) s += path(seg(r, 380 + i * 6, 112 + i * 7, 470 - i * 4, 112 + i * 7, 4, .5), .4);
+      // furrows converging on the horizon, stubble along them
+      for (let k = -11; k <= 11; k++) {
+        const x0 = 300 + k * 9, x1 = 300 + k * 64;
+        s += path(seg(r, x0, 156, x1, 410, 8, .9), .35);
+        for (let t = .04; t < 1; t += .045 + r() * .03) {
+          const x = x0 + (x1 - x0) * t, y = 156 + 254 * t, h = 2 + t * 11;
+          s += line(x + (r() - .5) * 3, y, x + (r() - .5) * 3 + (r() - .4) * h * .5, y - h, .4 + t * .3);
+        }
+      }
+      // the coulter's cut: a band of turned earth crossing the field
+      const cut = 'M40 400C120 360 220 300 330 262C390 242 470 232 560 230L560 246C470 250 400 262 340 282C240 316 140 372 70 410Z';
+      s += path(cut, .8);
+      s += hatch(cut, -22, 3.2, .4, defs, uid);
+      // the turned nest, broken open on the cut
+      for (let i = 0; i < 26; i++) {
+        const a0 = r() * Math.PI * 2, a1 = a0 + .6 + r() * 1.6, rad = 14 + r() * 16;
+        const cx = 336 + (r() - .5) * 8, cy = 276 + (r() - .5) * 6;
+        s += path(`M${f(cx + Math.cos(a0) * rad)} ${f(cy + Math.sin(a0) * rad * .6)}Q${f(cx + Math.cos((a0 + a1) / 2) * rad * 1.3)} ${f(cy + Math.sin((a0 + a1) / 2) * rad * .8)} ${f(cx + Math.cos(a1) * rad)} ${f(cy + Math.sin(a1) * rad * .6)}`, .45);
+      }
+      for (let i = 0; i < 12; i++) { const x = 360 + r() * 90, y = 262 + r() * 22; s += path(`M${f(x)} ${f(y)}q${f(4 + r() * 6)} ${f(-3 - r() * 4)} ${f(10 + r() * 8)} ${f(r() * 3)}`, .4); }
+      // the mouse, running from it
+      s += `<g transform="translate(232 322) scale(-1.25 1.25)">` +
+        path('M-16 0C-14 -9 2 -12 12 -7C17 -5 21 -3 25 0C20 2 14 3 8 3C0 4 -10 4 -16 0Z', .7) +
+        `<circle cx="11" cy="-8" r="3" fill="none" stroke-width=".6"/><circle cx="18" cy="-3" r=".7" fill="currentColor" stroke="none"/>` +
+        path('M-16 0C-26 2 -33 -5 -43 -1C-50 2 -55 6 -62 3', .55) +
+        path('M-8 3l-4 5M4 3l3 5M-4 3l-6 3M10 2l6 4', .5) + `</g>`;
+      return s;
+    },
+
+    brideshead(r, defs, uid) {
+      const bld = [];
+      const B = (d, w) => bld.push(path(d, w));
+      // central block, pediment, drum, dome, lantern
+      B('M248 232V170H352V232', .8); B('M244 170H356M244 166H356', .6);
+      B('M262 166L300 140L338 166', .7); B('M272 163L300 145L328 163', .4);
+      for (let x = 256; x <= 344; x += 11) B(`M${x} 174V232`, .4);
+      for (let x = 261; x <= 340; x += 22) { B(`M${x} 214V228M${x + 6} 214V228M${x} 214Q${x + 3} 209 ${x + 6} 214`, .45); B(`M${x} 186V198M${x + 6} 186V198`, .4); }
+      B('M278 140V112H322V140', .7);
+      for (let x = 282; x <= 318; x += 6) B(`M${x} 118V136`, .35);
+      B('M274 112H326', .7);
+      B('M276 112C278 90 290 78 300 76C310 78 322 90 324 112', .8);
+      for (let i = 1; i < 6; i++) { const t = i / 6, x = 276 + 48 * t; B(`M${f(x)} 112Q${f(300 + (x - 300) * .55)} 86 300 76`, .35); }
+      B('M295 76V64H305V76M293 64H307M297 64Q300 54 303 64M300 56V49', .55);
+      // the two wings and their end pavilions
+      for (const side of [-1, 1]) {
+        const x0 = side < 0 ? 248 : 352, x1 = side < 0 ? 128 : 472;
+        B(`M${x0} 186H${x1}V232`, .7); B(`M${x0} 182H${x1}`, .45);
+        for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x += 3) B(`M${x} 178V182`, .3);
+        for (let x = Math.min(x0, x1) + 6; x < Math.max(x0, x1) - 4; x += 12) { B(`M${x} 196V208M${x + 5} 196V208`, .4); B(`M${x} 216V228M${x + 5} 216V228`, .4); }
+        const p0 = side < 0 ? 96 : 472, p1 = side < 0 ? 128 : 504;
+        B(`M${p0} 232V174H${p1}V232M${p0 - 3} 174H${p1 + 3}M${p0} 174L${(p0 + p1) / 2} 162L${p1} 174`, .7);
+        for (let x = p0 + 6; x < p1; x += 9) B(`M${x} 186V226`, .35);
+      }
+      B('M80 233H520', .8);
+      let s = bld.join('');
+      // parkland trees, the lake, and the house given back by the water
+      for (const [cx, cy, sz] of [[44, 200, 34], [74, 186, 26], [548, 196, 36], [578, 208, 22]]) {
+        for (let i = 0; i < 36; i++) { const a = r() * Math.PI * 2, rr = sz * Math.sqrt(r()); const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr * .8; s += path(`M${f(x)} ${f(y)}q3 -4 6 0q3 -4 6 0`, .4); }
+        s += path(seg(r, cx, cy + sz * .5, cx + 1, 234, 3, .5), .7);
+      }
+      s += path(seg(r, 0, 236, 600, 236, 10, .4), .6);
+      s += `<g transform="translate(0 470) scale(1 -1)" stroke-dasharray="7 3 2 4" opacity=".55">${bld.join('')}</g>`;
+      s += rows(r, 0, 600, 244, 392, 16, .4);
+      return s;
+    },
+
+    nalan(r, defs, uid) {
+      let s = '';
+      // late light slanting across the page, and the shadow of leaves moving in it
+      const band = 'M60 120L520 40L560 250L100 330Z';
+      s += hatch(band, -9.8, 3.4, .32, defs, uid, 'opacity=".7"');
+      const band2 = 'M140 300L470 242L486 318L156 376Z';
+      s += hatch(band2, -9.8, 4.2, .28, defs, uid, 'opacity=".5"');
+      for (let i = 0; i < 16; i++) {
+        const x = 150 + r() * 330, y = 110 + r() * 170, a = r() * Math.PI * 2, l = 16 + r() * 16;
+        const c = Math.cos(a), sn = Math.sin(a), wd = l * .26;
+        const d = `M${f(x)} ${f(y)}Q${f(x + c * l * .5 - sn * wd)} ${f(y + sn * l * .5 + c * wd)} ${f(x + c * l)} ${f(y + sn * l)}Q${f(x + c * l * .5 + sn * wd)} ${f(y + sn * l * .5 - c * wd)} ${f(x)} ${f(y)}Z`;
+        s += hatch(d, 40 + r() * 40, 1.6, .35, defs, uid);
+        if (r() < .5) s += path(`M${f(x)} ${f(y)}q${f(-c * 8 + (r() - .5) * 8)} ${f(-sn * 8)} ${f(-c * 14)} ${f(-sn * 14 + 4)}`, .35, 'opacity=".6"');
+      }
+      // where the tea was spilt, a ring the paper kept
+      let ring = ''; const cx = 470, cy = 330;
+      for (let k = 0; k < 2; k++) {
+        let d = ''; for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 2, rr = 34 + k * 2.5 + Math.sin(a * 3 + 1) * 3 + (r() - .5) * 1.4; d += `${i ? 'L' : 'M'}${f(cx + Math.cos(a) * rr)} ${f(cy + Math.sin(a) * rr * .92)}`; }
+        ring += path(d, k ? .35 : .7);
+      }
+      s += ring;
+      return s;
+    },
+
+    hemingway(r, defs, uid) {
+      let s = '';
+      // roofs: mansards, dormers, chimney pots
+      let x = 0;
+      while (x < 600) {
+        const w = 70 + r() * 50, top = 118 + r() * 18, eave = 156 + r() * 6;
+        s += path(`M${f(x)} ${f(eave)}L${f(x + 8)} ${f(top)}H${f(x + w - 8)}L${f(x + w)} ${f(eave)}`, .6);
+        for (let dx = 14; dx < w - 12; dx += 20) s += path(`M${f(x + dx)} ${f(eave - 3)}V${f(eave - 15)}Q${f(x + dx + 5)} ${f(eave - 22)} ${f(x + dx + 10)} ${f(eave - 15)}V${f(eave - 3)}`, .45);
+        for (let c = 0; c < 2; c++) { const cx = x + 14 + r() * (w - 28); s += path(`M${f(cx)} ${f(top)}V${f(top - 12)}H${f(cx + 10)}V${f(top)}`, .5); for (let p = 0; p < 3; p++) s += path(`M${f(cx + 1.5 + p * 3)} ${f(top - 12)}v-4`, .5); }
+        for (let row = 0; row < 3; row++) for (let dx = 8; dx < w - 6; dx += 14) s += path(`M${f(x + dx)} ${f(eave + 10 + row * 22)}v12M${f(x + dx + 6)} ${f(eave + 10 + row * 22)}v12`, .38);
+        s += path(`M${f(x)} ${f(eave)}H${f(x + w)}M${f(x + w)} ${f(eave)}V242`, .45);
+        x += w;
+      }
+      // the quay, its plane trees, the booksellers' boxes
+      s += path(seg(r, 0, 244, 600, 244, 10, .4), .8) + path(seg(r, 0, 250, 600, 250, 10, .4), .5);
+      for (let i = 0; i < 7; i++) { const bx = 230 + i * 34; s += path(`M${bx} 244v-8h24v8M${bx - 1} 236l3 -5h20l3 5`, .45); }
+      for (const tx of [60, 210, 500]) { s += path(seg(r, tx, 244, tx + 2, 190, 4, .6), 1); for (let i = 0; i < 40; i++) { const a = r() * Math.PI * 2, rr = 26 * Math.sqrt(r()); s += path(`M${f(tx + Math.cos(a) * rr)} ${f(184 + Math.sin(a) * rr * .7)}q2 -3 5 0`, .4); } }
+      s += path('M0 252H600', .6);
+      for (let y = 262; y < 304; y += 10) { s += path(`M380 ${y}H600`, .35); for (let xx = 386 + (y % 20 ? 0 : 14); xx < 600; xx += 28) s += path(`M${xx} ${y - 10}v10`, .35); }
+      for (let i = 0; i < 6; i++) s += path(`M${300 + i * 13} ${252 + i * 9}h13v9`, .5);
+      s += path('M300 252L380 306M380 252V306', .5);
+      // the bridge, and the river taking everything
+      s += path('M0 238H200M0 244H200', .6) + path('M14 310C40 258 150 258 178 310', .8) + path('M30 310C52 270 140 270 162 310', .45);
+      s += path('M178 310V244M14 310V244', .6);
+      s += `<g transform="translate(0 620) scale(1 -1)" stroke-dasharray="5 4" opacity=".45">${path('M14 310C40 258 150 258 178 310', .6)}</g>`;
+      s += rows(r, 0, 600, 312, 396, 13, .42);
+      return s;
+    },
+
+    wong(r, defs, uid) {
+      let s = '';
+      // nothing beyond the glass; only the dust on it, and the arc where a hand once cleared it
+      const wipe = (x, y) => { const dx = x - 300, dy = y - 220; const d = Math.hypot(dx / 1.6, dy); return Math.abs(d - 104) < 22 + Math.sin(dx * .03) * 4 && dy < 40; };
+      for (let i = 0; i < 3400; i++) {
+        const x = 20 + r() * 560, y = 10 + r() * 380;
+        if (wipe(x, y) && r() < .95) continue;
+        s += `<circle cx="${f(x)}" cy="${f(y)}" r="${f(.3 + r() * .55)}" fill="currentColor" stroke="none"/>`;
+      }
+      // a few runs of condensation
+      for (let i = 0; i < 7; i++) {
+        let x = 90 + r() * 420, y = 40 + r() * 120, d = `M${f(x)} ${f(y)}`;
+        const len = 80 + r() * 180;
+        for (let t = 0; t < len; t += 8) { x += (r() - .5) * 3; y += 8; d += `L${f(x)} ${f(y)}`; }
+        s += path(d, .4, 'opacity=".7"') + `<circle cx="${f(x)}" cy="${f(y + 2)}" r="1.4" fill="none" stroke-width=".4"/>`;
+      }
+      return s;
+    },
+
+    li(r, defs, uid) {
+      let s = '';
+      // the page once folded into a volume; the crease stays
+      s += path(seg(r, 318, 0, 300, 400, 12, .8), .6) + path(seg(r, 322, 0, 304, 400, 12, .8), .3, 'opacity=".6"');
+      // tea, overturned in laughter: the tide-line it left, and where it ran
+      const cx = 420, cy = 230;
+      for (let k = 0; k < 3; k++) {
+        let d = ''; for (let i = 0; i <= 56; i++) { const a = i / 56 * Math.PI * 2, rr = 58 - k * 7 + Math.sin(a * 2 + .6) * 9 + Math.sin(a * 5) * 3 + (r() - .5) * 1.6; d += `${i ? 'L' : 'M'}${f(cx + Math.cos(a) * rr * 1.25)} ${f(cy + Math.sin(a) * rr)}`; }
+        s += path(d, [.8, .35, .3][k], k ? 'opacity=".6"' : '');
+      }
+      s += path('M470 278C478 300 474 322 486 348C490 358 486 366 492 380', .5) + path('M462 284C466 296 462 306 468 318', .35);
+      // and one candle's worth of soot, faint, where the night ended
+      for (let i = 0; i < 300; i++) { const a = r() * Math.PI * 2, rr = 26 * Math.sqrt(r()); s += `<circle cx="${f(170 + Math.cos(a) * rr * 1.4)}" cy="${f(120 + Math.sin(a) * rr)}" r="${f(.3 + r() * .4)}" fill="currentColor" stroke="none"/>`; }
+      return s;
+    },
+
+    pushkin(r, defs, uid) {
+      let s = '';
+      // the same eight lines, kept sheet after sheet
+      const hand = rng(1799);
+      const linesD = [];
+      for (let l = 0; l < 8; l++) {
+        let d = '', x = 22, y = 46 + l * 30;
+        const end = 196 - hand() * 40;
+        d += `M${x} ${y}`;
+        while (x < end) {
+          const w = 4 + hand() * 6, h = 4 + hand() * 9;
+          d += `C${f(x + w * .2)} ${f(y - h)} ${f(x + w * .8)} ${f(y - h)} ${f(x + w * .5)} ${f(y - 1)}C${f(x + w * .4)} ${f(y + 2)} ${f(x + w)} ${f(y + 1)} ${f(x + w + 1)} ${f(y)}`;
+          x += w + 1; if (hand() < .14) { x += 6; d += `M${f(x)} ${f(y)}`; }
+        }
+        linesD.push(d);
+      }
+      const sheet = (dx, dy, rot, op, w) => {
+        let edge = 'M0 0'; for (let i = 1; i <= 8; i++) edge += `L${f(i * 28 + (r() - .5))} ${f((r() - .5) * 1.2)}`;
+        edge += 'L224 300L0 300Z';
+        let g = path(edge, .6 * w + .2);
+        for (let l = 0; l < 8; l++) g += path(`M18 ${52 + l * 30}H206`, .25, 'stroke-dasharray="1 2"');
+        g += path(linesD.join(''), .5 * w + .1);
+        return `<g transform="translate(${dx} ${dy}) rotate(${rot} 112 150)" opacity="${op}">${g}</g>`;
+      };
+      const sheets = [[120, 40, -9, .35, .6], [150, 52, 5, .45, .7], [176, 36, -3, .55, .8], [214, 60, 8, .7, .9], [244, 46, -1.5, 1, 1]];
+      for (const p of sheets) s += sheet(...p);
+      s += path('M500 340C470 300 486 250 470 220', .5) + path('M472 222l6 -10l4 12Z', .6);
+      return s;
+    },
+
+    thackeray(r, defs, uid) {
+      let s = '';
+      // the embankment, the irons on it; and on the other side, nothing
+      s += path('M0 210L60 174H540L600 210', .9);
+      s += path('M60 168H540M60 172H540', .8);
+      for (let x = 64; x < 540; x += 7) s += path(`M${x} 166v8`, .45);
+      for (const px of [110, 250, 390, 530]) s += path(`M${px} 168V128M${px - 6} 132h12M${px - 4} 138h8`, .6);
+      s += path('M110 132Q180 142 250 132Q320 142 390 132Q460 142 530 132', .35) + path('M110 138Q180 148 250 138Q320 148 390 138Q460 148 530 138', .35);
+      s += hatch('M0 210L60 174H540L600 210Z', 64, 4, .35, defs, uid) + hatch('M0 210L60 174H540L600 210Z', 116, 9, .3, defs, uid);
+      // the old world: a lane between hedges running straight into the bank, steps cut up its face
+      s += path('M150 400C220 330 270 260 286 212M450 400C390 330 330 260 314 212', .7);
+      s += path(seg(r, 286, 212, 314, 212, 3, .4), .6);
+      for (let i = 0; i < 6; i++) s += path(`M${290 + i * 2} ${210 - i * 6}h${20 - i * 4}`, .5);
+      for (const side of [-1, 1]) for (let i = 0; i < 26; i++) {
+        const t = i / 26, x = 300 + side * (150 * (1 - t) + 26) * (1 - t * .3) + side * 40 * (1 - t), y = 400 - 190 * t;
+        s += path(`M${f(x)} ${f(y)}q${f(side * 5)} ${f(-6 - (1 - t) * 6)} ${f(side * 12 * (1 - t * .6))} 0`, .45);
+      }
+      s += tree(r, 120, 330, 40, -1.6, 6, 1) + tree(r, 500, 318, 30, -1.5, 6, .9);
+      s += path('M232 300v-14q4 -6 8 0v14Z', .55);
+      for (let i = 0; i < 5; i++) s += path(`M${470 + i * 9} 360v-22`, .5); s += path('M466 344h44M466 352h44', .5);
+      return s;
+    },
+
+    gatsby(r, defs, uid) {
+      let s = '';
+      // the far shore, the dock, and its light
+      let sh = 'M0 200'; for (let x = 0; x <= 380; x += 10) sh += `Q${x + 5} ${f(196 - r() * 9)} ${x + 10} ${f(199 + (r() - .5) * 2)}`;
+      s += path(sh, .55);
+      s += path('M300 188V176L312 168L324 176V188', .45);
+      s += path('M600 300L392 206M600 316L392 210', .7);
+      for (let i = 0; i < 14; i++) { const t = Math.pow(i / 13, 1.4), x = 600 - 208 * t, y = 300 - 94 * t, h = 30 * (1 - t) + 6; s += path(`M${f(x)} ${f(y)}v${f(h)}`, .3 + (1 - t) * .5); }
+      s += path('M394 206V184M391 184h6', .6);
+      s += `<circle cx="394" cy="181" r="2.6" stroke="none" style="fill:var(--wm-gc)"/>`;
+      for (let i = 0; i < 9; i++) s += `<path d="M${f(392 + (r() - .5) * 3)} ${214 + i * 8}h${f(3 + r() * 2)}" stroke-width="1" style="stroke:var(--wm-gc)" opacity="${f(.9 - i * .09)}"/>`;
+      // the water, the boat against it
+      s += rows(r, 0, 600, 204, 396, 22, .4);
+      s += `<g transform="translate(150 330)">${path('M-70 0C-50 14 40 14 64 -6L58 -6C30 4 -40 6 -68 -4Z', .8)}${path('M-30 2L-80 40M10 4L-14 46', .6)}${path('M-64 -2H58', .4)}</g>`;
+      return s;
+    },
+  };
+
+  // ---------- build each leaf into a sheet of paper ----------
+  const leaves = [...document.querySelectorAll('.wm-leaf')];
+  const states = [];
+  leaves.forEach((leafEl, i) => {
+    const key = leafEl.dataset.wm, uid = `wm${i}`, defs = [];
+    const mark = MARKS[key](rng(i * 977 + 31), defs, uid);
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'wm-sheet');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = `
+      <defs>
+        ${defs.join('')}
+        <g id="${uid}-mk" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" transform="translate(${OX} ${OY})">${mark}</g>
+        <filter id="${uid}-rough" filterUnits="userSpaceOnUse" x="-200" y="-200" width="${W + 400}" height="${H + 400}">
+          <feTurbulence type="fractalNoise" baseFrequency=".011" numOctaves="3" seed="${i + 3}"/>
+          <feDisplacementMap in="SourceGraphic" scale="120" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="${uid}-form" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}">
+          <feTurbulence type="fractalNoise" baseFrequency=".035 .02" numOctaves="4" seed="${i + 11}"/>
+          <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.6 1.05"/>
+        </filter>
+        <filter id="${uid}-glow" filterUnits="userSpaceOnUse" x="-40" y="-40" width="${W + 80}" height="${H + 80}">
+          <feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <radialGradient id="${uid}-soft"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <radialGradient id="${uid}-edge"><stop offset=".5" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <mask id="${uid}-light" maskUnits="userSpaceOnUse" x="-200" y="-200" width="${W + 400}" height="${H + 400}">
+          <g filter="url(#${uid}-rough)"><ellipse class="wm-lamp" cx="${W / 2}" cy="${H / 2}" rx="0" ry="0" fill="url(#${uid}-soft)"/></g>
+        </mask>
+        <mask id="${uid}-rest" maskUnits="userSpaceOnUse" x="-200" y="-200" width="${W + 400}" height="${H + 400}">
+          <g filter="url(#${uid}-rough)"><ellipse cx="${W / 2}" cy="${H / 2}" rx="${W * .44}" ry="${H * .44}" fill="url(#${uid}-edge)"/></g>
+        </mask>
+        <pattern id="${uid}-laid" patternUnits="userSpaceOnUse" width="27" height="2.8">
+          <path d="M0 1.4H27" stroke="var(--wm-glow)" stroke-width=".55" opacity=".55"/>
+          <path d="M13.5 0V2.8" stroke="var(--wm-glow)" stroke-width="1.1" opacity=".75"/>
+        </pattern>
+      </defs>
+      <use href="#${uid}-mk" class="wm-rest" mask="url(#${uid}-rest)" style="--wm-gc:var(--wm-g-rest)"/>
+      <g class="wm-held" mask="url(#${uid}-light)" opacity="0">
+        <rect class="wm-tint" x="-100" y="-100" width="${W + 200}" height="${H + 200}"/>
+        <rect x="0" y="0" width="${W}" height="${H}" filter="url(#${uid}-form)" opacity=".18"/>
+        <rect x="-100" y="-100" width="${W + 200}" height="${H + 200}" fill="url(#${uid}-laid)" opacity=".5"/>
+        <use href="#${uid}-mk" class="wm-lit" filter="url(#${uid}-glow)" style="--wm-gc:var(--wm-g)"/>
+      </g>`;
+    leafEl.prepend(svg);
+    const st = {
+      el: leafEl, svg, lamp: svg.querySelector('.wm-lamp'), held: svg.querySelector('.wm-held'),
+      cx: W / 2, cy: H / 2, tx: W / 2, ty: H / 2, light: 0, target: 0, hover: false, press: false, kept: false,
+    };
+    states.push(st);
+
+    leafEl.tabIndex = 0;
+    leafEl.setAttribute('aria-pressed', 'false');
+    const toSheet = e => {
+      const b = svg.getBoundingClientRect();
+      return [(e.clientX - b.left) / b.width * W, (e.clientY - b.top) / b.height * H];
+    };
+    leafEl.addEventListener('pointerenter', e => { st.hover = true; [st.tx, st.ty] = toSheet(e); if (st.light < .02) { st.cx = st.tx; st.cy = st.ty; } wake(); });
+    leafEl.addEventListener('pointermove', e => { [st.tx, st.ty] = toSheet(e); wake(); }, { passive: true });
+    leafEl.addEventListener('pointerleave', () => { st.hover = false; st.press = false; st.tx = W / 2; st.ty = H / 2; wake(); });
+    leafEl.addEventListener('pointerdown', () => { st.press = true; wake(); });
+    leafEl.addEventListener('pointerup', () => { st.press = false; wake(); });
+    const keep = () => { st.kept = !st.kept; leafEl.setAttribute('aria-pressed', String(st.kept)); leafEl.classList.toggle('is-kept', st.kept); wake(); };
+    leafEl.addEventListener('click', () => { if (!getSelection().toString()) keep(); });
+    leafEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); keep(); } });
+  });
+
+  // ---------- the light, eased ----------
+  let raf = 0;
+  function apply(st) {
+    const L = st.light;
+    st.lamp.setAttribute('cx', f(st.cx)); st.lamp.setAttribute('cy', f(st.cy));
+    st.lamp.setAttribute('rx', f(120 + L * 300)); st.lamp.setAttribute('ry', f(100 + L * 220));
+    st.held.setAttribute('opacity', f(Math.min(1, L * 1.15) * 100) / 100);
+  }
+  function tick() {
+    raf = 0;
+    if (reduced.matches) return;
+    let busy = false;
+    for (const st of states) {
+      st.target = st.kept ? 1 : st.press ? 1 : st.hover ? .78 : 0;
+      const tx = st.hover ? st.tx : W / 2, ty = st.hover ? st.ty : H / 2;
+      const k = st.target > st.light ? .09 : .035; // lifts quickly, sinks back slowly
+      const dl = st.target - st.light, dx = tx - st.cx, dy = ty - st.cy;
+      if (Math.abs(dl) < .002 && Math.abs(dx) < .3 && Math.abs(dy) < .3) { if (st.light !== st.target) { st.light = st.target; apply(st); } continue; }
+      st.light += dl * k; st.cx += dx * .08; st.cy += dy * .08;
+      apply(st); busy = true;
+    }
+    if (busy) raf = requestAnimationFrame(tick);
+  }
+  function wake() { if (!raf && !reduced.matches) raf = requestAnimationFrame(tick); }
+
+  // ---------- the words, clear near the centre of the view and quieter toward its edges ----------
+  const words = [...document.querySelectorAll('.wm-text')];
+  let pending = false;
+  function fade() {
+    pending = false;
+    const mid = innerHeight / 2;
+    for (const el of words) {
+      const b = el.getBoundingClientRect();
+      if (b.bottom < -200 || b.top > innerHeight + 200) continue;
+      // distance from the view's centre to the nearest part of the paragraph
+      const d = b.top > mid ? b.top - mid : b.bottom < mid ? mid - b.bottom : 0;
+      const t = Math.min(1, Math.max(0, (d - innerHeight * .16) / (innerHeight * .36)));
+      el.style.opacity = f((1 - t * t * (3 - 2 * t) * .82) * 100) / 100;
+    }
+  }
+  function scheduleFade() { if (!pending) { pending = true; requestAnimationFrame(fade); } }
+
+  function setMode() {
+    if (reduced.matches) {
+      // still: every leaf shown as if held to the light
+      for (const st of states) { st.cx = W / 2; st.cy = H / 2; st.light = 1; apply(st); }
+      for (const el of words) el.style.opacity = '';
+    } else {
+      for (const st of states) { if (!st.kept) st.light = 0; apply(st); }
+      fade();
+    }
+  }
+  addEventListener('scroll', () => { if (!reduced.matches) scheduleFade(); }, { passive: true });
+  addEventListener('resize', () => { if (!reduced.matches) scheduleFade(); });
+  reduced.addEventListener('change', setMode);
+  setMode();
+})();
+{% endraw %}
+</script>

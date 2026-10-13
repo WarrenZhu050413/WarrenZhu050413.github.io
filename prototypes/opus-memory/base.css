@@ -1,0 +1,13 @@
+/* Shared frame for the opus-memory sketches: the site's header and title, the essay's type. */
+body::before,body::after{display:none}
+.om{--om-silver:#c3bcb0;--om-green:#87a293;--om-rose:#b5a2a0;--om-sky:#819d9d;--om-ink:#8a969b;--om-deep:#4d5a5c;--om-paper:var(--paper);color:var(--ink)}
+.om-header{max-width:740px;margin:auto;padding:60px 0 30px}
+.om-title{font-family:var(--font-display,"Cormorant Garamond",serif);font-size:clamp(44px,5.5vw,76px);font-weight:400;line-height:1.1;margin:0}
+.om-meta{font-size:14px;color:var(--ink-muted);margin-top:10px}
+.om p,.om blockquote,.om .om-text{font-family:"Source Serif 4","Noto Serif SC",serif;font-size:20px;line-height:1.85;font-weight:400;font-style:normal;letter-spacing:normal;color:inherit}
+.om p{margin:0 0 1.3em}.om p:last-child{margin-bottom:0}
+.om blockquote{margin:0;padding:0;border:0;background:none}
+.om [lang^="zh"]{font-family:"Noto Serif SC","Source Serif 4",serif;font-size:20px}
+.om-motion{position:sticky;top:0;z-index:20;display:flex;justify-content:flex-end;padding:14px 0;pointer-events:none}
+.om-motion button{pointer-events:auto;font:13px/1.5 var(--font-body);color:var(--ink-muted);border:0;border-bottom:1px solid var(--border);padding:3px 0;background:none;cursor:pointer}
+.om-back{display:block;margin:120px auto 40px;max-width:650px;font-size:13px;color:var(--ink-muted)}

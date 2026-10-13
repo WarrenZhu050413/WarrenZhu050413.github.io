@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" aria-hidden="true" class="mv-scene">
+  <defs>
+    <linearGradient id="nab-dark" x2="0" y2="1"><stop stop-color="#222b2d"/><stop offset=".5" stop-color="#394348"/><stop offset="1" stop-color="#171e22"/></linearGradient>
+    <linearGradient id="nab-light"><stop stop-color="#8faba8" stop-opacity="0"/><stop offset=".46" stop-color="#b6c4b9" stop-opacity=".48"/><stop offset=".72" stop-color="#9bada8" stop-opacity=".15"/><stop offset="1" stop-color="#8faba8" stop-opacity="0"/></linearGradient>
+    <filter id="nab-soft"><feGaussianBlur stdDeviation="22"/></filter>
+    <filter id="nab-shadow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <g class="mv-d0"><rect width="1600" height="900" fill="url(#nab-dark)"/></g>
+  <g class="mv-d1"><path d="M140 416 Q780 395 1470 438 L1470 462 Q760 431 140 450Z" fill="url(#nab-light)" filter="url(#nab-soft)"/><path d="M140 435 Q800 418 1470 447" fill="none" stroke="url(#nab-light)" stroke-width="3"/></g>
+  <g class="mv-d2" fill="#182125" filter="url(#nab-shadow)">
+    <path d="M586 439 Q641 492 774 461 L790 434 Q691 469 586 419Z"/>
+    <path d="M579 402 L587 467 L596 467 L589 402Z M778 410 L785 466 L794 466 L787 410Z"/>
+    <path d="M571 482 Q688 537 807 486 L804 493 Q689 553 567 490Z"/>
+    <path d="M610 462 L603 497 L612 500 L620 464Z M755 465 L767 501 L776 498 L764 461Z"/>
+  </g>
+  <g class="mv-d3"><ellipse cx="690" cy="562" rx="220" ry="55" fill="#11181c" opacity=".6" filter="url(#nab-soft)"/></g>
+</svg>

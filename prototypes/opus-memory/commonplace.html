@@ -1,0 +1,273 @@
+---
+layout: default
+title: "I wish it were not dark."
+wide: true
+---
+<link rel="stylesheet" href="/prototypes/opus-memory/base.css">
+<style>
+/* Commonplace: no pictures. Reading lets the text behind you thin like old ink;
+   what you hold is inked, copied into the margin, and still there at the end. */
+.cp{display:grid;grid-template-columns:650px 290px;column-gap:84px;justify-content:center;align-items:start}
+.cp-main{grid-column:1}
+.cp .om-header{max-width:none;margin:0;padding:60px 0 20px}
+.cp-chapter{margin:0 0 150px}
+.cp-chapter:first-of-type{margin-top:70px}
+.cp-own{margin:0 0 72px}
+.om .cp-quote{margin:0 0 72px;padding-left:2em;color:color-mix(in srgb,var(--ink) 80%,var(--paper))}
+.om .cp-quote.cp-centre{padding:0;margin:0 auto 90px;max-width:560px;text-align:center}
+
+/* Every sentence or verse line is a unit that can be held. */
+.u{--fade:0;opacity:calc(1 - var(--fade) * .84);transition:opacity .35s ease-out,color .4s;cursor:pointer;
+   background-repeat:repeat-x;background-position:0 calc(100% - .08em);background-size:0 0;
+   -webkit-box-decoration-break:clone;box-decoration-break:clone;border-radius:1px}
+.u:hover{opacity:calc(1 - var(--fade) * .5)}
+.u:hover,.u.kept{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='7'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .44 0 0 0 0 .55 0 0 0 0 .5 0 0 0 -2.4 1.5'/%3E%3CfeComposite in2='SourceGraphic' operator='in'/%3E%3C/filter%3E%3Cpath d='M0 4.1 C10 3.3 19 4.7 32 3.9 S52 3.2 64 4.2' stroke='%23000' stroke-width='1.6' fill='none' filter='url(%23g)'/%3E%3C/svg%3E")}
+.u:hover:not(.kept){background-size:64px 7px;background-blend-mode:normal}
+.u.kept{opacity:calc(1 - var(--fade) * .12);color:var(--ink);background-size:64px 7px}
+.u.just-kept{animation:cp-ink .9s ease-out}
+@keyframes cp-ink{from{color:color-mix(in srgb,var(--ink) 45%,var(--paper))}to{color:var(--ink)}}
+.u.stanza{display:block}
+
+/* The pane in the glass chapter: seen, not held, until you hold it. */
+.is-motion .cp-dust .u:not(.kept){filter:blur(.55px);opacity:calc(.62 - var(--fade) * .45);transition:filter .8s,opacity .8s}
+.is-motion .cp-dust .u:not(.kept):hover{filter:none;opacity:1}
+
+/* The margin: a commonplace book that follows you down the page. */
+.cp-margin{grid-column:2;grid-row:1 / span 99;position:sticky;top:64px;height:calc(100vh - 128px);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;
+   -webkit-mask-image:linear-gradient(to bottom,transparent,#000 30%);mask-image:linear-gradient(to bottom,transparent,#000 30%);transition:opacity .8s}
+.cp-margin.is-yielding{opacity:0;pointer-events:none}
+.om .cp-entry{position:relative;margin:0 0 22px;font:15px/1.7 "Source Serif 4","Noto Serif SC",serif;color:color-mix(in srgb,var(--ink) 78%,var(--paper));cursor:pointer;white-space:pre-line}
+.cp-entry:hover{color:var(--ink)}
+.cp-entry.is-writing{animation:cp-write 1.6s cubic-bezier(.4,.1,.3,1) both}
+@keyframes cp-write{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.cp-copy{position:absolute;inset:0;pointer-events:none;white-space:pre-line;color:var(--ink)}
+
+/* What was kept, laid out as the last page. */
+.cp-kept{min-height:40vh;margin:40px 0 0;padding-top:30px}
+.cp-kept p{margin:0 0 1.1em}
+.cp-kept .cp-kept-stanza{white-space:pre-line}
+.cp-kept p{animation:none}
+.is-motion .cp-kept.is-arriving p{animation:cp-arrive 1.2s both}
+@keyframes cp-arrive{from{opacity:0}to{opacity:1}}
+
+.memory-essay:not(.is-motion) .u{--fade:0!important;transition:none}
+.memory-essay:not(.is-motion) .cp-entry{animation:none}
+@media (prefers-reduced-motion:reduce){.u,.cp-entry{transition:none;animation:none}}
+</style>
+
+<div class="om memory-essay" id="cp-essay">
+<div class="cp">
+<div class="cp-main">
+  <header class="om-header"><h1 class="om-title">I wish it were not dark.</h1></header>
+
+  <section class="cp-chapter" id="fear">
+    <div class="cp-own">
+      <p>I've learned for myself that the sensibilities I have come from fear. I wish that things could not become dark.</p>
+      <p>Most of what I do is to make sure that I don't actually lose the present, that it's somehow there, and that it's kept there somehow.</p>
+    </div>
+    <blockquote class="cp-quote" lang="en" cite="https://poets.org/poem/mouse/embed">
+      <p>But Mousie, thou art no thy lane,<br>In proving foresight may be vain:<br>The best-laid schemes o' mice an' men,<br>&emsp;&emsp;Gang aft a-gley,<br>An' lea'e us nought but grief an' pain,<br>&emsp;&emsp;For promis'd joy.</p>
+      <p>Still thou are blest, compared wi' me!<br>The present only toucheth thee:<br>But Och! I backward cast my e'e,<br>&emsp;&emsp;On prospects drear!<br>An' forward, tho' I canna see,<br>&emsp;&emsp;I guess an' fear!</p>
+    </blockquote>
+  </section>
+
+  <section class="cp-chapter" id="present">
+    <div class="cp-own">
+      <p>I don't like looking at the past. That is why I grasp so much to the present and what I have and whom I love.</p>
+      <p>It is a kind of longing for the past. Or perhaps not longing exactly. It is experiencing the present through memory, while fearing that the present really will become a memory.</p>
+    </div>
+    <blockquote class="cp-quote" lang="en" cite="https://www.gutenbergca.gutenbergcanada.ca/ebooks/waughe-bridesheadrevisited1945/waughe-bridesheadrevisited1945-00-h.html">
+      <p>I felt that I was leaving part of myself behind, and that wherever I went afterwards I should feel the lack of it, and search for it hopelessly, as ghosts are said to do, frequenting the spots where they buried material treasures without which they cannot pay their way to the nether world.</p>
+    </blockquote>
+    <blockquote class="cp-quote" lang="zh-Hans">
+      <p>谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳。<br>被酒莫惊春睡重，赌书消得泼茶香，当时只道是寻常。</p>
+    </blockquote>
+    <blockquote class="cp-quote" lang="en">
+      <p>But this is how Paris was in the early days when we were very poor and very happy.</p>
+    </blockquote>
+  </section>
+
+  <section class="cp-chapter" id="glass">
+    <blockquote class="cp-quote cp-centre cp-dust" lang="zh-Hans">
+      <p>那些消逝了的岁月，仿佛隔着一块积着灰尘的玻璃，看得到，抓不着。</p>
+      <p>他一直在怀念着过去的一切。如果他能冲破那块积着灰尘的玻璃，他会走回早已消逝的岁月。</p>
+    </blockquote>
+    <blockquote class="cp-quote" lang="zh-Hans">
+      <p>后屏居乡里十年，仰取俯拾，衣食有馀。连守两郡，竭其俸入，以事铅椠。每获一书，即同共勘校，整集签题。得书画、彝鼎，亦摩玩舒卷，指摘疵病，夜尽一烛为率。故能纸札精致，字画完整，冠诸收书家。余性偶强记，每饭罢，坐归来堂烹茶，指堆积书史，言某事在某书某卷第几页第几行，以中否角胜负，为饮茶先后。中即举杯大笑，至茶倾覆怀中，反不得饮而起。甘心老是乡矣，故虽处忧患困穷，而志不屈。</p>
+      <p>今日忽阅此书，如见故人。因忆侯在东莱静治堂，装卷初就，芸签缥带，来十卷作一帙。每日晚，吏散，辄校勘二卷，跋题一卷。此二千卷，有题跋者五百卷耳。今手泽如新，而墓木已拱，悲夫！</p>
+    </blockquote>
+  </section>
+
+  <section class="cp-chapter" id="continuity">
+    <div class="cp-own">
+      <p>All of this (from literature I consume, movies that I like to watch, things I like to do, the need for my career to compound and go, for my friendships and relationships to stay and go on, to abruptly cut off engagements that I believe will not last) comes from this.</p>
+    </div>
+    <blockquote class="cp-quote" lang="en" cite="https://buida.ru/text/sindbad-morexod/">
+      <p>Every day, from 11 November 1945, she copied out the same Pushkin poem by hand.</p>
+      <p data-unit="stanza" cite="https://max.mmlc.northwestern.edu/mdenner/Demo/texts/loved_you_once.htm">I loved you once: perhaps that love has yet<br>To die down thoroughly within my soul;<br>But let it not dismay you any longer;<br>I have no wish to cause you any sorrow.<br>I loved you wordlessly, without a hope,<br>By shyness tortured, or by jealousy.<br>I loved you with such tenderness and candor<br>And pray God grants you to be loved that way again.</p>
+    </blockquote>
+    <blockquote class="cp-quote" lang="en">
+      <p>We elderly people have lived in that praerailroad world, which has passed into limbo and vanished from under us. I tell you it was firm under our feet once, and not long ago. They have raised those railroad embankments up, and shut off the old world that was behind them. Climb up that bank on which the irons are laid, and look to the other side—it is gone. There IS no other side. Try and catch yesterday. Where is it? Here is a Times newspaper, dated Monday 26th, and this is Tuesday 27th. Suppose you deny there was such a day as yesterday?</p>
+    </blockquote>
+  </section>
+
+  <section class="cp-kept" id="kept" aria-live="polite"></section>
+</div>
+
+<aside class="cp-margin" id="cp-margin" aria-label="Kept lines"></aside>
+</div>
+</div>
+
+<script>
+(() => {
+  const essay = document.getElementById('cp-essay');
+  const margin = document.getElementById('cp-margin');
+  const keptPage = document.getElementById('kept');
+  const store = 'om-commonplace-v1';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  let motion = !reduced.matches;
+
+  // Split each passage into held units: sentences in prose, lines in verse, the whole stanza for Pushkin.
+  function sentences(text, zh) {
+    const out = []; let depth = 0, start = 0;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (c === '“' || (zh && c === '‘')) depth++;
+      else if (c === '”' || (zh && c === '’')) depth = Math.max(0, depth - 1);
+      else if (depth === 0 && /[。！？.!?；]/.test(c) && !(c === '.' && text[i + 1] === '.')) {
+        let j = i + 1;
+        while (j < text.length && /[”’"'）)]/.test(text[j])) j++;
+        if (!zh) while (j < text.length && text[j] === ' ') j++;
+        out.push(text.slice(start, j)); start = j; i = j - 1;
+      }
+    }
+    if (start < text.length && text.slice(start).trim()) out.push(text.slice(start));
+    return out;
+  }
+  const units = [];
+  function unit(text, parent) {
+    const s = document.createElement('span');
+    s.className = 'u'; s.textContent = text; s.dataset.id = units.length; s.tabIndex = 0;
+    units.push(s); parent.appendChild(s); return s;
+  }
+  for (const p of essay.querySelectorAll('.cp-main p')) {
+    const zh = (p.closest('[lang]')?.lang || 'en').startsWith('zh');
+    const stanza = p.closest('[data-unit="stanza"]');
+    const lines = [[]];
+    for (const n of [...p.childNodes]) n.nodeName === 'BR' ? lines.push([]) : lines.at(-1).push(n.textContent);
+    p.textContent = '';
+    if (stanza) { unit(lines.map(l => l.join('')).join('\n'), p).classList.add('stanza'); p.querySelector('.u').style.whiteSpace = 'pre-line'; continue; }
+    lines.forEach((parts, i) => {
+      if (i) p.appendChild(document.createElement('br'));
+      for (const s of sentences(parts.join(''), zh)) unit(s, p);
+    });
+  }
+
+  // Keeping: ink in the text, a copy in the margin, a line on the last page.
+  let kept = [];
+  try { kept = JSON.parse(localStorage.getItem(store) || '[]').filter(i => units[i]); } catch {}
+  const returns = new Map();
+  function entry(i, writing) {
+    const u = units[i];
+    const e = document.createElement('p');
+    e.className = 'cp-entry' + (writing && motion ? ' is-writing' : '');
+    e.dataset.id = i; e.textContent = u.textContent.replace(/^\s+/, '');
+    e.title = 'Return to this line';
+    e.addEventListener('click', () => u.scrollIntoView({ behavior: motion ? 'smooth' : 'auto', block: 'center' }));
+    return e;
+  }
+  function renderKept(arriving) {
+    keptPage.textContent = '';
+    for (const i of kept) {
+      const p = document.createElement('p');
+      p.textContent = units[i].textContent.replace(/^\s+/, '');
+      if (units[i].classList.contains('stanza')) p.className = 'cp-kept-stanza';
+      keptPage.appendChild(p);
+    }
+    keptPage.classList.toggle('is-arriving', !!arriving);
+  }
+  // The copied poem gathers another sheet each time you come back to it.
+  function layerCopies(i) {
+    const e = margin.querySelector(`.cp-entry[data-id="${i}"]`);
+    if (!e) return;
+    e.querySelectorAll('.cp-copy').forEach(c => c.remove());
+    const n = Math.min(returns.get(i) || 0, 7);
+    for (let k = 1; k <= n; k++) {
+      const c = document.createElement('span');
+      c.className = 'cp-copy'; c.textContent = e.firstChild.textContent;
+      c.style.transform = `translate(${k * 2.4}px, ${-k * 1.6}px)`;
+      c.style.opacity = String(.1 - k * .01);
+      e.appendChild(c);
+    }
+  }
+  function keep(i, fresh) {
+    const u = units[i];
+    u.classList.add('kept');
+    if (fresh && motion) { u.classList.add('just-kept'); setTimeout(() => u.classList.remove('just-kept'), 900); }
+    margin.appendChild(entry(i, fresh));
+    layerCopies(i);
+  }
+  function release(i) {
+    units[i].classList.remove('kept');
+    margin.querySelector(`.cp-entry[data-id="${i}"]`)?.remove();
+  }
+  kept.forEach(i => keep(i, false));
+  renderKept(false);
+
+  function toggleUnit(u) {
+    const i = Number(u.dataset.id);
+    if (kept.includes(i)) { kept = kept.filter(k => k !== i); release(i); }
+    else { kept.push(i); keep(i, true); }
+    localStorage.setItem(store, JSON.stringify(kept));
+    renderKept(false);
+    u.setAttribute('aria-pressed', String(kept.includes(i)));
+  }
+  for (const u of units) {
+    u.setAttribute('role', 'button');
+    u.setAttribute('aria-pressed', String(kept.includes(Number(u.dataset.id))));
+    u.addEventListener('click', () => { if (!String(getSelection())) toggleUnit(u); });
+    u.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleUnit(u); } });
+  }
+
+  // Words read clearly near the middle of the page and quieten toward either edge;
+  // what you have held stays inked.
+  let pending = false;
+  const ease = t => t * t * (3 - 2 * t);
+  function render() {
+    pending = false;
+    if (!motion) return;
+    const mid = innerHeight * .48, band = innerHeight * .2, reach = innerHeight * .36;
+    for (const u of units) {
+      const r = u.getBoundingClientRect();
+      const d = Math.abs((r.top + r.bottom) / 2 - mid);
+      u.style.setProperty('--fade', ease(Math.min(1, Math.max(0, (d - band) / reach))).toFixed(3));
+    }
+  }
+  const schedule = () => { if (!pending) { pending = true; requestAnimationFrame(render); } };
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule);
+
+  const stanza = units.find(u => u.classList.contains('stanza'));
+  let wasVisible = false;
+  new IntersectionObserver(([e]) => {
+    const i = Number(stanza.dataset.id);
+    if (e.isIntersecting && !wasVisible && kept.includes(i)) { returns.set(i, (returns.get(i) || 0) + 1); layerCopies(i); }
+    wasVisible = e.isIntersecting;
+  }, { threshold: .6 }).observe(stanza);
+
+  // At the end the margin gives way, and what was kept becomes the page.
+  new IntersectionObserver(([e]) => {
+    margin.classList.toggle('is-yielding', e.isIntersecting && kept.length > 0);
+    if (e.isIntersecting && kept.length) renderKept(true);
+  }, { rootMargin: '0px 0px -30% 0px' }).observe(keptPage);
+
+  function setMotion(value) {
+    motion = value;
+    essay.classList.toggle('is-motion', value);
+    if (!value) units.forEach(u => u.style.setProperty('--fade', '0'));
+    render();
+  }
+  reduced.addEventListener('change', e => setMotion(!e.matches));
+  setMotion(motion);
+})();
+</script>

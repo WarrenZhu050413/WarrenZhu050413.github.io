@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   {%- include head.html -%}
-  <body>
+  <body{% if page.memory %} class="memory-page"{% endif %}>
     {%- include header.html -%}
-    <main class="container{% if page.wide %} container--wide{% endif %}">
+    <main class="container{% if page.wide %} container--wide{% endif %}{% if page.memory %} container--memory{% endif %}">
       {{ content }}
     </main>
     {%- include footer.html -%}

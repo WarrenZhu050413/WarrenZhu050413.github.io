@@ -1,0 +1,460 @@
+---
+layout: default
+title: "I wish it were not dark."
+wide: true
+---
+<link rel="stylesheet" href="/prototypes/opus-memory/base.css">
+<style>
+/* One window, held for the whole essay. The view is through old glass; what you wipe stays clear. */
+.ow-grid{display:grid;grid-template-columns:minmax(0,1fr) 520px;gap:56px;width:min(1400px,calc(100vw - 72px));margin-left:calc(50% - min(700px,50vw - 36px))}
+.ow-stage{position:sticky;top:0;height:100vh}
+.ow-pane{position:absolute;inset:0 -2% 0 -4%;-webkit-mask:url(/prototypes/opus-memory/window/edge.svg) center/100% 100% no-repeat;mask:url(/prototypes/opus-memory/window/edge.svg) center/100% 100% no-repeat;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Ccircle cx='17' cy='17' r='14' fill='none' stroke='%23ffffff' stroke-opacity='.55'/%3E%3C/svg%3E") 17 17,crosshair;touch-action:pan-y}
+.ow-pane>*{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.ow-fog{transition:opacity 1.2s}
+.ow-dust{opacity:.45;transition:opacity 1.6s}
+.ow-pane[data-active=wong] .ow-dust{opacity:.95}
+.ow-grain{mix-blend-mode:multiply;opacity:.3}
+/* What each passage touches comes forward in the one scene. */
+#ow-green-glow{opacity:.55;transition:opacity 2.4s}
+.ow-pane[data-active=gatsby] #ow-green-glow{opacity:1}
+.ow-shadows{opacity:.05;transform:translate(-40px,6px);transition:opacity 2.6s,transform 6s ease-out}
+.ow-pane[data-active=nalan] .ow-shadows{opacity:.17;transform:translate(10px,0)}
+.ow-late{opacity:0;transition:opacity 3s}
+.ow-pane[data-active=nalan] .ow-late{opacity:.5}
+.ow-pane[data-active=li] .ow-late{opacity:.22}
+.ow-stain{opacity:.32;transition:opacity 2.4s}
+.ow-pane[data-active=li] .ow-stain,.ow-pane[data-active=nalan] .ow-stain{opacity:.75}
+.ow-ink{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.2s ease-in-out}
+.ow-pane.is-written .ow-ink{stroke-dashoffset:0}
+.ow-pane.is-written .ow-ink:nth-of-type(2){transition-delay:1.6s}
+/* The words: clearest at the centre of the page, quieter toward its edges. */
+.ow-text{position:relative;padding:22vh 0 0}
+.ow-veil{position:sticky;height:0;z-index:3;pointer-events:none}
+.ow-veil::before{content:"";position:absolute;left:-20px;right:-20px;height:30vh}
+.ow-veil-top{top:0}.ow-veil-top::before{top:0;background:linear-gradient(var(--paper) 8%,color-mix(in srgb,var(--paper) 55%,transparent) 45%,transparent)}
+.ow-veil-bottom{bottom:0}.ow-veil-bottom::before{bottom:0;background:linear-gradient(transparent,color-mix(in srgb,var(--paper) 55%,transparent) 55%,var(--paper) 92%)}
+.ow-chapter{padding-bottom:18vh}
+.ow-passage{padding:0 0 34vh}
+.ow-own p{color:var(--ink)}
+.ow-quote blockquote{margin-left:2em;color:color-mix(in srgb,var(--ink) 82%,var(--paper))}
+.ow-quiet{height:110vh;padding:0}
+@media (prefers-reduced-motion:reduce){.ow-fog,.ow-dust{display:none}.ow-pane *{transition:none!important}.ow-ink{stroke-dashoffset:0}}
+@media (max-width:900px){.ow-grid{display:block;width:auto;margin:0}.ow-stage{height:60vh;top:0;z-index:2}.ow-text{padding-top:10vh}}
+</style>
+
+<div class="om">
+<header class="om-header"><h1 class="om-title">I wish it were not dark.</h1></header>
+
+<div class="ow-grid">
+<div class="ow-stage">
+<div class="ow-pane" id="ow-pane" data-active="" role="img" aria-label="A window at dusk looking across a lake to a great house, a green light at a dock, a field and a railway bank; on the window seat, books, a cup and copied pages.">
+
+<!-- Beyond the glass. Inline attributes only: this drawing is also rasterised for the fogged view. -->
+<svg class="ow-land" id="ow-land" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="ow-sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#a7b3b6"/><stop offset=".5" stop-color="#c3c7c1"/><stop offset=".82" stop-color="#d8c8c1"/><stop offset="1" stop-color="#d6ccc3"/>
+  </linearGradient>
+  <radialGradient id="ow-sunglow"><stop offset="0" stop-color="#f1e4da" stop-opacity=".95"/><stop offset=".3" stop-color="#e3cec5" stop-opacity=".55"/><stop offset="1" stop-color="#d9c6bf" stop-opacity="0"/></radialGradient>
+  <linearGradient id="ow-lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3c7bf"/><stop offset="1" stop-color="#9fada8"/></linearGradient>
+  <linearGradient id="ow-field" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b7b4a4"/><stop offset="1" stop-color="#a39f8e"/></linearGradient>
+  <radialGradient id="ow-greenglow"><stop offset="0" stop-color="#b9e0c3" stop-opacity=".95"/><stop offset=".18" stop-color="#93bfa1" stop-opacity=".5"/><stop offset="1" stop-color="#87a293" stop-opacity="0"/></radialGradient>
+  <filter id="ow-warp" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".0035 .011" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="ow-ripple" x="0" y="-5%" width="100%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".003 .09" numOctaves="1" seed="2"/><feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation=".7"/></filter>
+  <filter id="ow-soft"><feGaussianBlur stdDeviation="2.2"/></filter>
+  <clipPath id="ow-lakeclip"><rect x="0" y="549" width="1000" height="104"/></clipPath>
+</defs>
+<g filter="url(#ow-warp)">
+  <rect width="1000" height="560" fill="url(#ow-sky)"/>
+  <g stroke="#e9e3dc" stroke-width=".7" fill="none" opacity=".45">
+    <path d="M90 300 C 260 284, 420 296, 560 288"/><path d="M380 360 C 520 348, 700 356, 860 344"/><path d="M560 410 C 680 402, 820 408, 980 398"/><path d="M40 430 C 160 424, 260 428, 360 420"/>
+  </g>
+  <circle cx="722" cy="507" r="120" fill="url(#ow-sunglow)"/>
+  <circle cx="722" cy="507" r="17" fill="#efe3da" opacity=".85"/>
+  <path d="M0 520 C 120 494, 240 503, 330 512 S 520 497, 640 505 S 860 490, 1000 500 L1000 560 L0 560Z" fill="#a8b2ae" opacity=".5"/>
+  <path d="M0 532 C 160 518, 330 528, 480 522 S 800 520, 1000 526 L1000 560 L0 560Z" fill="#bcbfb7" opacity=".55"/>
+  <g id="ow-town"></g>
+  <g id="ow-rail"></g>
+  <g id="ow-estate">
+    <g id="ow-clumps" filter="url(#ow-soft)"></g>
+    <g id="ow-house" stroke="#6d787a" stroke-width=".7" stroke-linejoin="round"></g>
+  </g>
+  <rect y="548" width="1000" height="106" fill="url(#ow-lake)"/>
+  <g clip-path="url(#ow-lakeclip)"><use href="#ow-estate" transform="matrix(1 0 0 -1 0 1097)" opacity=".26" filter="url(#ow-ripple)"/><ellipse cx="722" cy="600" rx="30" ry="46" fill="#ece0d7" opacity=".35" filter="url(#ow-soft)"/></g>
+  <g id="ow-water" stroke="#eef0ea" fill="none"></g>
+  <g id="ow-dock" stroke="#5f6865" fill="none" stroke-width=".9"></g>
+  <g id="ow-green-glow"><circle cx="104" cy="571" r="58" fill="url(#ow-greenglow)"/><circle cx="104" cy="571" r="2.6" fill="#c4e7cd"/><path d="M104 600 L104 640" stroke="#b8dcc1" stroke-width="2" opacity=".35" filter="url(#ow-soft)"/></g>
+  <path d="M0 651 C 200 641, 400 660, 600 652 S 900 645, 1000 655 L1000 1000 L0 1000Z" fill="url(#ow-field)"/>
+  <g id="ow-field-marks" fill="none"></g>
+</g>
+</svg>
+
+<canvas class="ow-fog" id="ow-fog"></canvas>
+
+<svg class="ow-dust" id="ow-dust" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice"><defs><filter id="ow-smear"><feGaussianBlur stdDeviation="9"/></filter></defs><g id="ow-specks"></g></svg>
+
+<!-- This side of the glass: the room, which stays clear. -->
+<svg class="ow-room" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="ow-seat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cbc6b9"/><stop offset=".15" stop-color="#d9d4c8"/><stop offset="1" stop-color="#e2ddd2"/></linearGradient>
+  <linearGradient id="ow-bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7c8480"/><stop offset=".5" stop-color="#9aa09b"/><stop offset="1" stop-color="#7a827e"/></linearGradient>
+  <linearGradient id="ow-barh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a3a8a3"/><stop offset="1" stop-color="#737b77"/></linearGradient>
+  <radialGradient id="ow-latelight" cx=".7" cy=".1" r=".9"><stop offset="0" stop-color="#e9cfc4"/><stop offset="1" stop-color="#e9cfc4" stop-opacity="0"/></radialGradient>
+  <filter id="ow-shadowblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="ow-paper"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="8"/><feColorMatrix values="0 0 0 0 .55  0 0 0 0 .53  0 0 0 0 .49  0 0 0 .1 0"/><feComposite in2="SourceGraphic" operator="in"/><feBlend in="SourceGraphic" mode="multiply"/></filter>
+</defs>
+<g id="ow-glass-sheen" fill="#ffffff" opacity=".07"><path d="M40 40 L130 40 L20 150 L-60 150Z"/><path d="M700 360 L760 360 L690 470 L630 470Z"/><path d="M420 30 L450 30 L360 150 L330 150Z"/></g>
+<g id="ow-bars">
+  <rect x="0" y="156" width="1000" height="7" fill="url(#ow-barh)"/>
+  <rect x="0" y="324" width="1000" height="15" fill="url(#ow-barh)"/>
+  <rect x="0" y="637" width="1000" height="7" fill="url(#ow-barh)"/>
+  <rect x="326" y="0" width="8" height="790" fill="url(#ow-bar)"/>
+  <rect x="666" y="0" width="8" height="790" fill="url(#ow-bar)"/>
+  <rect x="0" y="770" width="1000" height="22" fill="url(#ow-barh)"/>
+  <path d="M0 339.5 H1000 M0 163.5 H1000 M0 644.5 H1000" stroke="#5f6764" stroke-width=".6" opacity=".6"/>
+</g>
+<path d="M0 792 H1000 V960 H0Z" fill="url(#ow-seat)" filter="url(#ow-paper)"/>
+<path d="M0 792 H1000 V800 H0Z" fill="#a9a497" opacity=".7"/>
+<g stroke="#bdb6a8" stroke-width=".5" fill="none" opacity=".55"><path d="M0 830 C 300 828, 700 833, 1000 829"/><path d="M0 872 C 260 870, 640 875, 1000 871"/><path d="M0 918 C 340 915, 660 921, 1000 917"/></g>
+<path d="M0 960 H1000 V976 H0Z" fill="#b8b1a2"/>
+<path d="M0 976 H1000 V1000 H0Z" fill="#d8d2c5" opacity=".6"/>
+<rect class="ow-late" x="0" y="792" width="1000" height="170" fill="url(#ow-latelight)"/>
+<g id="ow-books"></g>
+<g class="ow-stain" fill="none" stroke="#b39f9b"><ellipse cx="452" cy="914" rx="35" ry="6.5" stroke-width="2"/><ellipse cx="455" cy="915" rx="29" ry="5" stroke-width=".6" opacity=".6"/><path d="M486 916 C 500 920, 512 921, 520 919" stroke-width="1.2" opacity=".5"/></g>
+<g id="ow-cup" stroke="#9e998c" stroke-width=".8">
+  <ellipse cx="562" cy="893" rx="47" ry="8.5" fill="#ebe6db"/><ellipse cx="562" cy="892" rx="30" ry="4.6" fill="none" opacity=".5"/>
+  <path d="M530 852 C 531 878, 542 889, 562 889 C 582 889, 593 878, 594 852 Z" fill="#efebe2"/>
+  <path d="M536 866 C 540 880, 548 886, 560 887" fill="none" stroke="#c9c4b8" stroke-width="3" opacity=".6"/>
+  <ellipse cx="562" cy="852" rx="32" ry="6" fill="#e7e1d5"/><ellipse cx="562" cy="853.4" rx="27" ry="4.3" fill="#a18d7b" stroke="none" opacity=".75"/>
+  <path d="M593 858 C 611 855, 611 878, 589 879" fill="none" stroke-width="2.2"/>
+</g>
+<g id="ow-sheets"></g>
+<g class="ow-shadows" id="ow-shadows" filter="url(#ow-shadowblur)" fill="#3f4c45"></g>
+</svg>
+
+<svg class="ow-grain" aria-hidden="true"><filter id="ow-grainf"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="5" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .48  0 0 0 .55 0"/></filter><rect width="100%" height="100%" filter="url(#ow-grainf)"/></svg>
+</div>
+</div>
+
+<div class="ow-text">
+<div class="ow-veil ow-veil-top" aria-hidden="true"></div>
+
+<section class="ow-chapter">
+  <div class="ow-passage ow-own" data-scene="own"><p>I&#x27;ve learned for myself that the sensibilities I have come from fear. I wish that things could not become dark.</p><p>Most of what I do is to make sure that I don't actually lose the present, that it's somehow there, and that it's kept there somehow.</p></div>
+  <div class="ow-passage ow-quote" data-scene="burns"><blockquote lang="en" cite="https://poets.org/poem/mouse/embed"><p>But Mousie, thou art no thy lane,<br>In proving foresight may be vain:<br>The best-laid schemes o&#x27; mice an&#x27; men,<br>&emsp;&emsp;Gang aft a-gley,<br>An&#x27; lea&#x27;e us nought but grief an&#x27; pain,<br>&emsp;&emsp;For promis&#x27;d joy.</p><p>Still thou are blest, compared wi&#x27; me!<br>The present only toucheth thee:<br>But Och! I backward cast my e&#x27;e,<br>&emsp;&emsp;On prospects drear!<br>An&#x27; forward, tho&#x27; I canna see,<br>&emsp;&emsp;I guess an&#x27; fear!</p></blockquote></div>
+</section>
+
+<section class="ow-chapter">
+  <div class="ow-passage ow-own" data-scene="own"><p>I don&#x27;t like looking at the past. That is why I grasp so much to the present and what I have and whom I love.</p><p>It is a kind of longing for the past. Or perhaps not longing exactly. It is experiencing the present through memory, while fearing that the present really will become a memory.</p></div>
+  <div class="ow-passage ow-quote" data-scene="brideshead"><blockquote lang="en" cite="https://www.gutenbergca.gutenbergcanada.ca/ebooks/waughe-bridesheadrevisited1945/waughe-bridesheadrevisited1945-00-h.html"><p>I felt that I was leaving part of myself behind, and that wherever I went afterwards I should feel the lack of it, and search for it hopelessly, as ghosts are said to do, frequenting the spots where they buried material treasures without which they cannot pay their way to the nether world.</p></blockquote></div>
+  <div class="ow-passage ow-quote" data-scene="nalan"><blockquote lang="zh-Hans"><p>谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳。<br>被酒莫惊春睡重，赌书消得泼茶香，当时只道是寻常。</p></blockquote></div>
+  <div class="ow-passage ow-quote" data-scene="hemingway"><blockquote lang="en"><p>But this is how Paris was in the early days when we were very poor and very happy.</p></blockquote></div>
+</section>
+
+<section class="ow-chapter">
+  <div class="ow-passage ow-quote" data-scene="wong"><blockquote lang="zh-Hans"><p>那些消逝了的岁月，仿佛隔着一块积着灰尘的玻璃，看得到，抓不着。</p><p>他一直在怀念着过去的一切。如果他能冲破那块积着灰尘的玻璃，他会走回早已消逝的岁月。</p></blockquote></div>
+  <div class="ow-passage ow-quote" data-scene="li"><blockquote lang="zh-Hans"><p>后屏居乡里十年，仰取俯拾，衣食有馀。连守两郡，竭其俸入，以事铅椠。每获一书，即同共勘校，整集签题。得书画、彝鼎，亦摩玩舒卷，指摘疵病，夜尽一烛为率。故能纸札精致，字画完整，冠诸收书家。余性偶强记，每饭罢，坐归来堂烹茶，指堆积书史，言某事在某书某卷第几页第几行，以中否角胜负，为饮茶先后。中即举杯大笑，至茶倾覆怀中，反不得饮而起。甘心老是乡矣，故虽处忧患困穷，而志不屈。</p><p>今日忽阅此书，如见故人。因忆侯在东莱静治堂，装卷初就，芸签缥带，来十卷作一帙。每日晚，吏散，辄校勘二卷，跋题一卷。此二千卷，有题跋者五百卷耳。今手泽如新，而墓木已拱，悲夫！</p></blockquote></div>
+</section>
+
+<section class="ow-chapter">
+  <div class="ow-passage ow-own" data-scene="own"><p>All of this (from literature I consume, movies that I like to watch, things I like to do, the need for my career to compound and go, for my friendships and relationships to stay and go on, to abruptly cut off engagements that I believe will not last) comes from this.</p></div>
+  <div class="ow-passage ow-quote" data-scene="pushkin"><blockquote lang="en" cite="https://max.mmlc.northwestern.edu/mdenner/Demo/texts/loved_you_once.htm"><p>Every day, from 11 November 1945, she copied out the same Pushkin poem by hand.</p><p>I loved you once: perhaps that love has yet<br>To die down thoroughly within my soul;<br>But let it not dismay you any longer;<br>I have no wish to cause you any sorrow.<br>I loved you wordlessly, without a hope,<br>By shyness tortured, or by jealousy.<br>I loved you with such tenderness and candor<br>And pray God grants you to be loved that way again.</p></blockquote></div>
+  <div class="ow-passage ow-quote" data-scene="thackeray"><blockquote lang="en"><p>We elderly people have lived in that praerailroad world, which has passed into limbo and vanished from under us. I tell you it was firm under our feet once, and not long ago. They have raised those railroad embankments up, and shut off the old world that was behind them. Climb up that bank on which the irons are laid, and look to the other side—it is gone. There IS no other side. Try and catch yesterday. Where is it? Here is a Times newspaper, dated Monday 26th, and this is Tuesday 27th. Suppose you deny there was such a day as yesterday?</p></blockquote></div>
+  <div class="ow-passage ow-quiet" data-scene="gatsby" aria-hidden="true"></div>
+</section>
+
+<div class="ow-veil ow-veil-bottom" aria-hidden="true"></div>
+</div>
+</div>
+</div>
+
+<script>
+{% raw %}
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const pane = document.getElementById('ow-pane');
+  const land = document.getElementById('ow-land');
+  let seed = 20261011;
+  const rand = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const el = (parent, name, attrs) => { const node = document.createElementNS(NS, name); for (const k in attrs) node.setAttribute(k, attrs[k]); parent.appendChild(node); return node; };
+  const f = n => n.toFixed(1);
+
+  /* ---- The view: drawn once, finely, by hand-tuned rules. ---- */
+  const town = document.getElementById('ow-town');
+  for (let i = 0, x = 26; x < 300; i++) {
+    const w = 9 + rand() * 9, h = 5 + rand() * 7, base = 531 + rand() * 3;
+    el(town, 'path', { d: `M${f(x)} ${f(base)} V${f(base - h)} L${f(x + w / 2)} ${f(base - h - 4 - rand() * 3)} L${f(x + w)} ${f(base - h)} V${f(base)}Z`, fill: '#9aa3a2', opacity: f(.38 + rand() * .3), stroke: '#7c8788', 'stroke-width': '.35' });
+    x += w + rand() * 5;
+  }
+  el(town, 'path', { d: 'M148 532 V500 L151 486 L154 500 V532Z', fill: '#8f9a9a', opacity: '.6' });
+  el(town, 'path', { d: 'M0 561 C 70 553, 170 548, 300 547 C 360 547, 420 548, 470 549', stroke: '#e8e8e1', 'stroke-width': '2.4', fill: 'none', opacity: '.6' });
+  el(town, 'path', { d: 'M0 548 C 120 538, 250 534, 330 536 L330 549 L0 549Z', fill: '#b2b6ac', opacity: '.7' });
+
+  // The embankment shuts off the far side.
+  const rail = document.getElementById('ow-rail');
+  el(rail, 'path', { d: 'M598 551 C 640 540, 700 536, 760 533 L1000 518 L1000 553 L598 553Z', fill: '#a6a699' });
+  el(rail, 'path', { d: 'M600 551 C 640 541, 700 537, 760 534 L1000 519', stroke: '#8e8f83', 'stroke-width': '.6', fill: 'none' });
+  const railY = (x, k) => 534 - (x - 760) * (15 / 240) + k;
+  for (let x = 650; x < 1000; x += 7 + (x - 650) / 60) el(rail, 'path', { d: `M${f(x)} ${f(railY(x, -1.6))} l2 ${f(4.4)}`, stroke: '#7a7d73', 'stroke-width': '.8', opacity: '.7' });
+  el(rail, 'path', { d: `M650 ${f(railY(650, -1.3))} L1000 ${f(railY(1000, -1.3))}`, stroke: '#5f6763', 'stroke-width': '1', fill: 'none' });
+  el(rail, 'path', { d: `M652 ${f(railY(652, 2.4))} L1000 ${f(railY(1000, 2.4))}`, stroke: '#5f6763', 'stroke-width': '1.1', fill: 'none' });
+  for (let i = 0; i < 46; i++) { const x = 610 + rand() * 390; el(rail, 'path', { d: `M${f(x)} ${f(railY(x, 5 + rand() * 9))} l${f(rand() * 2 - 1)} ${f(3 + rand() * 4)}`, stroke: '#8b8b7e', 'stroke-width': '.5', opacity: '.6' }); }
+
+  // Woods either side of the house, then the house itself.
+  const clumps = document.getElementById('ow-clumps');
+  [[300, 520, 46, 26], [338, 514, 34, 30], [270, 532, 40, 16], [680, 518, 42, 28], [716, 527, 38, 20], [650, 528, 24, 22], [438, 528, 14, 18], [585, 530, 13, 16]].forEach(([x, y, rx, ry]) => {
+    el(clumps, 'ellipse', { cx: x, cy: y, rx, ry, fill: '#87968e', opacity: '.75' });
+    el(clumps, 'ellipse', { cx: x + 4, cy: y + ry * .45, rx: rx * .85, ry: ry * .5, fill: '#6f7f77', opacity: '.5' });
+  });
+  const house = document.getElementById('ow-house');
+  const wall = '#d2cec3', glass = '#8b9594';
+  const box = (x, y, w, h, fill = wall) => el(house, 'rect', { x, y, width: w, height: h, fill });
+  // Drum and dome, behind the centre.
+  box(492, 427, 36, 34);
+  for (let x = 496; x < 526; x += 7) el(house, 'path', { d: `M${x} 450 V437 a1.8 1.8 0 0 1 3.6 0 V450`, fill: glass, 'stroke-width': '.4', opacity: '.8' });
+  el(house, 'path', { d: 'M487 429 C 489 400, 531 400, 533 429Z', fill: '#c4c6bd' });
+  for (const k of [-14, -6, 2, 10, 18]) el(house, 'path', { d: `M510 405 Q ${f(510 + k * .6)} 414, ${f(510 + k)} 429`, fill: 'none', 'stroke-width': '.45', opacity: '.7' });
+  el(house, 'path', { d: 'M486 429 H534', 'stroke-width': '1' });
+  box(506, 391, 8, 13); el(house, 'path', { d: 'M504 391 L510 382 L516 391Z', fill: '#c4c6bd' }); el(house, 'path', { d: 'M510 382 V375', 'stroke-width': '.6' });
+  // Wings and end pavilions.
+  box(372, 500, 98, 48); box(550, 500, 98, 48);
+  box(358, 490, 24, 58); box(638, 490, 24, 58);
+  el(house, 'path', { d: 'M356 490 L370 482 L384 490Z M636 490 L650 482 L664 490Z', fill: wall });
+  for (const x0 of [372, 550]) {
+    el(house, 'path', { d: `M${x0} 500 H${x0 + 98} M${x0} 496 H${x0 + 98}`, 'stroke-width': '.5' });
+    for (let x = x0 + 2; x < x0 + 98; x += 4) el(house, 'path', { d: `M${x} 496 V500`, 'stroke-width': '.35' });
+    for (let x = x0 + 6; x < x0 + 92; x += 10.5) { box(x, 506, 4.2, 11, glass); box(x, 525, 4.2, 14, glass); }
+    for (const u of [x0 + 12, x0 + 48, x0 + 84]) el(house, 'path', { d: `M${u} 496 v-4 m-1.6 0 h3.2`, 'stroke-width': '.5' });
+  }
+  for (const x0 of [358, 638]) { box(x0 + 9, 504, 6, 13, glass); box(x0 + 9, 524, 6, 16, glass); }
+  // Centre block, columns and pediment.
+  box(468, 476, 84, 72);
+  el(house, 'path', { d: 'M464 476 L510 456 L556 476Z', fill: '#cdc9be' });
+  el(house, 'circle', { cx: 510, cy: 468, r: 3, fill: 'none', 'stroke-width': '.5' });
+  for (let x = 474; x <= 546; x += 12) el(house, 'path', { d: `M${x} 478 V548 M${x + 2.4} 478 V548`, 'stroke-width': '.4', opacity: '.8' });
+  for (let x = 478; x < 542; x += 12) { box(x + .8, 486, 4.4, 14, glass); box(x + .8, 518, 4.4, 22, glass); }
+  el(house, 'path', { d: 'M500 548 V528 a10 10 0 0 1 20 0 V548Z', fill: '#7d8786', opacity: '.75' });
+  el(house, 'path', { d: 'M352 548 H668', 'stroke-width': '1.1' });
+  el(house, 'path', { d: 'M440 552 H580 M430 556 H590', 'stroke-width': '.4', opacity: '.6' });
+
+  // Water, then the dock where the green light is.
+  const water = document.getElementById('ow-water');
+  for (let i = 0; i < 90; i++) {
+    const t = Math.pow(rand(), 1.4), y = 552 + t * 100, x = rand() * 1000, len = 8 + rand() * (30 + t * 60);
+    el(water, 'path', { d: `M${f(x)} ${f(y)} h${f(len)}`, 'stroke-width': f(.4 + t * .7), opacity: f(.18 + rand() * .4) });
+  }
+  for (let i = 0; i < 14; i++) el(water, 'path', { d: `M${f(700 + rand() * 44)} ${f(556 + i * 6.5)} h${f(6 + rand() * 18)}`, stroke: '#f3e9e1', 'stroke-width': '1', opacity: '.55' });
+  const dock = document.getElementById('ow-dock');
+  el(dock, 'path', { d: 'M58 603 L236 597 L238 601 L60 608Z', fill: '#7d8582', stroke: 'none', opacity: '.85' });
+  for (let x = 66; x < 236; x += 22) el(dock, 'path', { d: `M${x} ${f(605 - (x - 60) * .033)} V${f(622 + rand() * 4)}` });
+  el(dock, 'path', { d: 'M104 602 V574 M98 574 H110' });
+  for (let x = 66; x < 236; x += 22) el(dock, 'path', { d: `M${x + 2} ${f(626)} h${f(10 + rand() * 6)}`, stroke: '#d9dcd5', opacity: '.5' });
+
+  // The field's edge, its stubble, and a nest the plough went through.
+  const marks = document.getElementById('ow-field-marks');
+  el(marks, 'path', { d: 'M0 652 C 200 643, 400 661, 600 653 S 900 646, 1000 656', stroke: '#8a8a7c', 'stroke-width': '.8', opacity: '.6' });
+  for (let k = 0; k < 7; k++) {
+    const y0 = 668 + k * k * 2.6;
+    el(marks, 'path', { d: `M-10 ${f(y0 + 30)} C 300 ${f(y0 + 6)}, 650 ${f(y0 - 4)}, 1010 ${f(y0 - 14)}`, stroke: '#958f7d', 'stroke-width': f(.5 + k * .12), opacity: '.45' });
+  }
+  for (let row = 0; row < 30; row++) {
+    const t = row / 29, y = 662 + Math.pow(t, 1.7) * 128, sc = .45 + t * 1.5;
+    for (let x = rand() * 12; x < 1000; x += (6 + rand() * 10) * sc) {
+      const h = (3 + rand() * 5) * sc, lean = (rand() - .5) * 2.4 * sc;
+      el(marks, 'path', { d: `M${f(x)} ${f(y + rand() * 4 * sc)} l${f(lean)} ${f(-h)}`, stroke: rand() < .25 ? '#c9c1a9' : '#7f7d6f', 'stroke-width': f(.4 * sc + .2), opacity: f(.35 + rand() * .35) });
+    }
+  }
+  el(marks, 'path', { d: 'M40 790 C 140 760, 260 722, 430 684', stroke: '#8d8572', 'stroke-width': '1.6', opacity: '.55' });
+  el(marks, 'path', { d: 'M46 794 C 150 764, 266 727, 436 689', stroke: '#d0c7b0', 'stroke-width': '.8', opacity: '.5' });
+  el(marks, 'ellipse', { cx: 232, cy: 738, rx: 20, ry: 6, fill: '#77715f', opacity: '.35', stroke: 'none' });
+  for (let i = 0; i < 46; i++) {
+    const a = rand() * Math.PI * 2, r = 12 + rand() * 18, x = 232 + Math.cos(a) * r * 1.4, y = 737 + Math.sin(a) * r * .38, l = 6 + rand() * 10, b = a + Math.PI / 2 + (rand() - .5);
+    el(marks, 'path', { d: `M${f(x)} ${f(y)} q${f(Math.cos(b) * l * .5)} ${f(-2 - rand() * 3)} ${f(Math.cos(b) * l)} ${f(Math.sin(b) * l * .3)}`, stroke: rand() < .5 ? '#a49b80' : '#867f6b', 'stroke-width': '.6', opacity: '.75' });
+  }
+  for (let i = 0; i < 18; i++) { const x = 250 + rand() * 120, y = 712 + rand() * 30; el(marks, 'path', { d: `M${f(x)} ${f(y)} l${f(4 + rand() * 6)} ${f((rand() - .5) * 3)}`, stroke: '#a49b80', 'stroke-width': '.5', opacity: '.6' }); }
+
+  /* ---- The room. ---- */
+  const books = document.getElementById('ow-books');
+  [[78, 906, 236, 19, '#a5aea7'], [92, 887, 206, 16, '#b8a6a1'], [84, 871, 222, 17, '#aba696'], [104, 854, 186, 13, '#a1aaa9']].forEach(([x, y, w, h, cover]) => {
+    el(books, 'path', { d: `M${x} ${y} h${w} l16 -12 h${-w} Z`, fill: cover, stroke: '#7f8682', 'stroke-width': '.5', transform: `translate(0 ${-h})` });
+    el(books, 'rect', { x, y: y - h, width: w, height: h, fill: '#ece6d9', stroke: '#8a8f8a', 'stroke-width': '.5' });
+    el(books, 'path', { d: `M${x + w} ${y} l16 -12 v${-h} l-16 12Z`, fill: cover, stroke: '#7f8682', 'stroke-width': '.5', opacity: '.9' });
+    for (let k = 3; k < h - 1; k += 2.2) el(books, 'path', { d: `M${x + 3} ${f(y - k)} H${x + w - 2}`, stroke: '#c9c2b2', 'stroke-width': '.35' });
+    el(books, 'path', { d: `M${x} ${y - h + 1.5} H${x + w} M${x} ${y - .8} H${x + w}`, stroke: cover, 'stroke-width': '2' });
+  });
+  el(books, 'path', { d: 'M300 906 L318 784 L338 787 L322 908Z', fill: '#9aa59c', stroke: '#76807a', 'stroke-width': '.6' });
+  el(books, 'path', { d: 'M316 798 L335 801 M309 846 L328 849 M313 820 L332 823', stroke: '#c9c3b2', 'stroke-width': '1.4' });
+
+  // The same lines, copied day after day: a stack of sheets, each carrying the same two lines.
+  const sheets = document.getElementById('ow-sheets');
+  const quad = (dx, dy, rot) => `translate(${dx} ${dy}) rotate(${rot} 770 885)`;
+  const corners = 'M664 840 L878 832 L904 934 L644 944Z';
+  const line = (k, g, cls, opacity) => {
+    // Script-like strokes along a line across the sheet, foreshortened by the seat's perspective.
+    const y0 = 856 + k * 20, xL = 676 - k * 4, xR = 870 + k * 3; let d = `M${xL} ${y0}`;
+    for (let x = xL; x < xR - 8;) {
+      const w = 4 + rand() * 7; x += w;
+      d += ` q${f(-w * .3)} ${f(-4 - rand() * 3)} ${f(w * .6)} ${f(-1 + rand())} t${f(w * .4)} ${f(rand() * 1.5)}`;
+      if (rand() < .14) { x += 6; d += ` m6 0`; }
+    }
+    return el(g, 'path', { d, fill: 'none', stroke: '#5f6866', 'stroke-width': '.75', 'stroke-linecap': 'round', opacity, class: cls || '', pathLength: cls ? 1 : undefined });
+  };
+  for (let i = 8; i >= 0; i--) {
+    const g = el(sheets, 'g', { transform: quad(-i * 2.6 + (rand() - .5) * 3, i * 1.9, (rand() - .5) * 3.4) });
+    el(g, 'path', { d: corners, fill: i ? '#e6e1d5' : '#f0ece2', stroke: '#b0aa9d', 'stroke-width': '.55' });
+    if (i) { line(0, g, '', '.16'); line(1, g, '', '.12'); }
+    else { el(g, 'path', { d: 'M664 840 L878 832 L882 846 L667 853Z', fill: '#ffffff', opacity: '.25' }); line(0, g, 'ow-ink', '.85'); line(1, g, 'ow-ink', '.85'); }
+  }
+  [...sheets.querySelectorAll('[pathLength="undefined"]')].forEach(n => n.removeAttribute('pathLength'));
+
+  // Shadows of leaves from outside the window: never drawn, only cast, and only in the late light.
+  const shadows = document.getElementById('ow-shadows');
+  const sprig = (cx, cy, n, spread) => {
+    for (let i = 0; i < n; i++) {
+      const a = rand() * Math.PI * 2, r = rand() * spread, x = cx + Math.cos(a) * r * 1.5, y = cy + Math.sin(a) * r * .45;
+      el(shadows, 'ellipse', { cx: f(x), cy: f(y), rx: f(16 + rand() * 14), ry: f(3 + rand() * 2.5), transform: `rotate(${f((rand() - .5) * 50)} ${f(x)} ${f(y)})`, opacity: f(.4 + rand() * .6) });
+    }
+  };
+  sprig(640, 860, 22, 70); sprig(860, 900, 18, 60); sprig(430, 830, 12, 50); sprig(780, 700, 14, 70); sprig(930, 600, 10, 60);
+
+  // Dust on the glass.
+  const specks = document.getElementById('ow-specks');
+  for (let i = 0; i < 380; i++) el(specks, 'circle', { cx: f(rand() * 1000), cy: f(rand() * 790), r: f(.3 + Math.pow(rand(), 3) * 1.6), fill: rand() < .7 ? '#f7f5ef' : '#6f7672', opacity: f(.15 + rand() * .5) });
+  for (let i = 0; i < 14; i++) el(specks, 'ellipse', { cx: f(rand() * 1000), cy: f(rand() * 760), rx: f(30 + rand() * 90), ry: f(8 + rand() * 30), fill: '#f5f2ea', opacity: f(.06 + rand() * .08), filter: 'url(#ow-smear)' });
+  for (let i = 0; i < 9; i++) { const x = rand() * 1000, y = 250 + rand() * 480; el(specks, 'path', { d: `M${f(x)} ${f(y)} q${f((rand() - .5) * 6)} ${f(30 + rand() * 40)} ${f((rand() - .5) * 4)} ${f(60 + rand() * 60)}`, stroke: '#f4f2ec', 'stroke-width': '1.4', fill: 'none', opacity: '.22' }); }
+
+  /* ---- Which passage is being read. ---- */
+  const REGIONS = {
+    burns: { x: 232, y: 720, r: 180 }, brideshead: { x: 510, y: 486, r: 200 }, nalan: { x: 722, y: 512, r: 150 },
+    hemingway: { x: 160, y: 526, r: 150 }, li: null, wong: null, own: null,
+    pushkin: { x: 770, y: 712, r: 120 }, thackeray: { x: 830, y: 536, r: 170 }, gatsby: { x: 104, y: 580, r: 150 }
+  };
+  const passages = [...document.querySelectorAll('[data-scene]')];
+  let region = null;
+  function readPosition() {
+    const mid = innerHeight * .46; let best = null, bestD = Infinity;
+    for (const p of passages) {
+      const r = p.getBoundingClientRect();
+      const d = r.top > mid ? r.top - mid : r.bottom < mid ? mid - r.bottom : 0;
+      if (d < bestD) { bestD = d; best = p; }
+    }
+    const name = best && bestD < innerHeight * .4 ? best.dataset.scene : '';
+    if (pane.dataset.active !== name) {
+      pane.dataset.active = name;
+      region = REGIONS[name] || null;
+      if (name === 'pushkin') pane.classList.add('is-written');
+    }
+  }
+  addEventListener('scroll', () => requestAnimationFrame(readPosition), { passive: true });
+  readPosition();
+
+  /* ---- The glass. ---- */
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const fog = document.getElementById('ow-fog');
+  const fctx = fog.getContext('2d');
+  const fogSrc = document.createElement('canvas'), sctx = fogSrc.getContext('2d');
+  const tmp = document.createElement('canvas'), tctx = tmp.getContext('2d');
+  const kept = document.createElement('canvas'); kept.width = kept.height = 500;
+  const kctx = kept.getContext('2d');
+  const KEY = 'opus-memory-window-kept';
+  let W = 0, H = 0, dpr = 1, s = 1, ox = 0, oy = 0, ready = false, cur = null, lastPoint = null, saveTimer = 0;
+
+  try { const saved = localStorage.getItem(KEY); if (saved) { const img = new Image(); img.onload = () => { kctx.drawImage(img, 0, 0, 500, 500); if (ready) eraseKept(); }; img.src = saved; } } catch (e) {}
+
+  function erase(ctx, x, y, r, a) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(0,0,0,${a})`); g.addColorStop(.5, `rgba(0,0,0,${a * .75})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, 2 * r, 2 * r); ctx.globalCompositeOperation = 'source-over';
+  }
+  function eraseKept() {
+    fctx.globalCompositeOperation = 'destination-out';
+    fctx.drawImage(kept, ox * dpr, oy * dpr, 1000 * s * dpr, 1000 * s * dpr);
+    fctx.globalCompositeOperation = 'source-over';
+  }
+  function noiseTile() {
+    const c = document.createElement('canvas'); c.width = c.height = 160; const x = c.getContext('2d'); const d = x.createImageData(160, 160);
+    for (let i = 0; i < d.data.length; i += 4) { const v = 200 + rand() * 55; d.data[i] = v; d.data[i + 1] = v; d.data[i + 2] = v - 4; d.data[i + 3] = rand() * 60; }
+    x.putImageData(d, 0, 0); return c;
+  }
+  const grainTile = noiseTile();
+  function paintVeil(ctx) {
+    ctx.fillStyle = 'rgba(222,223,217,.52)'; ctx.fillRect(0, 0, fog.width, fog.height);
+    for (let i = 0; i < 70; i++) {
+      const x = rand() * fog.width, y = rand() * fog.height, r = (60 + rand() * 220) * dpr, g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, `rgba(244,243,238,${.06 + rand() * .14})`); g.addColorStop(1, 'rgba(244,243,238,0)');
+      ctx.fillStyle = g; ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+    }
+    const low = ctx.createLinearGradient(0, 0, 0, fog.height); low.addColorStop(0, 'rgba(240,240,234,0)'); low.addColorStop(.75, 'rgba(240,240,234,.16)'); low.addColorStop(1, 'rgba(240,240,234,.28)');
+    ctx.fillStyle = low; ctx.fillRect(0, 0, fog.width, fog.height);
+    ctx.fillStyle = ctx.createPattern(grainTile, 'repeat'); ctx.fillRect(0, 0, fog.width, fog.height);
+  }
+  function build() {
+    const r = pane.getBoundingClientRect();
+    W = r.width; H = r.height; dpr = Math.min(devicePixelRatio || 1, 1.5);
+    s = Math.max(W / 1000, H / 1000); ox = (W - 1000 * s) / 2; oy = (H - 1000 * s) / 2;
+    for (const c of [fog, fogSrc, tmp]) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+    // Until the blurred view is ready, the glass is simply milky.
+    sctx.fillStyle = '#cfd1cb'; sctx.fillRect(0, 0, fogSrc.width, fogSrc.height); paintVeil(sctx);
+    fctx.drawImage(fogSrc, 0, 0); eraseKept();
+    const clone = land.cloneNode(true); clone.setAttribute('width', W); clone.setAttribute('height', H);
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml' }));
+    const img = new Image();
+    img.onload = () => {
+      const small = document.createElement('canvas'); small.width = Math.ceil(W / 11); small.height = Math.ceil(H / 11);
+      const x = small.getContext('2d'); x.drawImage(img, 0, 0, small.width, small.height);
+      const mid = document.createElement('canvas'); mid.width = Math.ceil(W / 4); mid.height = Math.ceil(H / 4);
+      const m = mid.getContext('2d'); m.imageSmoothingQuality = 'high'; m.drawImage(small, 0, 0, mid.width, mid.height);
+      sctx.imageSmoothingQuality = 'high'; sctx.drawImage(mid, 0, 0, fogSrc.width, fogSrc.height);
+      paintVeil(sctx);
+      fctx.globalCompositeOperation = 'copy'; fctx.drawImage(fogSrc, 0, 0); fctx.globalCompositeOperation = 'source-over';
+      eraseKept(); ready = true; URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+  const toPane = e => { const r = pane.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  function wipe(p) {
+    const r = 44;
+    erase(fctx, p.x * dpr, p.y * dpr, r * dpr, .9);
+    const kx = (p.x - ox) / s * .5, ky = (p.y - oy) / s * .5, kr = r / s * .5;
+    const g = kctx.createRadialGradient(kx, ky, 0, kx, ky, kr);
+    g.addColorStop(0, 'rgba(255,255,255,.7)'); g.addColorStop(.55, 'rgba(255,255,255,.45)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    kctx.fillStyle = g; kctx.fillRect(kx - kr, ky - kr, 2 * kr, 2 * kr);
+  }
+  pane.addEventListener('pointermove', e => {
+    if (still.matches || !ready) return;
+    const p = toPane(e);
+    if (lastPoint) {
+      const dx = p.x - lastPoint.x, dy = p.y - lastPoint.y, n = Math.min(24, Math.ceil(Math.hypot(dx, dy) / 12));
+      for (let i = 1; i <= n; i++) wipe({ x: lastPoint.x + dx * i / n, y: lastPoint.y + dy * i / n });
+    } else wipe(p);
+    lastPoint = p;
+    clearTimeout(saveTimer); saveTimer = setTimeout(save, 1500);
+  }, { passive: true });
+  pane.addEventListener('pointerleave', () => { lastPoint = null; });
+  function save() { try { localStorage.setItem(KEY, kept.toDataURL()); } catch (e) {} }
+  addEventListener('pagehide', save);
+
+  // The glass clouds again on its own, everywhere except where you have wiped it.
+  let last = 0, visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(pane);
+  function tick(t) {
+    requestAnimationFrame(tick);
+    if (!ready || still.matches || !visible || t - last < 40) return;
+    last = t;
+    tctx.globalCompositeOperation = 'copy'; tctx.drawImage(fogSrc, 0, 0);
+    tctx.globalCompositeOperation = 'destination-out'; tctx.drawImage(kept, ox * dpr, oy * dpr, 1000 * s * dpr, 1000 * s * dpr);
+    fctx.globalAlpha = .016; fctx.drawImage(tmp, 0, 0); fctx.globalAlpha = 1;
+    // Where a passage is being read, the glass thins a little by itself.
+    if (region) {
+      if (!cur) cur = { ...region };
+      cur.x += (region.x - cur.x) * .04; cur.y += (region.y - cur.y) * .04; cur.r += (region.r - cur.r) * .04;
+      erase(fctx, (ox + cur.x * s) * dpr, (oy + cur.y * s) * dpr, cur.r * s * dpr, .065);
+    }
+  }
+  let resizeTimer = 0;
+  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(build, 200); });
+  build();
+  requestAnimationFrame(tick);
+})();
+{% endraw %}
+</script>

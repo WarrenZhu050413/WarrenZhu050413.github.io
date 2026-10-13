@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" aria-hidden="true" class="mv-scene">
+<defs>
+  <radialGradient id="present-air"><stop stop-color="#727b76" stop-opacity=".4"/><stop offset=".65" stop-color="#515c57" stop-opacity=".18"/><stop offset="1" stop-color="#363f3b" stop-opacity="0"/></radialGradient>
+  <radialGradient id="present-light"><stop stop-color="#c8c5ac" stop-opacity=".62"/><stop offset=".42" stop-color="#a5b1a2" stop-opacity=".25"/><stop offset="1" stop-color="#8a9c91" stop-opacity="0"/></radialGradient>
+  <linearGradient id="present-page" x1="0" y1="0" x2=".6" y2="1"><stop stop-color="#afafa0" stop-opacity=".75"/><stop offset="1" stop-color="#737f75" stop-opacity=".3"/></linearGradient>
+  <filter id="present-soft" x="-.3" y="-.3" width="1.6" height="1.6"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="present-edge" x="-.2" y="-.2" width="1.4" height="1.4"><feGaussianBlur stdDeviation="2.5"/></filter>
+</defs>
+<g class="mv-d0"><ellipse cx="810" cy="455" rx="680" ry="390" fill="url(#present-air)"/></g>
+<g class="mv-d1" filter="url(#present-soft)"><path d="M490 160L920 115L1140 720L450 720Z" fill="#84968b" opacity=".08"/><ellipse cx="805" cy="625" rx="420" ry="105" fill="#1d2724" opacity=".55"/></g>
+<g class="mv-d2">
+  <ellipse cx="804" cy="565" rx="420" ry="220" fill="url(#present-light)"><animate attributeName="opacity" values=".7;.9;.7" dur="28s" repeatCount="indefinite"/></ellipse>
+  <g filter="url(#present-edge)">
+    <path d="M496 541Q650 480 797 552Q945 477 1101 526L1038 660Q905 632 810 673Q663 639 529 683Z" fill="#313d36" opacity=".7"/>
+    <path d="M492 532Q652 476 797 545L809 654Q671 611 528 669Z" fill="url(#present-page)"/>
+    <path d="M797 545Q934 476 1101 517L1040 647Q910 617 809 654Z" fill="url(#present-page)" opacity=".9"/>
+    <path d="M797 546Q795 600 809 654" stroke="#d2cfb5" stroke-opacity=".2" stroke-width="3" fill="none"/>
+    <path d="M547 647Q689 601 802 644M822 641Q925 608 1039 632" stroke="#b9c0ad" stroke-opacity=".1" stroke-width="2" fill="none"/>
+  </g>
+</g>
+<g class="mv-d3" opacity=".11" filter="url(#present-edge)"><path d="M300 306Q756 208 1280 345" stroke="#a4b9af" stroke-width="3" fill="none"/><path d="M333 727Q730 636 1263 726" stroke="#91a99c" stroke-width="2" fill="none"/></g>
+</svg>

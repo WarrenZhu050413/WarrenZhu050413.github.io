@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rachmaninoff — listening study</title>
+<style>html{color-scheme:dark}body{margin:0;background:#131412;color:#deddd5;font:18px/1.65 Georgia,serif}main{max-width:930px;margin:65px auto;padding:0 32px 60px}h1{font-size:38px;font-weight:400;line-height:1.2;margin:0 0 20px}h2{font-size:24px;font-weight:400;margin:0 0 8px}p{max-width:740px;color:#b4b5ac}section{padding:28px 0;border-top:1px solid #30322c}.variants{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}.variants section{min-width:0}audio{width:100%;height:34px;margin:12px 0}a{color:#b6c5bf;text-underline-offset:4px}.note,footer{font-size:14px;color:#999e94}table{border-collapse:collapse;width:100%;margin:20px 0}td,th{padding:14px 18px 14px 0;text-align:left;vertical-align:top;border-bottom:1px solid #30322c}th{font-size:14px;font-weight:400;color:#a0a496}.listen{display:block;font-size:15px}footer{margin-top:50px}button{font:inherit}@media(max-width:750px){.variants{display:block}h1{font-size:30px}}</style></head>
+<body><main><h1>Rachmaninoff, with more time</h1>
+<p>Prelude in E-flat major, Op. 23, No. 6. Your selected Ashkenazy performance, followed by three versions of Giorgi Latso’s recording and other performances to compare. The Latso edits retain the original pitch and expressive timing, stretching the whole recording evenly.</p>
+<section><h2>Selected: Vladimir Ashkenazy</h2><div>3:01 · original tempo</div><audio controls preload="none" data-src="/assets/audio/rachmaninoff-op23-no6-ashkenazy.m4a"></audio><p class="note"><a href="https://www.youtube.com/watch?v=G0EBMHFsEwY" target="_blank" rel="noopener">The recording you selected</a>. Now used in the local blog preview. Music synchronization remains off.</p></section>
+<div class="variants">
+<section><h2>Original</h2><div>5:30 · unchanged tempo</div><audio controls preload="none" data-src="/assets/audio/rachmaninoff-op23-no6-latso.m4a"></audio></section>
+<section><h2>A little slower</h2><div>6:07 · 10% slower</div><audio controls preload="none" data-src="/assets/audio/rachmaninoff-op23-no6-latso-90.m4a"></audio></section>
+<section><h2>More suspended</h2><div>6:28 · 15% slower</div><audio controls preload="none" data-src="/assets/audio/rachmaninoff-op23-no6-latso-85.m4a"></audio></section>
+</div>
+<p class="note">Start with the 10% edit. This is a tempo study, not a newly played or resynthesized performance. Time stretching can soften piano attacks. The full concert file, including its pauses, is preserved in every version; full-file lengths do not measure tempo alone. Only one player sounds at a time. The essay’s timing is unchanged; these are listening previews only.</p>
+<section><h2>Other performances</h2><table><thead><tr><th>Recording</th><th>Listed time</th><th>Listening reference</th></tr></thead><tbody>
+<tr><td>Vladimir Ashkenazy · Decca</td><td>2:57</td><td><a href="https://www.prestomusic.com/classical/products/8362482--rachmaninov-preludes-op-3-op-23-op-32" target="_blank" rel="noopener">Track 6, E-flat major →</a><br><span class="note">1975 recording, 2017 release. Much shorter than the Latso file.</span></td></tr>
+<tr><td>Nikolai Lugansky · harmonia mundi</td><td>3:03</td><td><a href="https://www.harmoniamundi.com/en/albums/24-preludes/" target="_blank" rel="noopener">2018 album and listening links →</a><br><span class="note">A second modern recording to compare against Ashkenazy.</span></td></tr>
+<tr><td>Howard Shelley · Hyperion</td><td>3:46*</td><td><a href="https://www.hyperion-records.co.uk/dc.asp?dc=D_CDA66081" target="_blank" rel="noopener">Preludes, Op. 23 →</a><br><span class="note">A longer alternative worth auditioning. *Time documented in <a href="https://research-repository.uwa.edu.au/files/3221768/Ong_Siew_Yuan_2005.pdf" target="_blank" rel="noopener">Ong, The Piano Prelude, Table 2.4</a>.</span></td></tr>
+</tbody></table><p class="note">These commercial recordings are linked for listening. No Creative Commons licence for them has been verified. Credit by itself does not permit copying or editing them. The three Latso versions use the licensed recording. No reuse licence has been verified for the selected Ashkenazy recording.</p></section>
+<footer>Sergei Rachmaninoff · Prelude in E-flat major, Op. 23, No. 6.<br>Performed by Giorgi Latso. Recorded by <a href="https://commons.wikimedia.org/wiki/File:Rachmaninof_Prelude_E_flat.ogg" target="_blank" rel="noopener">Asuas</a>, Beverly Hills, 13 April 2019. <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.<br>Original converted to AAC. The two edits reduce tempo by 10% and 15%, with pitch preserved; both edited recordings remain CC BY-SA 4.0.</footer>
+</main><script>
+async function completeAudio(src){
+  const head=await fetch(src,{method:'HEAD',cache:'no-store'});
+  const length=Number(head.headers.get('content-length'));
+  if(!head.ok||!length)throw new Error('Audio unavailable');
+  const parts=[];
+  // The local preview truncates some large media responses. Bounded ranges also
+  // give us a verifiable complete file before allowing playback or seeking.
+  for(let start=0;start<length;start+=1048576){
+    const end=Math.min(length-1,start+1048575);
+    const response=await fetch(src,{headers:{Range:`bytes=${start}-${end}`},cache:'no-store'});
+    const bytes=await response.arrayBuffer();
+    if(response.status!==206||bytes.byteLength!==end-start+1)throw new Error('Incomplete audio');
+    parts.push(bytes);
+  }
+  return URL.createObjectURL(new Blob(parts,{type:'audio/mp4'}));
+}
+const players=[...document.querySelectorAll('audio')];
+players.forEach(async player=>{
+  player.addEventListener('play',()=>players.forEach(other=>{if(other!==player)other.pause()}));
+  try{player.src=await completeAudio(player.dataset.src);player.preload='metadata';player.load()}
+  catch{const note=document.createElement('p');note.className='note';note.textContent='Audio could not load. Reload to try again.';player.after(note)}
+});
+</script></body></html>
