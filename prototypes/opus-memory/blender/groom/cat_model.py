@@ -113,7 +113,7 @@ ell('chin', hp(.04, 0, -.034), (.014, .012, .008), k=.008, length=.01, flow=hv(-
 cone('bridge', hp(.016, 0, .022), hp(.064, 0, -.004), .0135, .008, k=.01, length=.005, flow=hv(-1, 0, .5), lift=.1, droop=0,
      density=1.6)
 # Expression. The lids decide how sleepy the cat looks.
-UPPER_LID, LOWER_LID = .2, -.34   # height of each lid's edge straight ahead: higher = more open
+UPPER_LID, LOWER_LID = .26, -.34   # height of each lid's edge straight ahead: higher = more open
 CORNER, CORNER_ANGLE, TILT = -.1, 1.0, -.02
 def lid_edge(edge, a, s):
     """The lids meet at the corners, so the opening is an almond."""
@@ -317,10 +317,11 @@ def eye_geometry(e):
                 rim = float(lid_edge(edge, a, e['side']))
                 el = rim + (1 - rim) * (i / rows) ** 1.3 if which == 'upper' else rim - (1 + rim) * (i / rows) ** 1.3
                 el = max(-1, min(1, el)); c = math.sqrt(1 - el * el)
-                bulge = 1.065 + .01 * math.cos(a)
+                bulge = (1.065 if which == 'upper' else 1.03) + .01 * math.cos(a)
                 vs.append(e['centre'] + EYE_R * bulge * (g * c * math.cos(a) + side * c * math.sin(a) + up * el))
         # A thin dark rim at the lid's edge; the rest of the shell is covered skin.
-        for part, band in (('lid', range(0, 2)), ('cover', range(2, rows))):
+        rim_rows = 2 if which == 'upper' else 1
+        for part, band in (('lid', range(0, rim_rows)), ('cover', range(rim_rows, rows))):
             fs = [(i * (cols + 1) + j, i * (cols + 1) + j + 1, (i + 1) * (cols + 1) + j + 1, (i + 1) * (cols + 1) + j)
                   for i in band for j in range(cols)]
             used = np.unique(np.array(fs)); remap = np.full(len(vs), -1); remap[used] = np.arange(len(used))
@@ -579,7 +580,7 @@ def build(strands=300000, with_coat=True, log=print):
             for j in (0, cols):
                 edge = grid[i, j]; axis = ear['base'] + ear['up'] * ear['height'] * t
                 out = unit(edge - axis + ear['up'] * .004 * (1 + 2 * t))
-                for _ in range(8):
+                for _ in range(14):
                     root = edge + rng.normal(size=3) * .0006; ln = rng.uniform(.005, .011) * (1 - .4 * t)
                     dirn = unit(out + ear['up'] * (.4 + t) + rng.normal(size=3) * .25)
                     fur.append([root + dirn * ln * k / 5 + np.array([0, 0, -.0012]) * (k / 5) ** 2 for k in range(6)])

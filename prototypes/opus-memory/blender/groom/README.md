@@ -11,20 +11,22 @@ Made against `../portrait/reference.png`, the long-haired black cat Warren chose
 - `groom.py` renders Cycles stills of a pose: about 400,000 strands with
   Principled Hair absorption, in the reference's rim light or at Burns scale.
 - `export.py` writes the browser asset `assets/models/memory-cat-longhair.glb`
-  (Draco, about 2.3 MB, 175,400 triangles, 12 draw calls). It has a decimated
-  skinned skin and 9,240 fur cards laid along the coat's locks: about 1,800 finer
+  (Draco, about 2.3 MB, 175,100 triangles, 12 draw calls). It has a decimated
+  skinned skin and 9,220 fur cards laid along the coat's locks: about 1,800 finer
   locks for the plume and up to 2,000 for the face, which lie close to the skin
-  and use the atlas's two sparse fuzz columns. The ears carry thin inner wisps
-  and a fine fringe along their edges, with no cards on their backs. Head
-  details are merged by material into `Eyes`, `Lid rims`, `Ears and covers` and
-  `Nose leather`. Each lid is a thin dark rim plus a skin-coloured cover, and
-  each eye sits in an almond socket cut only where the lids open. Skinning is
-  per vertex, so the merged meshes keep their lid, ear and head bones. The
-  muzzle's short fur is left to a velvet skin.
+  and use the atlas's two sparse fuzz columns. Face and neck cards shade with the
+  skin normal beneath each vertex, so the cheek ruff blends; body cards keep one
+  tone per lock. The ears carry 250 thin inner wisps and 600 fringe cards along
+  their edges and tip, with no cards on their backs. Head details are merged by
+  material into `Eyes`, `Lid rims`, `Ears and covers` and `Nose leather`. Each
+  lid is a dark rim plus a skin-coloured cover; the lower lid sits close to the
+  eyeball. Each eye sits in an almond socket cut only where the lids open.
+  Skinning is per vertex, so the merged meshes keep their lid, ear and head
+  bones. The muzzle's short fur is left to a velvet skin.
 - `compare.py` builds side-by-side sheets of reference crops and renders.
   `compare-walk.png` sets the cat against the reference; `compare-refine.png`
-  (v7 to v8), `compare-next.png` (v8 to v9) and `compare-v10.png` (v9 to v10)
-  record each refinement.
+  (v7 to v8), `compare-next.png` (v8 to v9), `compare-v10.png` (v9 to v10) and
+  `compare-v11.png` (v10 to v11) record each refinement.
 
 ```sh
 B=/Applications/Blender.app/Contents/MacOS/Blender

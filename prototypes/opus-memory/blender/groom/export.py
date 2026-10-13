@@ -8,6 +8,7 @@ normal beneath it so the coat lights as one soft volume. Cards and whiskers
 carry a strand atlas whose alpha is meant for alpha-to-coverage.
 """
 import bpy, json, sys
+from mathutils.kdtree import KDTree
 import numpy as np
 from pathlib import Path
 from mathutils import Matrix
@@ -20,7 +21,7 @@ import cat_model as cat
 ARGS = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 def arg(name, default):
     return type(default)(ARGS[ARGS.index(name) + 1]) if name in ARGS else default
-CARDS = arg('--cards', 9240)
+CARDS = arg('--cards', 9220)
 FUZZ = (6, 7)          # atlas columns drawn as fine, sparse fuzz for the head and ears
 STRANDS = arg('--strands', 300000)
 OUT = Path(arg('--out', str(ROOT / 'assets/models/memory-cat-longhair.glb')))
@@ -56,7 +57,7 @@ def strand_atlas(columns=8, size=1024, strands=170):
                 np.add.at(shade, (yi, cols), w * weight * .5 * bright)
         # A dense undercoat near the root so cards never show daylight where they leave the skin.
         v = np.arange(size)[:, None] / size; u = (np.arange(width)[None, :] + .5) / width
-        fill = np.clip(1 - v / (.2 if not fuzz else .1), 0, 1) * (1 - np.abs(2 * u - 1) ** (3 if not fuzz else 1.5)) * (.9 if not fuzz else .3)
+        fill = np.clip(1 - v / (.2 if not fuzz else .1), 0, 1) * (1 - np.abs(2 * u - 1) ** (3 if not fuzz else 1.5)) * (.9 if not fuzz else 0.)
         acc[:, c * width:(c + 1) * width] += fill
         shade[:, c * width:(c + 1) * width] += fill
     alpha = 1 - np.exp(-acc * 2.0)
@@ -133,6 +134,11 @@ def skin_mesh():
     V = np.array([v.co for v in ob.data.vertices])
     return ob, bone_weights(V)
 
+SKIN_NORMALS = cat.vertex_normals(model['skin']['verts'], model['skin']['faces'])
+SKIN_TREE = KDTree(len(model['skin']['verts']))
+for i, p in enumerate(model['skin']['verts']): SKIN_TREE.insert(p, i)
+SKIN_TREE.balance()
+
 def coat_cards(coat, count, points=8):
     S, Nn, Wr = coat['points'], coat['normals'], coat['bone_weights']
     dominant = Wr.argmax(1)
@@ -185,8 +191,13 @@ def coat_cards(coat, count, points=8):
     V = np.broadcast_to(np.linspace(0, 1, points)[None, :, None], (k, points, 2))
     uv = np.stack([U, V], -1)
     plane = cat.unit(np.cross(side, tangent)); plane *= np.sign((plane * normal[:, None]).sum(-1, keepdims=True))
-    shade = cat.unit(normal[:, None] * .75 + plane * .25)
-    normals = np.repeat(shade, 2, axis=1).reshape(-1, 3)
+    # Face and neck cards shade with the skin beneath each vertex, so the cheek ruff blends instead of
+    # reading as shingles; body cards keep one tone per lock, which holds the coat's value at scene scale.
+    nearest = np.array([SKIN_TREE.find(p)[1] for p in verts])
+    blended = cat.unit(SKIN_NORMALS[nearest].reshape(k, points, 2, 3) * .8 + plane[:, :, None] * .2)
+    per_lock = np.repeat(cat.unit(normal[:, None] * .75 + plane * .25)[:, :, None], 2, axis=2)
+    soft = on_head | (weights.argmax(1) == names.index('neck'))
+    normals = np.where(soft[:, None, None, None], blended, per_lock).reshape(-1, 3)
     faces = []
     for c in range(k):
         o = c * points * 2
@@ -248,8 +259,8 @@ for mat, name in MERGED.items():
 ears = next(c for c in model['curves'] if c['name'] == 'Ear furnishings')
 # Only the inner furnishings become cards; the short fur on the backs of the ears is left to the skin.
 inner, rim = ears['kind'] == 0, ears['kind'] == 2
-iv, if_, iu, ir = strand_cards(ears['points'][inner], .0016, ears['rig'][0][inner, 0], 450)
-rv, rf, ru, rr = strand_cards(ears['points'][rim], .0013, ears['rig'][0][rim, 0], 500)
+iv, if_, iu, ir = strand_cards(ears['points'][inner], .0016, ears['rig'][0][inner, 0], 250)
+rv, rf, ru, rr = strand_cards(ears['points'][rim], .0013, ears['rig'][0][rim, 0], 600)
 parts.append((mesh('Ear fur', np.concatenate([iv, rv]), if_ + [tuple(i + len(iv) for i in f) for f in rf], 'coat',
                    np.concatenate([iu, ru])), (np.concatenate([ir[0], rr[0]]), np.concatenate([ir[1], rr[1]]))))
 whiskers = next(c for c in model['curves'] if c['name'] == 'Whiskers')
