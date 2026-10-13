@@ -20,7 +20,7 @@ import cat_model as cat
 ARGS = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 def arg(name, default):
     return type(default)(ARGS[ARGS.index(name) + 1]) if name in ARGS else default
-CARDS = arg('--cards', 6000)
+CARDS = arg('--cards', 8000)
 STRANDS = arg('--strands', 300000)
 OUT = Path(arg('--out', str(ROOT / 'assets/models/memory-cat-longhair.glb')))
 SKIN_FACES = arg('--skin-faces', 16000)
@@ -31,7 +31,7 @@ model = cat.build(STRANDS, log=print)
 names = model['names']
 
 # ---------------------------------------------------------------- textures
-def strand_atlas(columns=8, size=1024, strands=110):
+def strand_atlas(columns=8, size=1024, strands=170):
     """Columns of clumped strands, root at the bottom (v = 0), converging and thinning to the tip."""
     width = size // columns
     acc = np.zeros((size, size)); shade = np.zeros((size, size))
@@ -42,7 +42,7 @@ def strand_atlas(columns=8, size=1024, strands=110):
             length = (size - 2) * rng.uniform(.45, 1.) ** .55
             ys = np.arange(0, length, .5); t = ys / length
             xs = x0 + (tip - x0) * t ** 1.25 + np.sin(t * rng.uniform(2, 5) + rng.uniform(0, 6)) * rng.uniform(0, 2.5)
-            weight = 1.2 * (1 - .78 * t)
+            weight = .85 * (1 - .75 * t)
             xi = np.floor(xs).astype(int); fx = xs - xi; yi = ys.astype(int)
             bright = rng.uniform(.6, 1.5)
             for dx, w in ((0, 1 - fx), (1, fx)):
@@ -139,11 +139,15 @@ def coat_cards(coat, count, points=8):
     width = np.clip(np.sqrt(np.bincount(group, (off ** 2).sum(1), minlength=k) / n[:, 0]) * 2.8, .005, .032)
     # Short fur (face, muzzle, fronts of the legs) is left to the velvet skin: cards there read as scales.
     mean_length = np.bincount(group, coat['length'], minlength=k) / n[:, 0]
-    keep = mean_length > .016
+    # Narrow fuzz cards for the shorter fur of the brow, crown and chin; none on the muzzle.
+    nose = next(p for p in model['parts'] if p['name'] == 'Nose leather')['verts'].mean(0)
+    keep = (mean_length > .016) | ((mean_length > .009) & (np.linalg.norm(spine[:, 0] - nose, axis=1) > .024))
     near = np.full(k, np.inf)
     for e in cat.EYES: near = np.minimum(near, (np.linalg.norm(spine - e['centre'], axis=-1).min(1) - width / 2) / (cat.EYE_R * 1.6))
     keep &= near > 1
-    spine, normal, weights, width, k = spine[keep], normal[keep], weights[keep], width[keep] * np.clip(mean_length[keep] / .04, .55, 1), keep.sum()
+    spine, normal, weights, width, k = spine[keep], normal[keep], weights[keep], width[keep] * np.clip(mean_length[keep] / .04, .32, 1), keep.sum()
+    # The plume fans wider than the narrow tail its roots sit on.
+    width = width * np.where(np.array([names[b].startswith('tail') for b in weights.argmax(1)]), 3., 1)
     # Resample each spine to fewer points along its index.
     src = np.linspace(0, S.shape[1] - 1, points); i0 = np.floor(src).astype(int).clip(0, S.shape[1] - 2); f = (src - i0)[None, :, None]
     spine = spine[:, i0] * (1 - f) + spine[:, i0 + 1] * f

@@ -9,7 +9,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
 
-const MODEL = '/assets/models/memory-cat-longhair.glb?v=7';
+const MODEL = '/assets/models/memory-cat-longhair.glb?v=8';
 const SCALE = 4.5;            // scene units per metre inside the cat's root
 const STRIDE = .9 * .72;      // world distance per gait cycle, as the scenes compute phase
 const GAIT = { hind_l: 0, fore_l: .25, hind_r: .5, fore_r: .75 };
@@ -19,14 +19,15 @@ const clean = name => name.replace(/\s/g, '_').replace(/[[\].:/]/g, '');
 const fromBlender = ([x, y, z]) => new Vector3(x, z, -y);
 const smooth = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
 
-let loading;
-function load() {
-  loading ||= new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('/assets/vendor/draco/')).loadAsync(MODEL);
-  return loading;
+const loads = new Map();
+function load(url) {
+  if (!loads.has(url)) loads.set(url, new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('/assets/vendor/draco/')).loadAsync(url));
+  return loads.get(url);
 }
 
 // Coat cards: alpha-to-coverage with mip-aware coverage, lit by the skin normal from both sides,
-// with a soft velvet sheen where the coat turns from the light.
+// with a soft velvet sheen, and a faint warm rim where the coat turns away, as long fur
+// catches the haze at its edges.
 function coatMaterial(map) {
   const m = new MeshPhysicalMaterial({ map, color: '#ffffff', roughness: .6, metalness: 0, side: DoubleSide, alphaToCoverage: true,
     sheen: 1, sheenColor: new Color('#7d7a76'), sheenRoughness: .42, specularIntensity: .35 });
@@ -40,7 +41,10 @@ function coatMaterial(map) {
           diffuseColor.a = min(1.0, diffuseColor.a * (1.0 + lod * .32));
           diffuseColor.a = clamp((diffuseColor.a - .36) / max(fwidth(diffuseColor.a) * 1.8, 1e-4) + .5, 0.0, 1.0);
         }
-        #include <alphatest_fragment>`);
+        #include <alphatest_fragment>`)
+      .replace('#include <opaque_fragment>', `
+        outgoingLight += vec3(.55, .52, .47) * pow(1.0 - clamp(abs(dot(normal, normalize(vViewPosition))), 0.0, 1.0), 4.0) * .09;
+        #include <opaque_fragment>`);
   };
   return m;
 }
@@ -60,11 +64,11 @@ function fabrik(joints, lengths, iterations = 16) {
   return joints;
 }
 
-export function cat() {
+export function cat({ model: url = MODEL } = {}) {
   const root = new Group();
   const api = { root, head: root, mouth: new Vector3(1.4, 1.2, 0), pose() {} };
   // Each cat gets its own skinned copy: a rebuilt world must not inherit another cat's pose.
-  api.ready = load().then(gltf => {
+  api.ready = load(url).then(gltf => {
     const model = cloneSkinned(gltf.scene);
     model.updateMatrixWorld(true);
     const rig = model.getObjectByName('Cat');

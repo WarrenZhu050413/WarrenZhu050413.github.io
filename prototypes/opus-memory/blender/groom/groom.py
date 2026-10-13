@@ -57,14 +57,14 @@ def iris_image():
     return img
 
 def materials():
-    eye = principled('Eye', (.5, .5, .5), .35, **{'Coat Weight': .6, 'Coat Roughness': .07})
+    eye = principled('Eye', (.5, .5, .5), .4, **{'Coat Weight': .35, 'Coat Roughness': .12})
     tex = eye.node_tree.nodes.new('ShaderNodeTexImage'); tex.image = iris_image()
     eye.node_tree.links.new(tex.outputs['Color'], eye.node_tree.nodes['Principled BSDF'].inputs['Base Color'])
     return dict(
         skin=principled('Undercoat', (.016, .014, .013), .55, **{'Sheen Weight': .6, 'Sheen Roughness': .4,
                         'Sheen Tint': (.25, .24, .23, 1)}),
-        nose=principled('Nose leather', (.02, .017, .017), .72), lid=principled('Lid', (.008, .007, .007), .5),
-        eye=eye, hair=hair_material(), whisker=principled('Whisker', (.72, .72, .70), .35))
+        nose=principled('Nose leather', (.016, .014, .014), .82), lid=principled('Lid', (.008, .007, .007), .5),
+        eye=eye, hair=hair_material(), whisker=principled('Whisker', (.5, .5, .49), .4))
 
 # ---------------------------------------------------------------- objects
 def mesh_object(name, verts, faces, mat, uv=None):

@@ -11,10 +11,11 @@ Made against `../portrait/reference.png`, the long-haired black cat Warren chose
 - `groom.py` renders Cycles stills of a pose: about 400,000 strands with
   Principled Hair absorption, in the reference's rim light or at Burns scale.
 - `export.py` writes the browser asset `assets/models/memory-cat-longhair.glb`
-  (Draco, about 1.9 MB). The asset has a decimated skinned skin and about 6,000
-  fur cards laid along the coat's locks, plus eyes, lids, nose, ears, ear fur and
-  whiskers. The rig includes lid and ear bones. Short face fur is left to a velvet
-  skin, because cards that small read as scales.
+  (Draco, about 2.2 MB, 175,000 triangles). The asset has a decimated skinned
+  skin and 8,000 fur cards laid along the coat's locks, plus eyes, lids, nose,
+  ears, ear fur and whiskers. The rig includes lid and ear bones. The muzzle's
+  short fur is left to a velvet skin; the brow, crown and chin get narrow fuzz
+  cards, because wide cards that small read as scales.
 - `compare.py` builds side-by-side sheets of reference crops and renders.
 
 ```sh

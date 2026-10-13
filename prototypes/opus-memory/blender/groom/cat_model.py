@@ -103,12 +103,12 @@ OWNER = 'head'
 HEAD_PRIMS = len(PRIMS)
 ell('cranium', hp(-.002, 0, .006), (.045, .04, .037), k=.012, length=.019, flow=hv(-1, 0, -.15), lift=.2, droop=.05)
 for s in (-1, 1):
-    ell(f'cheek{s}', hp(.008, s * .031, -.016), (.031, .021, .024), k=.014, length=.022,
-        flow=hv(-.9, s * .8, -.5), lift=.4, droop=.15, loft=.25, behind=dict(length=.05, lift=.5))
-    ell(f'pad{s}', hp(.054, s * .0105, -.022), (.013, .011, .0105), k=.008, length=.005, flow=hv(.3, s * 1, -.4),
+    ell(f'cheek{s}', hp(.008, s * .031, -.016), (.031, .021, .024), k=.014, length=.024,
+        flow=hv(-.7, s * 1.05, -.55), lift=.45, droop=.15, loft=.28, behind=dict(length=.068, lift=.55))
+    ell(f'pad{s}', hp(.053, s * .0102, -.0215), (.0122, .0103, .0098), k=.008, length=.005, flow=hv(.3, s * 1, -.4),
         lift=.15, droop=0, density=1.6)
     ell(f'brow{s}', hp(.03, s * .021, .014), (.012, .013, .006), k=.008, length=.006, flow=hv(-.6, s * .7, .1), lift=.1, droop=0)
-ell('muzzle', hp(.047, 0, -.019), (.019, .018, .013), k=.01, length=.006, flow=hv(.2, 0, -1), lift=.15, droop=0, density=1.6)
+ell('muzzle', hp(.046, 0, -.0185), (.018, .017, .0125), k=.01, length=.006, flow=hv(.2, 0, -1), lift=.15, droop=0, density=1.6)
 ell('chin', hp(.04, 0, -.034), (.014, .012, .008), k=.008, length=.01, flow=hv(-.2, 0, -1), lift=.25, droop=.1)
 cone('bridge', hp(.016, 0, .022), hp(.064, 0, -.004), .0135, .008, k=.01, length=.005, flow=hv(-1, 0, .5), lift=.1, droop=0,
      density=1.6)
@@ -156,16 +156,17 @@ for leg, (top, mid, low, paw) in LEGS.items():
 # The tail rises from the rump and curls forward, a plume held high.
 for i in range(len(TAIL) - 1):
     OWNER = f'tail{i}'
-    cone(f'tail{i}', TAIL[i], TAIL[i + 1], TAIL_R[i], TAIL_R[i + 1], k=.012, length=.065 + .02 * i, radial=.7, along=1.8,
-         flow=(-.2, 0, 0), lift=.26, droop=.6, loft=.28, clump=.6, density=1.5)
+    cone(f'tail{i}', TAIL[i], TAIL[i + 1], TAIL_R[i], TAIL_R[i + 1], k=.012, length=.075 + .022 * i, radial=.75, along=1.7,
+         flow=(-.2, 0, 0), lift=.3, droop=.78, loft=.3, clump=.6, density=1.5)
 
 # Expression. The lids decide how sleepy the cat looks.
-UPPER_LID, LOWER_LID = .22, -.36   # height of each lid's edge straight ahead: higher = more open
+UPPER_LID, LOWER_LID = .13, -.36   # height of each lid's edge straight ahead: higher = more open
 CORNER, CORNER_ANGLE, TILT = -.12, 1.0, -.02
 def lid_edge(edge, a, s):
     """The lids meet at the corners, so the opening is an almond."""
     f = np.clip(a / CORNER_ANGLE, -1, 1)
-    return CORNER + (edge - CORNER) * np.cos(f * np.pi / 2) ** .8 + TILT * f * s
+    shape = .4 if edge > CORNER else .8      # the upper lid runs level, then drops into the corners
+    return CORNER + (edge - CORNER) * np.cos(f * np.pi / 2) ** shape + TILT * f * s
 
 # ---------------------------------------------------------------- signed distances
 def sd_round_cone(P, a, b, r1, r2):
@@ -324,7 +325,7 @@ def nose_geometry(F):
     """A domed, rounded triangle on the nose tip, wider at the top."""
     n = unit(hv(1, 0, -.3)); across = unit(hv(0, 1, 0)); down = unit(np.cross(n, across))
     centre = surface_point(F, hp(.06, 0, -.005) + n * .05, -n) + n * .0004
-    w, h = .0072 * HS / 1.36, .0052 * HS / 1.36
+    w, h = .0064 * HS / 1.36, .0046 * HS / 1.36
     outline = []
     for i in range(48):
         a = 2 * math.pi * i / 48
@@ -504,17 +505,19 @@ def build(strands=300000, with_coat=True, log=print):
     for e in EYES:
         q = P - e['centre']; r = np.linalg.norm(q, axis=1); up = (q @ e['up']) / np.maximum(r, 1e-9)
         a = np.arctan2(q @ e['across'], q @ e['gaze'])
-        opening = (r < EYE_R * 1.45) & (np.abs(a) < CORNER_ANGLE) & (up < lid_edge(UPPER_LID, a, e['side']) + .035) & \
-                  (up > lid_edge(LOWER_LID, a, e['side']) - .035)
+        opening = (r < EYE_R * 1.45) & (np.abs(a) < CORNER_ANGLE) & (up < lid_edge(UPPER_LID, a, e['side']) + .015) & \
+                  (up > lid_edge(LOWER_LID, a, e['side']) - .015)
         keep &= ~opening & (r > EYE_R * 1.08)
     keep &= np.linalg.norm(P - nose['centre'], axis=1) > .0085 * HS / 1.36
     P, Nn, Wt, Wr = P[keep], Nn[keep], Wt[keep], Wr[keep]
     L, flow, lift, droop, loft, clump = coat_fields(grow, P, Nn, Wt)
-    # Hair beside the eyes sweeps away from them; fur parts around the nose leather.
+    # Hair beside the eyes lies back along the lids, so fur meets the lid edge without a bare ring;
+    # fur parts around the nose leather.
     for e in EYES:
         away = P - e['centre']; dist = np.linalg.norm(away, axis=1); mm = np.clip((EYE_R * 2.1 - dist) / .008, 0, 1)[:, None]
         away = away - (away @ e['gaze'])[:, None] * e['gaze']
-        flow = unit(flow * (1 - mm) + unit(away) * mm)
+        flow = unit(flow * (1 - mm) + unit(unit(away) * .35 - e['gaze'] * .65) * mm)
+        L = L * (1 - .45 * mm[:, 0])
     away = P - nose['centre']; mm = np.clip((.017 - np.linalg.norm(away, axis=1)) / .01, 0, 1)
     flow = unit(flow * (1 - mm[:, None]) + unit(away) * mm[:, None]); L = L * (1 - .55 * mm)
     # Locks vary as wholes: length, direction and loft. This layers the coat.
@@ -562,15 +565,15 @@ def build(strands=300000, with_coat=True, log=print):
     # Whiskers: long, pale, fanning forward and drooping.
     wh = []
     for s in (-1, 1):
-        for j in range(9):
-            root = hp(.057, s * (.011 + .003 * (j % 3)), -.017 - .0026 * j)
-            out = unit(hv(.55, s * 1, .25 - .07 * j)); ln = rng.uniform(.06, .085)
+        for j in range(7):
+            root = hp(.056, s * (.011 + .003 * (j % 3)), -.017 - .0032 * j)
+            out = unit(hv(.5, s * 1, .2 - .08 * j)); ln = rng.uniform(.055, .078)
             wh.append([root + out * ln * k / 9 + np.array([0, 0, -1]) * .012 * (k / 9) ** 2 + hv(1, 0, 0) * .006 * (k / 9)
                        for k in range(10)])
         for j in range(3):
             root = EYES[(s + 1) // 2]['centre'] + hv(.003, s * .004, .013)
             wh.append([root + unit(hv(.3, s * .6, 1)) * .03 * k / 9 for k in range(10)])
-    curves.append(dict(name='Whiskers', mat='whisker', points=np.array(wh), root=.00018, tip=.00003, rig=rigid(len(wh))))
+    curves.append(dict(name='Whiskers', mat='whisker', points=np.array(wh), root=.00014, tip=.00003, rig=rigid(len(wh))))
     log('coat', len(P), 'strands')
     return m
 

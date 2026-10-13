@@ -75,6 +75,7 @@ function size() {
 addEventListener('resize', size); size();
 const time = document.querySelector('#time'); time.max = END;
 document.querySelector('#play').textContent = playing ? 'Pause' : 'Play';
+document.querySelector('#scale').textContent = close ? 'Scene size' : 'Inspect closer';
 document.querySelector('#play').onclick = e => { playing = !playing; e.target.textContent = playing ? 'Pause' : 'Play'; };
 document.querySelector('#replay').onclick = () => { seconds = 0; playing = true; document.querySelector('#play').textContent = 'Pause'; };
 document.querySelector('#scale').onclick = e => { close = !close; e.target.textContent = close ? 'Scene size' : 'Inspect closer'; };
