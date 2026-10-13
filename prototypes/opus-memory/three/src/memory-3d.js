@@ -785,15 +785,16 @@ function burns(scene) {
   const mouse = fieldMouse(); mouse.root.scale.setScalar(.3); scene.add(mouse.root);
   const puss = cat(); puss.root.scale.setScalar(.72); scene.add(puss.root);
   const faceLight = new DirectionalLight('#aebbb4', .48); faceLight.position.set(4, 5, 12); scene.add(faceLight);
-  const M0 = new Vector3(1.75, 0, .15), M1 = new Vector3(1.15, 0, .2);
+  const M0 = new Vector3(1.75, 0, .15);
   const P0 = new Vector3(-5, 0, -2.6), P1 = new Vector3(-.75, 0, .1), P2 = new Vector3(-10, 0, -11);
   const heading1 = Math.atan2(-(P1.z - P0.z), P1.x - P0.x), heading2 = Math.atan2(-(P2.z - P1.z), P2.x - P1.x) - Math.PI * 2;
+  const M1 = P1.clone().add(new Vector3(Math.cos(heading1), 0, -Math.sin(heading1)).multiplyScalar(.75));
   const approach = P0.distanceTo(P1), leave = P1.distanceTo(P2);
-  const mouth = new Vector3();
+  const mouth = new Vector3(), scruff = new Vector3();
   const birds = rooks(scene, new Vector3(-4, 7, -22));
   const motion = {};
   return {
-    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6, traveller: mouse.root, motion,
+    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6, traveller: mouse.root, motion, ready: puss.ready,
     tick(t, s, dt, attention = {x:0,y:0}) {
       breeze.value=s + attention.x * .7;
       // The cat: walk in, stop, lower the head, take her, turn, walk away.
@@ -806,9 +807,9 @@ function burns(scene) {
       puss.root.rotation.y = heading;
       const travelled = inPos * approach + eOut * leave + Math.abs(heading2 - heading1) * turn * .5;
       const moving = Math.min(1, (walkIn > 0 && walkIn < 1 ? 1 - walkIn ** 3 : 0) + (walkOut > 0 ? Math.min(1, walkOut * 6) : 0) + (turn > 0 && turn < 1 ? .45 : 0));
-      const lower = seg(s, 22, 25) - seg(s, 28, 30) * .82;
+      const lower = seg(s, 22, 25) - seg(s, 27, 29) * .82;
       const phase = travelled / .9 / .72;
-      puss.pose({ phase, moving, lower, s, tailUp: seg(s, 29, 31), attention: (1-seg(s,2,4))*.5 });
+      puss.pose({ phase, moving, lower, s, tailUp: seg(s, 29, 31), attention: (1-seg(s,2,4))*.5 + (1-lower)*Math.max(0,-attention.y)*.15 });
       Object.assign(motion,{phase,moving,x:puss.root.position.x/12});
       puss.root.updateMatrixWorld(true);
       puss.head.localToWorld(mouth.copy(puss.mouth));
@@ -823,11 +824,14 @@ function burns(scene) {
         mouse.pose({ phase: go * (M0.distanceTo(M1) / .3) / .3, moving: go > 0 && go < 1 ? 1 : 0, sit, paws: s < 3.4 ? 'groom' : 'hold', s,
           look: sit > .5 ? Math.sin(s * 3.1) * .04 : Math.max(0, Math.sin(s * 2.3)) ** 8 * .2 });
       } else {
-        const scruff = new Vector3(0, .3, 0);
-        mouse.root.position.copy(ground).lerp(mouth.clone().sub(scruff), lift);
-        // Held across the mouth, as a cat carries a kitten.
+        // The scruff belongs to the posed mouse, including its scale and turn.
+        mouse.root.position.copy(ground);
         mouse.root.rotation.set(0, Math.PI + lift * (heading + Math.PI / 2 - Math.PI), 0);
         mouse.pose({ s, hang: lift, sit: 0 });
+        mouse.root.updateMatrixWorld(true);
+        mouse.inner.localToWorld(scruff.set(.14, 1.02, 0));
+        scruff.sub(mouse.root.position);
+        mouse.root.position.lerp(mouth.clone().sub(scruff), lift);
       }
       mouse.root.visible = !document.querySelector('.memory-mouse[data-transfer="true"]');
       for (const b of birds) {
@@ -1117,15 +1121,17 @@ function mount(art, build) {
   renderer.outputColorSpace = SRGBColorSpace;
   const scene = new Scene();
   const world = build(scene);
+  let ready = !world.ready;
   const candle = new PointLight('#dec7a1', 0, Math.max(12, world.radius * .7), 2);
   scene.add(candle);
   const candleRay = new Vector3(), candleDirection = new Vector3();
   if (world.shadows) { renderer.shadowMap.enabled = true; renderer.shadowMap.type = PCFShadowMap; }
   const camera = new PerspectiveCamera(world.fov, 16 / 9, .5, 2000);
   art.insertBefore(canvas, svg);
-  svg.style.display = 'none';
+  canvas.style.display = ready ? '' : 'none';
+  if (ready) svg.style.display = 'none';
   svg.pauseAnimations?.();
-  art.dataset.world = '3d';
+  art.dataset.world = ready ? '3d' : 'loading';
   const id = art.closest('[data-scene]')?.dataset.scene;
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -1158,6 +1164,7 @@ function mount(art, build) {
     world.camUniform?.value.copy(camera.position);
   }
   function draw(dt) {
+    if (!ready) return;
     view(dt);
     world.tick(ambient * .12, story, dt, attention);
     if(id)window.memoryGestures?.set(id,world.motion||{});
@@ -1196,14 +1203,14 @@ function mount(art, build) {
     const state = art.dataset.state;
     const r = art.getBoundingClientRect();
     const visible = r.bottom > 0 && r.top < innerHeight;
-    const shouldRun = state === 'present' && visible && !reduced.matches && !held;
+    const shouldRun = ready && state === 'present' && visible && !reduced.matches && !held;
     if (shouldRun && !running) { running = true; prev = 0; frames = 0; fpsT = performance.now(); animation = requestAnimationFrame(loop); }
     if (!shouldRun && running) { running = false; cancelAnimationFrame(animation); animation = null; }
     if (state === 'set') print();
   }
   // Once set, the world becomes a print of its last frame and gives its GPU back.
   function print() {
-    if (printed) return;
+    if (!ready || printed) return;
     printed = true;
     window.memoryGestures?.clear(id);
     renderer.render(scene, camera);
@@ -1212,6 +1219,12 @@ function mount(art, build) {
     img.width = canvas.width; img.height = canvas.height;
     canvas.replaceWith(img);
     art.dataset.world = 'print';
+    release();
+  }
+  function release() {
+    running = false;
+    cancelAnimationFrame(animation);
+    animation = null;
     scene.traverse(o => { o.geometry?.dispose(); if (o.material) [].concat(o.material).forEach(m => { m.map?.dispose(); m.dispose(); }); });
     renderer.dispose(); renderer.forceContextLoss();
   }
@@ -1234,8 +1247,24 @@ function mount(art, build) {
   new MutationObserver(apply).observe(art, { attributes: true, attributeFilter: ['data-state'] });
   addEventListener('scroll', () => { if (!printed) apply(); }, { passive: true });
   reduced.addEventListener('change', apply);
-  addEventListener('resize', () => { if (printed) return; size(); if (!running) renderer.render(scene, camera); });
+  addEventListener('resize', () => { if (printed) return; size(); if (ready && !running) renderer.render(scene, camera); });
   addEventListener('memory-scene-start', event => { if (event.detail?.id === id && story < 3) story = 0; });
+  world.ready?.then(() => {
+    ready = true;
+    canvas.style.display = '';
+    svg.style.display = 'none';
+    art.dataset.world = '3d';
+    if (!held) story = ambient = reduced.matches ? world.still ?? 0 : window.memoryTimeline?.sceneTime?.(id) ?? story;
+    draw(0);
+    apply();
+  }, () => {
+    printed = true;
+    canvas.remove();
+    svg.style.display = '';
+    if (!reduced.matches) svg.unpauseAnimations?.();
+    art.dataset.world = 'svg';
+    release();
+  });
   apply();
 }
 

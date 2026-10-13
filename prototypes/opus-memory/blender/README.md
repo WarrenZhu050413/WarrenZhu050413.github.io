@@ -1,5 +1,7 @@
 # Black cat motion study
 
+Superseded by `groom/`, which builds the poem's long-haired cat. Kept for reference.
+
 This is an isolated Blender-to-Three.js study. It does not replace the cat in
 the poem yet. Compare the silhouette, fur, head turn, and three walking cycles
 before expanding it to the carry scene or migrating other worlds.

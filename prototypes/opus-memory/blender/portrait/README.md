@@ -1,5 +1,7 @@
 # Seated proportion study
 
+Superseded by `groom/`, which builds the poem's long-haired cat. Kept for reference.
+
 This is a separate, unrigged sculpture made after the walking cat was rejected.
 It focuses on the supplied reference's broader head, seated chest silhouette,
 close front paws, resting tail, and layered coat. It is not a replacement asset

@@ -42,6 +42,17 @@ camera scales differ; anatomy does not. The mouse crosses at 26 seconds; the
 butterfly leaves by 31 seconds. Burns continues in the same composition until
 Brideshead at 70 seconds. The 53-second stanza is not another empty field scene.
 
+The cat is authored and rigged in Blender under `blender/groom/`. Its local Draco
+GLB contains the skin, fur cards and skeleton. `memory-cat.js` selects the browser
+adapter, which returns `{root, head, mouth, pose}` immediately and attaches the
+model after loading. Its `ready` promise lets the world keep its SVG visible until
+the model can be posed; a static print waits too. A failed load retains the SVG.
+Burns supplies score-derived travel, gait phase and pickup
+poses; stance paws counter the actual distance travelled, including braking.
+The mouse's posed scruff meets the mouth marker as the cat raises its head.
+The separate `blender-cat/` study uses the same asset and adapter, with a stand-in
+mouse. Coat and face refinements can change that asset without changing the score.
+
 Build the main renderer with `sh prototypes/opus-memory/three/build.sh`.
 Run media/clock regressions with
 `node --test prototypes/opus-memory/checks/timeline.cjs`.

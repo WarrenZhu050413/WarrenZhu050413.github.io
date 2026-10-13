@@ -229,3 +229,5 @@ body:has(.memory-essay[data-active-scene="thackeray"]) .memory-train{opacity:1}
 .is-unfolding.is-static .memory-stage .memory-poem-line{max-height:none;opacity:1;filter:none;transform:none}
 .is-unfolding.is-static .memory-stage .memory-poem-stanza{position:relative;opacity:1;filter:none;transform:none}
 .is-unfolding.is-static .memory-scene-layer{display:none}
+.is-unfolding.is-static .memory-atlas{display:grid}
+@media(max-width:650px){.is-unfolding.is-static .memory-atlas{display:block}}
