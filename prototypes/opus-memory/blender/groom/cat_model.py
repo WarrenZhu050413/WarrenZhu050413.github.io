@@ -112,13 +112,26 @@ ell('muzzle', hp(.046, 0, -.0185), (.018, .017, .0125), k=.01, length=.006, flow
 ell('chin', hp(.04, 0, -.034), (.014, .012, .008), k=.008, length=.01, flow=hv(-.2, 0, -1), lift=.25, droop=.1)
 cone('bridge', hp(.016, 0, .022), hp(.064, 0, -.004), .0135, .008, k=.01, length=.005, flow=hv(-1, 0, .5), lift=.1, droop=0,
      density=1.6)
+# Expression. The lids decide how sleepy the cat looks.
+UPPER_LID, LOWER_LID = .2, -.34   # height of each lid's edge straight ahead: higher = more open
+CORNER, CORNER_ANGLE, TILT = -.1, 1.0, -.02
+def lid_edge(edge, a, s):
+    """The lids meet at the corners, so the opening is an almond."""
+    f = np.clip(a / CORNER_ANGLE, -1, 1)
+    shape = .62 if edge > CORNER else .8     # a heavy upper lid, gently curved into the corners
+    return CORNER + (edge - CORNER) * np.cos(f * np.pi / 2) ** shape + TILT * f * s
+
 EYE_R = .0105 * HS
 EYES = [dict(side=s, gaze=unit(hv(1, s * .2, .02))) for s in (-1, 1)]
 for e in EYES:
     e['centre'] = hp(.033, e['side'] * .0225, .004) - e['gaze'] * EYE_R * .3
-    e['up'] = -unit(np.cross(np.cross(e['gaze'], (0, 0, 1)), e['gaze']))
+    e['up'] = unit(np.cross(np.cross(e['gaze'], (0, 0, 1)), e['gaze']))      # towards the top of the head
     e['across'] = np.cross(e['up'], e['gaze'])
-    ell(f'socket{e["side"]}', e['centre'], (EYE_R * 1.1,) * 3, k=.004, sub=True)
+    # An almond socket, cut only where the lids open: above and below it the lids tuck under the
+    # skin as folds, instead of sitting in a round pit that reads as a dark disc.
+    frame = np.stack([e['gaze'], e['across'], e['up']], 1)
+    ell(f'socket{e["side"]}', e['centre'] + e['up'] * EYE_R * (UPPER_LID + LOWER_LID) / 2,
+        (EYE_R * 1.35, EYE_R * 1.16, EYE_R * .72), k=.004, rot=frame, sub=True)
 for pr in PRIMS[HEAD_PRIMS:]:
     if pr['kind'] == 'ell' and not pr['name'].startswith('socket'): pr['r'] = pr['r'] * HS
     if pr['kind'] == 'cone': pr['ra'] *= HS; pr['rb'] *= HS
@@ -158,15 +171,6 @@ for i in range(len(TAIL) - 1):
     OWNER = f'tail{i}'
     cone(f'tail{i}', TAIL[i], TAIL[i + 1], TAIL_R[i], TAIL_R[i + 1], k=.012, length=.075 + .022 * i, radial=.75, along=1.7,
          flow=(-.2, 0, 0), lift=.3, droop=.78, loft=.3, clump=.6, density=1.5)
-
-# Expression. The lids decide how sleepy the cat looks.
-UPPER_LID, LOWER_LID = .11, -.3   # height of each lid's edge straight ahead: higher = more open
-CORNER, CORNER_ANGLE, TILT = -.1, 1.0, -.02
-def lid_edge(edge, a, s):
-    """The lids meet at the corners, so the opening is an almond."""
-    f = np.clip(a / CORNER_ANGLE, -1, 1)
-    shape = .62 if edge > CORNER else .8     # a heavy upper lid, gently curved into the corners
-    return CORNER + (edge - CORNER) * np.cos(f * np.pi / 2) ** shape + TILT * f * s
 
 # ---------------------------------------------------------------- signed distances
 def sd_round_cone(P, a, b, r1, r2):
@@ -544,7 +548,7 @@ def build(strands=300000, with_coat=True, log=print):
                             lock=group, length=L, normals=Nn, bone_weights=Wr))
 
     # Ear furnishings inside, a short coat on the backs.
-    fur, fur_bone = [], []
+    fur, fur_bone, fur_kind = [], [], []     # kind: 0 inner furnishings, 1 back of the ear, 2 rim fringe
     for ear, s in zip(ears, (-1, 1)):
         # Roots anywhere on the shell's faces, not on its vertex rows, which read as a comb edge-on.
         q = ear['faces']; ev = ear['solid'][:len(ear['verts'])]; en = ear['normals'][:len(ear['verts'])]
@@ -563,12 +567,24 @@ def build(strands=300000, with_coat=True, log=print):
                     ln = rng.uniform(.012, .024) * (1 - height[i] * .5)
                     dirn = unit(ear['up'] * .65 + ear['fwd'] * .55 + nrm[i] * .3 + rng.normal(size=3) * .2)
                     fur.append([root[i] + dirn * ln * k / 5 + np.array([0, 0, -.002]) * (k / 5) ** 2 for k in range(6)])
-                    fur_bone.append(index[f'ear{s}'])
+                    fur_bone.append(index[f'ear{s}']); fur_kind.append(0)
                 else:
                     dirn = unit(ear['up'] * .8 + nrm[i] * .45 + rng.normal(size=3) * .15); ln = rng.uniform(.005, .01)
                     fur.append([root[i] + dirn * ln * k / 5 for k in range(6)])
-                    fur_bone.append(index[f'ear{s}'])
-    curves.append(dict(name='Ear furnishings', mat='hair', points=np.array(fur), root=.00006, tip=.00001,
+                    fur_bone.append(index[f'ear{s}']); fur_kind.append(1)
+        # A fine fringe along both edges and over the tip softens the shell's outline.
+        cols = 22; grid = ev.reshape(-1, cols + 1, 3)
+        for i in range(2, len(grid)):
+            t = i / (len(grid) - 1)
+            for j in (0, cols):
+                edge = grid[i, j]; axis = ear['base'] + ear['up'] * ear['height'] * t
+                out = unit(edge - axis + ear['up'] * .004 * (1 + 2 * t))
+                for _ in range(8):
+                    root = edge + rng.normal(size=3) * .0006; ln = rng.uniform(.005, .011) * (1 - .4 * t)
+                    dirn = unit(out + ear['up'] * (.4 + t) + rng.normal(size=3) * .25)
+                    fur.append([root + dirn * ln * k / 5 + np.array([0, 0, -.0012]) * (k / 5) ** 2 for k in range(6)])
+                    fur_bone.append(index[f'ear{s}']); fur_kind.append(2)
+    curves.append(dict(name='Ear furnishings', mat='hair', points=np.array(fur), root=.00006, tip=.00001, kind=np.array(fur_kind),
                        rig=(np.array(fur_bone)[:, None], np.ones((len(fur), 1)))))
     # Whiskers: long, pale, fanning forward and drooping.
     wh = []

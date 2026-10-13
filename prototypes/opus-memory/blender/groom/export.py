@@ -20,7 +20,8 @@ import cat_model as cat
 ARGS = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 def arg(name, default):
     return type(default)(ARGS[ARGS.index(name) + 1]) if name in ARGS else default
-CARDS = arg('--cards', 8000)
+CARDS = arg('--cards', 9240)
+FUZZ = (6, 7)          # atlas columns drawn as fine, sparse fuzz for the head and ears
 STRANDS = arg('--strands', 300000)
 OUT = Path(arg('--out', str(ROOT / 'assets/models/memory-cat-longhair.glb')))
 SKIN_FACES = arg('--skin-faces', 16000)
@@ -38,13 +39,15 @@ def strand_atlas(columns=8, size=1024, strands=170):
     width = size // columns
     acc = np.zeros((size, size)); shade = np.zeros((size, size))
     for c in range(columns):
+        fuzz = c in FUZZ
         centre = width * (.5 + rng.normal(0, .06))
-        for _ in range(strands):
-            x0 = width * (.5 + np.clip(rng.normal(0, .21), -.46, .46)); tip = centre + rng.normal(0, .19) * width
-            length = (size - 2) * rng.uniform(.35, 1.) ** .55
+        for _ in range(strands if not fuzz else 130):
+            spread = .21 if not fuzz else .26
+            x0 = width * (.5 + np.clip(rng.normal(0, spread), -.46, .46)); tip = centre + rng.normal(0, spread - .02) * width
+            length = (size - 2) * rng.uniform(.35 if not fuzz else .25, 1.) ** (.55 if not fuzz else .8)
             ys = np.arange(0, length, .5); t = ys / length
             xs = x0 + (tip - x0) * t ** 1.25 + np.sin(t * rng.uniform(2, 5) + rng.uniform(0, 6)) * rng.uniform(0, 2.5)
-            weight = .85 * (1 - .8 * t)
+            weight = .85 * (1 - .8 * t) if not fuzz else .55 * (1 - .85 * t)
             xi = np.floor(xs).astype(int); fx = xs - xi; yi = ys.astype(int)
             bright = rng.uniform(.6, 1.5)
             for dx, w in ((0, 1 - fx), (1, fx)):
@@ -53,7 +56,7 @@ def strand_atlas(columns=8, size=1024, strands=170):
                 np.add.at(shade, (yi, cols), w * weight * .5 * bright)
         # A dense undercoat near the root so cards never show daylight where they leave the skin.
         v = np.arange(size)[:, None] / size; u = (np.arange(width)[None, :] + .5) / width
-        fill = np.clip(1 - v / .2, 0, 1) * (1 - np.abs(2 * u - 1) ** 3) * .9
+        fill = np.clip(1 - v / (.2 if not fuzz else .1), 0, 1) * (1 - np.abs(2 * u - 1) ** (3 if not fuzz else 1.5)) * (.9 if not fuzz else .3)
         acc[:, c * width:(c + 1) * width] += fill
         shade[:, c * width:(c + 1) * width] += fill
     alpha = 1 - np.exp(-acc * 2.0)
@@ -132,10 +135,13 @@ def skin_mesh():
 
 def coat_cards(coat, count, points=8):
     S, Nn, Wr = coat['points'], coat['normals'], coat['bone_weights']
-    tail = np.array([names[b].startswith('tail') for b in Wr.argmax(1)])
+    dominant = Wr.argmax(1)
+    tail = np.array([names[b].startswith('tail') for b in dominant])
+    head = dominant == names.index('head')
     tail_cards = min(1800, int(tail.sum()) // 9)
+    head_cards = min(2000, int(head.sum()) // 10)     # the face's short fur gets finer locks
     group = np.zeros(len(S), int); centres = []
-    for mask, cards in ((tail, tail_cards), (~tail, count - tail_cards)):
+    for mask, cards in ((tail, tail_cards), (head, head_cards), (~tail & ~head, count - tail_cards - head_cards)):
         c, g = cat.locks(S[mask, 0], cards)
         group[mask] = g + len(centres); centres += list(np.nonzero(mask)[0][c])
     centres = np.array(centres)
@@ -152,9 +158,14 @@ def coat_cards(coat, count, points=8):
     nose = next(p for p in model['parts'] if p['name'] == 'Nose leather')['verts'].mean(0)
     keep = (mean_length > .016) | ((mean_length > .009) & (np.linalg.norm(spine[:, 0] - nose, axis=1) > .024))
     near = np.full(k, np.inf)
-    for e in cat.EYES: near = np.minimum(near, (np.linalg.norm(spine - e['centre'], axis=-1).min(1) - width / 2) / (cat.EYE_R * 1.6))
+    for e in cat.EYES: near = np.minimum(near, (np.linalg.norm(spine - e['centre'], axis=-1).min(1) - width / 2) / (cat.EYE_R * 1.25))
     keep &= near > 1
+    on_head = (weights.argmax(1) == names.index('head'))[keep]
     spine, normal, weights, width, k = spine[keep], normal[keep], weights[keep], width[keep] * np.clip(mean_length[keep] / .04, .32, 1), keep.sum()
+    # Face fur lies close to the skin and stays narrow, so the crown has no fringe of standing blades.
+    lift = ((spine - spine[:, :1]) * normal[:, None]).sum(-1, keepdims=True)
+    spine = spine - lift * normal[:, None] * (.6 * on_head)[:, None, None]
+    width = width * np.where(on_head, .6, 1)
     # The plume fans wider than the narrow tail its roots sit on.
     width = width * np.where(np.array([names[b].startswith('tail') for b in weights.argmax(1)]), 1.7, 1)
     # Resample each spine to fewer points along its index.
@@ -169,7 +180,7 @@ def coat_cards(coat, count, points=8):
     base = spine + normal[:, None] * .0012 * (1 - v)
     left, right = base - side * half, base + side * half
     verts = np.stack([left, right], 2).reshape(-1, 3)
-    column = rng.integers(0, 8, k)[:, None, None]
+    column = np.where(on_head, rng.choice(FUZZ, k), rng.integers(0, 6, k))[:, None, None]
     U = np.broadcast_to((column + np.array([.03, .97])[None, None]) / 8, (k, points, 2))
     V = np.broadcast_to(np.linspace(0, 1, points)[None, :, None], (k, points, 2))
     uv = np.stack([U, V], -1)
@@ -197,9 +208,9 @@ def strand_cards(points, width, bones, count):
     v = np.linspace(0, 1, n)[None, :, None]
     half = width * (1 - .6 * v) / 2
     verts = np.stack([S - side * half, S + side * half], 2).reshape(-1, 3)
-    column = rng.integers(0, 8, len(S))[:, None, None]
-    U = np.broadcast_to((column + np.array([.3, .7])[None, None]) / 8, (len(S), n, 2))
-    V = np.broadcast_to(np.linspace(.25, 1, n)[None, :, None], (len(S), n, 2))
+    column = rng.choice(FUZZ, len(S))[:, None, None]
+    U = np.broadcast_to((column + np.array([.1, .9])[None, None]) / 8, (len(S), n, 2))
+    V = np.broadcast_to(np.linspace(.4, 1, n)[None, :, None], (len(S), n, 2))   # past the root fill: wisps, not shards
     faces = [(c * n * 2 + j * 2, c * n * 2 + j * 2 + 1, c * n * 2 + j * 2 + 3, c * n * 2 + j * 2 + 2)
              for c in range(len(S)) for j in range(n - 1)]
     rig = (np.repeat(bones[pick], n * 2)[:, None], np.ones((len(verts), 1)))
@@ -235,8 +246,12 @@ for mat, name in MERGED.items():
     rig = (np.concatenate([p['rig'][0] for p in group]), np.concatenate([p['rig'][1] for p in group]))
     parts.append((mesh(name, verts, faces, mat, uv), rig))
 ears = next(c for c in model['curves'] if c['name'] == 'Ear furnishings')
-ev, ef, eu, er = strand_cards(ears['points'], .0045, ears['rig'][0][:, 0], 2200)
-parts.append((mesh('Ear fur', ev, ef, 'coat', eu), er))
+# Only the inner furnishings become cards; the short fur on the backs of the ears is left to the skin.
+inner, rim = ears['kind'] == 0, ears['kind'] == 2
+iv, if_, iu, ir = strand_cards(ears['points'][inner], .0016, ears['rig'][0][inner, 0], 450)
+rv, rf, ru, rr = strand_cards(ears['points'][rim], .0013, ears['rig'][0][rim, 0], 500)
+parts.append((mesh('Ear fur', np.concatenate([iv, rv]), if_ + [tuple(i + len(iv) for i in f) for f in rf], 'coat',
+                   np.concatenate([iu, ru])), (np.concatenate([ir[0], rr[0]]), np.concatenate([ir[1], rr[1]]))))
 whiskers = next(c for c in model['curves'] if c['name'] == 'Whiskers')
 wv, wf, wu = ribbons(whiskers['points'], .0007, .00015)
 head = names.index('head')

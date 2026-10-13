@@ -9,7 +9,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
 
-const MODEL = '/assets/models/memory-cat-longhair.glb?v=9';
+const MODEL = '/assets/models/memory-cat-longhair.glb?v=10';
 const SCALE = 4.5;            // scene units per metre inside the cat's root
 const STRIDE = .9 * .72;      // world distance per gait cycle, as the scenes compute phase
 const GAIT = { hind_l: 0, fore_l: .25, hind_r: .5, fore_r: .75 };
