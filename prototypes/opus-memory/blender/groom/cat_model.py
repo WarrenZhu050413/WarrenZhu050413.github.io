@@ -107,7 +107,7 @@ for s in (-1, 1):
         flow=hv(-.7, s * 1.05, -.55), lift=.45, droop=.15, loft=.28, behind=dict(length=.068, lift=.55))
     ell(f'pad{s}', hp(.053, s * .0102, -.0215), (.0122, .0103, .0098), k=.008, length=.005, flow=hv(.3, s * 1, -.4),
         lift=.15, droop=0, density=1.6)
-    ell(f'brow{s}', hp(.03, s * .021, .014), (.012, .013, .006), k=.008, length=.006, flow=hv(-.6, s * .7, .1), lift=.1, droop=0)
+    ell(f'brow{s}', hp(.03, s * .021, .013), (.012, .013, .0045), k=.008, length=.005, flow=hv(-.6, s * .7, .1), lift=.1, droop=0)
 ell('muzzle', hp(.046, 0, -.0185), (.018, .017, .0125), k=.01, length=.006, flow=hv(.2, 0, -1), lift=.15, droop=0, density=1.6)
 ell('chin', hp(.04, 0, -.034), (.014, .012, .008), k=.008, length=.01, flow=hv(-.2, 0, -1), lift=.25, droop=.1)
 cone('bridge', hp(.016, 0, .022), hp(.064, 0, -.004), .0135, .008, k=.01, length=.005, flow=hv(-1, 0, .5), lift=.1, droop=0,
@@ -160,12 +160,12 @@ for i in range(len(TAIL) - 1):
          flow=(-.2, 0, 0), lift=.3, droop=.78, loft=.3, clump=.6, density=1.5)
 
 # Expression. The lids decide how sleepy the cat looks.
-UPPER_LID, LOWER_LID = .13, -.36   # height of each lid's edge straight ahead: higher = more open
-CORNER, CORNER_ANGLE, TILT = -.12, 1.0, -.02
+UPPER_LID, LOWER_LID = .11, -.3   # height of each lid's edge straight ahead: higher = more open
+CORNER, CORNER_ANGLE, TILT = -.1, 1.0, -.02
 def lid_edge(edge, a, s):
     """The lids meet at the corners, so the opening is an almond."""
     f = np.clip(a / CORNER_ANGLE, -1, 1)
-    shape = .4 if edge > CORNER else .8      # the upper lid runs level, then drops into the corners
+    shape = .62 if edge > CORNER else .8     # a heavy upper lid, gently curved into the corners
     return CORNER + (edge - CORNER) * np.cos(f * np.pi / 2) ** shape + TILT * f * s
 
 # ---------------------------------------------------------------- signed distances
@@ -315,10 +315,17 @@ def eye_geometry(e):
                 el = max(-1, min(1, el)); c = math.sqrt(1 - el * el)
                 bulge = 1.065 + .01 * math.cos(a)
                 vs.append(e['centre'] + EYE_R * bulge * (g * c * math.cos(a) + side * c * math.sin(a) + up * el))
-        for i in range(rows):
-            for j in range(cols):
-                q = i * (cols + 1) + j; fs.append((q, q + 1, q + cols + 2, q + cols + 1))
-        lids.append(dict(name=which, verts=np.array(vs), faces=np.array(fs)))
+        # A thin dark rim at the lid's edge; the rest of the shell is covered skin.
+        for part, band in (('lid', range(0, 2)), ('cover', range(2, rows))):
+            fs = [(i * (cols + 1) + j, i * (cols + 1) + j + 1, (i + 1) * (cols + 1) + j + 1, (i + 1) * (cols + 1) + j)
+                  for i in band for j in range(cols)]
+            used = np.unique(np.array(fs)); remap = np.full(len(vs), -1); remap[used] = np.arange(len(used))
+            faces = remap[np.array(fs)]; V = np.array(vs)[used]
+            # Face away from the eye's centre, for one-sided skin shading; the two shells wind oppositely.
+            n = np.cross(V[faces[:, 2]] - V[faces[:, 0]], V[faces[:, 3]] - V[faces[:, 1]])
+            inward = (n * (V[faces].mean(1) - e['centre'])).sum(1) < 0
+            faces[inward] = faces[inward][:, ::-1]
+            lids.append(dict(name=which, part=part, verts=np.array(vs)[used], faces=faces))
     return eye, lids
 
 def nose_geometry(F):
@@ -478,7 +485,8 @@ def build(strands=300000, with_coat=True, log=print):
         parts.append(dict(name='Eye', mat='eye', uv=eye['uv'], verts=eye['verts'], faces=eye['faces'], rig=rigid(len(eye['verts']))))
         for lid in lids:
             b = index[f'lid{e["side"]}'] if lid['name'] == 'upper' else head
-            parts.append(dict(name=f'{lid["name"]} lid', mat='lid', verts=lid['verts'], faces=lid['faces'], rig=rigid(len(lid['verts']), b)))
+            name, mat = (f'{lid["name"]} lid', 'lid') if lid['part'] == 'lid' else (f'{lid["name"].title()} cover', 'skin')
+            parts.append(dict(name=name, mat=mat, verts=lid['verts'], faces=lid['faces'], rig=rigid(len(lid['verts']), b)))
     nose = nose_geometry(F)
     parts.append(dict(name='Nose leather', mat='nose', verts=nose['verts'], faces=nose['faces'], rig=rigid(len(nose['verts']))))
     ears = []

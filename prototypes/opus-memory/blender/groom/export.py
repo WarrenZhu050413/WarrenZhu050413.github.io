@@ -32,17 +32,19 @@ names = model['names']
 
 # ---------------------------------------------------------------- textures
 def strand_atlas(columns=8, size=1024, strands=170):
-    """Columns of clumped strands, root at the bottom (v = 0), converging and thinning to the tip."""
+    """Columns of clumped strands, root at the bottom (v = 0), converging and thinning to the tip.
+    Strands thin out towards each column's sides and the root fill feathers sideways, so a card's
+    long edges dissolve instead of reading as a ribbon."""
     width = size // columns
     acc = np.zeros((size, size)); shade = np.zeros((size, size))
     for c in range(columns):
         centre = width * (.5 + rng.normal(0, .06))
         for _ in range(strands):
-            x0 = rng.uniform(.04, .96) * width; tip = centre + rng.normal(0, .14) * width
-            length = (size - 2) * rng.uniform(.45, 1.) ** .55
+            x0 = width * (.5 + np.clip(rng.normal(0, .21), -.46, .46)); tip = centre + rng.normal(0, .19) * width
+            length = (size - 2) * rng.uniform(.35, 1.) ** .55
             ys = np.arange(0, length, .5); t = ys / length
             xs = x0 + (tip - x0) * t ** 1.25 + np.sin(t * rng.uniform(2, 5) + rng.uniform(0, 6)) * rng.uniform(0, 2.5)
-            weight = .85 * (1 - .75 * t)
+            weight = .85 * (1 - .8 * t)
             xi = np.floor(xs).astype(int); fx = xs - xi; yi = ys.astype(int)
             bright = rng.uniform(.6, 1.5)
             for dx, w in ((0, 1 - fx), (1, fx)):
@@ -50,10 +52,11 @@ def strand_atlas(columns=8, size=1024, strands=170):
                 np.add.at(acc, (yi, cols), w * weight * .5)
                 np.add.at(shade, (yi, cols), w * weight * .5 * bright)
         # A dense undercoat near the root so cards never show daylight where they leave the skin.
-        v = np.arange(size)[:, None] / size
-        acc[:, c * width:(c + 1) * width] += np.clip(1 - v / .22, 0, 1) * .9
-        shade[:, c * width:(c + 1) * width] += np.clip(1 - v / .22, 0, 1) * .9
-    alpha = 1 - np.exp(-acc * 1.7)
+        v = np.arange(size)[:, None] / size; u = (np.arange(width)[None, :] + .5) / width
+        fill = np.clip(1 - v / .2, 0, 1) * (1 - np.abs(2 * u - 1) ** 3) * .9
+        acc[:, c * width:(c + 1) * width] += fill
+        shade[:, c * width:(c + 1) * width] += fill
+    alpha = 1 - np.exp(-acc * 2.0)
     tone = shade / np.maximum(acc, 1e-6)
     rgb = np.stack([.05 * tone, .047 * tone, .045 * tone], -1)
     img = bpy.data.images.new('Coat strands', size, size, alpha=True)
@@ -129,7 +132,13 @@ def skin_mesh():
 
 def coat_cards(coat, count, points=8):
     S, Nn, Wr = coat['points'], coat['normals'], coat['bone_weights']
-    centres, group = cat.locks(S[:, 0], count)
+    tail = np.array([names[b].startswith('tail') for b in Wr.argmax(1)])
+    tail_cards = min(1800, int(tail.sum()) // 9)
+    group = np.zeros(len(S), int); centres = []
+    for mask, cards in ((tail, tail_cards), (~tail, count - tail_cards)):
+        c, g = cat.locks(S[mask, 0], cards)
+        group[mask] = g + len(centres); centres += list(np.nonzero(mask)[0][c])
+    centres = np.array(centres)
     k = len(centres); n = np.bincount(group, minlength=k).astype(float)[:, None]
     spine = np.zeros((k,) + S.shape[1:]); np.add.at(spine, group, S); spine /= n[:, :, None]
     normal = np.zeros((k, 3)); np.add.at(normal, group, Nn); normal = cat.unit(normal)
@@ -147,7 +156,7 @@ def coat_cards(coat, count, points=8):
     keep &= near > 1
     spine, normal, weights, width, k = spine[keep], normal[keep], weights[keep], width[keep] * np.clip(mean_length[keep] / .04, .32, 1), keep.sum()
     # The plume fans wider than the narrow tail its roots sit on.
-    width = width * np.where(np.array([names[b].startswith('tail') for b in weights.argmax(1)]), 3., 1)
+    width = width * np.where(np.array([names[b].startswith('tail') for b in weights.argmax(1)]), 1.7, 1)
     # Resample each spine to fewer points along its index.
     src = np.linspace(0, S.shape[1] - 1, points); i0 = np.floor(src).astype(int).clip(0, S.shape[1] - 2); f = (src - i0)[None, :, None]
     spine = spine[:, i0] * (1 - f) + spine[:, i0 + 1] * f
@@ -214,8 +223,17 @@ skin, skin_rig = skin_mesh(); parts.append((skin, skin_rig))
 coat = next(c for c in model['curves'] if c['name'] == 'Long coat')
 cv, cf, cu, cn, cr = coat_cards(coat, CARDS)
 parts.append((mesh('Coat', cv, cf, 'coat', cu, cn), cr))
-for p in model['parts']:
-    parts.append((mesh(p['name'], p['verts'], p['faces'], p['mat'], p.get('uv')), p['rig']))
+# Head details sharing a material become one mesh each, so the browser draws them in one call.
+# Skinning is per vertex, so a merged mesh keeps each piece's bone (lids, ears, head).
+MERGED = dict(eye='Eyes', lid='Lid rims', skin='Ears and covers', nose='Nose leather')
+for mat, name in MERGED.items():
+    group = [p for p in model['parts'] if p['mat'] == mat]
+    offsets = np.cumsum([0] + [len(p['verts']) for p in group])
+    verts = np.concatenate([p['verts'] for p in group])
+    faces = [tuple(int(i) + o for i in f) for p, o in zip(group, offsets) for f in p['faces']]
+    uv = np.concatenate([p['uv'] for p in group]) if all('uv' in p for p in group) else None
+    rig = (np.concatenate([p['rig'][0] for p in group]), np.concatenate([p['rig'][1] for p in group]))
+    parts.append((mesh(name, verts, faces, mat, uv), rig))
 ears = next(c for c in model['curves'] if c['name'] == 'Ear furnishings')
 ev, ef, eu, er = strand_cards(ears['points'], .0045, ears['rig'][0][:, 0], 2200)
 parts.append((mesh('Ear fur', ev, ef, 'coat', eu), er))

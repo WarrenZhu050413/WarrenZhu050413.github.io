@@ -1,7 +1,7 @@
 """Cycles stills of the cat in a pose, for comparison with the reference.
 
 Blender --background --python prototypes/opus-memory/blender/groom/groom.py -- \
-    [--pose approach|carry|rest] [--view walk|face|scene|carry] [--skin] \
+    [--pose approach|carry|rest] [--view walk|face|scene|carry] [--skin] [--cpu] \
     [--strands 400000] [--samples 96] [--out name]
 """
 import bpy, math, sys, time
@@ -113,12 +113,15 @@ log('objects')
 scene = bpy.context.scene
 scene.render.engine = 'CYCLES'; scene.cycles.samples = SAMPLES; scene.cycles.use_denoising = True
 prefs = bpy.context.preferences.addons['cycles'].preferences
-try:
-    prefs.compute_device_type = 'METAL'; prefs.get_devices()
-    for dev in prefs.devices: dev.use = True
-    scene.cycles.device = 'GPU'
-except Exception as err:
-    log('cpu render', err)
+if '--cpu' in ARGS:
+    scene.cycles.device = 'CPU'; log('cpu render')
+else:
+    try:
+        prefs.compute_device_type = 'METAL'; prefs.get_devices()
+        for dev in prefs.devices: dev.use = True
+        scene.cycles.device = 'GPU'
+    except Exception as err:
+        log('cpu render', err)
 scene.view_settings.view_transform = 'AgX'; scene.view_settings.look = 'AgX - Base Contrast'
 world = bpy.data.worlds.new('World'); scene.world = world; world.use_nodes = True
 bg = world.node_tree.nodes['Background']

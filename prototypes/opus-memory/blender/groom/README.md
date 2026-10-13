@@ -11,12 +11,17 @@ Made against `../portrait/reference.png`, the long-haired black cat Warren chose
 - `groom.py` renders Cycles stills of a pose: about 400,000 strands with
   Principled Hair absorption, in the reference's rim light or at Burns scale.
 - `export.py` writes the browser asset `assets/models/memory-cat-longhair.glb`
-  (Draco, about 2.2 MB, 175,000 triangles). The asset has a decimated skinned
-  skin and 8,000 fur cards laid along the coat's locks, plus eyes, lids, nose,
-  ears, ear fur and whiskers. The rig includes lid and ear bones. The muzzle's
-  short fur is left to a velvet skin; the brow, crown and chin get narrow fuzz
-  cards, because wide cards that small read as scales.
+  (Draco, about 2.3 MB, 175,500 triangles, 12 draw calls). It has a decimated
+  skinned skin; 8,000 fur cards laid along the coat's locks, about 1,800 of them
+  finer locks for the plume; ear fur; whiskers; and head details merged by
+  material into `Eyes`, `Lid rims`, `Ears and covers` and `Nose leather`. Each
+  lid is a thin dark rim plus a skin-coloured cover. Skinning is per vertex, so
+  the merged meshes keep their lid, ear and head bones. The muzzle's short fur
+  is left to a velvet skin; the brow, crown and chin get narrow fuzz cards,
+  because wide cards that small read as scales.
 - `compare.py` builds side-by-side sheets of reference crops and renders.
+  `compare-walk.png` sets the cat against the reference; `compare-refine.png`
+  (v7 to v8) and `compare-next.png` (v8 to v9) record each refinement.
 
 ```sh
 B=/Applications/Blender.app/Contents/MacOS/Blender
@@ -30,14 +35,15 @@ $B --background --factory-startup --python compare.py -- compare-walk.png \
 sh ../../three/build.sh blender-cat-test
 ```
 
-Each still takes 30 to 60 seconds on Metal. The first run on a new machine also
-compiles Cycles kernels, which takes several minutes. `groom.py` writes
-`groom.blend` and `export.py` writes `export.blend` for inspection; neither is
-committed.
+Each still takes 30 to 60 seconds on Metal; `--cpu` renders on the CPU instead.
+The first run on a new machine also compiles Cycles kernels, which takes several
+minutes. `groom.py` writes `groom.blend` and `export.py` writes `export.blend`
+for inspection; neither is committed.
 
 The poem uses this cat. `memory-cat.js` re-exports the browser adapter,
 `prototypes/opus-memory/three/src/memory-cat-longhair.js`, which keeps the
-`{ root, head, mouth, pose }` contract and loads the GLB itself with the local
+`{ root, head, mouth, pose }` contract and adds `ready`, a promise that settles
+once the model is posable. The adapter loads the GLB itself with the local
 Draco decoder in `assets/vendor/draco/`. The coat cards use alpha-to-coverage,
 so the renderer needs `antialias: true`. The study page
 `/prototypes/opus-memory/blender-cat/` plays Burns' light, camera and timing,
