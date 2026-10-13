@@ -1124,7 +1124,8 @@ function mount(art, build) {
   let ready = !world.ready;
   const candle = new PointLight('#dec7a1', 0, Math.max(12, world.radius * .7), 2);
   scene.add(candle);
-  const candleRay = new Vector3(), candleDirection = new Vector3();
+  const candleRay = new Vector3(), candleDirection = new Vector3(), candlePosition = new Vector3();
+  let candlePlaced = false;
   if (world.shadows) { renderer.shadowMap.enabled = true; renderer.shadowMap.type = PCFShadowMap; }
   const camera = new PerspectiveCamera(world.fov, 16 / 9, .5, 2000);
   art.insertBefore(canvas, svg);
@@ -1163,17 +1164,21 @@ function mount(art, build) {
     camera.lookAt(tg);
     world.camUniform?.value.copy(camera.position);
   }
-  function draw(dt) {
+  function draw(dt, attentionDt = dt) {
     if (!ready) return;
-    view(dt);
+    view(attentionDt);
     world.tick(ambient * .12, story, dt, attention);
     if(id)window.memoryGestures?.set(id,world.motion||{});
     const light = Number(art.style.getPropertyValue('--candle-light')) || 0;
-    candle.intensity = light * Math.min(90, world.radius * 1.4);
+    // Attention keeps responding while the score is paused, without advancing a scene cue.
+    const lightEase = 1 - Math.exp(-attentionDt / .65);
+    candle.intensity += (light * Math.min(40, world.radius * .45) - candle.intensity) * lightEase;
     if (light) {
       candleRay.set(Number(art.style.getPropertyValue('--candle-x')) || 0, Number(art.style.getPropertyValue('--candle-y')) || 0, .5).unproject(camera).sub(camera.position).normalize();
       camera.getWorldDirection(candleDirection);
-      candle.position.copy(camera.position).addScaledVector(candleRay, world.radius * .78 / Math.max(.3, candleRay.dot(candleDirection)));
+      candlePosition.copy(camera.position).addScaledVector(candleRay, world.radius * .78 / Math.max(.3, candleRay.dot(candleDirection)));
+      if (!candlePlaced) { candle.position.copy(candlePosition); candlePlaced = true; }
+      else candle.position.lerp(candlePosition, 1 - Math.exp(-attentionDt / .24));
     }
     renderer.render(scene, camera);
   }
@@ -1188,7 +1193,7 @@ function mount(art, build) {
     const storyStep = owned === null || owned === undefined ? dt : Math.max(0, Math.min(.1, owned - story));
     story = owned ?? story + dt;
     ambient = owned ?? ambient + dt;
-    draw(storyStep);
+    draw(storyStep, dt);
     frames++;
     if (now - fpsT > 2000) { art.dataset.fps = (frames * 1000 / (now - fpsT)).toFixed(1); frames = 0; fpsT = now; }
   }
@@ -1213,6 +1218,8 @@ function mount(art, build) {
     if (!ready || printed) return;
     printed = true;
     window.memoryGestures?.clear(id);
+    // A settled illustration keeps its authored lighting, not the viewer's transient candle.
+    candle.intensity = 0;
     renderer.render(scene, camera);
     const img = new Image();
     img.className = 'mv-world'; img.alt = ''; img.src = canvas.toDataURL('image/jpeg', .92);

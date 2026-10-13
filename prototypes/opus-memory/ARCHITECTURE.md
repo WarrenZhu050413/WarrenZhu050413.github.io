@@ -30,6 +30,9 @@ and steam at the railway. These offsets are calculated from the current pose,
 never accumulated, so moving the pointer cannot cause drift or change a cue. Scene scripts report their
 actual movement to `memoryGestures`; the sound layer reads that movement rather
 than maintaining its own choreography. The train retains its separate mix.
+Camera attention and the cursor candle ease with frame time, including while the
+score is paused. The candle fades in and out at restrained intensity; it is removed
+before a settled illustration is captured, so prints keep their authored lighting.
 
 A world is unseen, present, then a print. Present worlds sample the same score,
 including inside the enlarged dialog. Closing the dialog catches the reading
