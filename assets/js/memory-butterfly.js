@@ -105,8 +105,9 @@
       const p = Math.min(1,elapsed/duration);
       openingLine?.style.setProperty('--opening-ink',String(smooth((p-.025)/.18))); 
       // One coordinate system for the cradle, the mouse and the butterfly.
-      const w=innerWidth*.47,h=w*9/16;
-      const cradle={left:innerWidth*.23-w/2,top:innerHeight*.53-h/2,w,h};
+      const narrow=innerWidth<700;
+      const w=innerWidth*(narrow?.96:.47),h=w*9/16;
+      const cradle={left:innerWidth*(narrow?.5:.23)-w/2,top:innerHeight*(narrow?.22:.53)-h/2,w,h};
       const q=flightProgress(p);
       let x,y,angle;
       if(q<.22){

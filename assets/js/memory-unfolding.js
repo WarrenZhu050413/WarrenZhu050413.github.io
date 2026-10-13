@@ -1,5 +1,5 @@
 // I wish it were not dark. One clock carries the whole reading: the music's own
-// time while it plays, a quiet clock of the same pace while it does not. Each
+// time while it plays, holding the same pose while it is paused. Each
 // passage arrives on its beat, its painting settles into a small print, and at
 // the end the poem is drawn in among the passages it was read with, all of them
 // turning slowly around a small dark centre with one light in it.
@@ -144,7 +144,7 @@
     const i=scenes.findIndex(s=>s.start===beat);
     const after=BEATS.find(b=>b>beat)??END;
     dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:scenes[i].id,duration:(after-beat)*1000}}));
-    if(i>1&&!opened&&current>=i-1.1)goTo(i+.4);
+    if(i>1&&!opened)goTo(i+.4);
   }
   function beats(){
     while(lastBeat+1<BEATS.length&&clock.t>=BEATS[lastBeat+1]){lastBeat++;onBeat(BEATS[lastBeat])}
@@ -354,7 +354,8 @@
       // A broad translucent arrival crosses the page, then becomes a small print.
       const approach=s.id==='wong'?1.7:1.35;
       const baseScale=Math.min(1,innerWidth/1728);
-      const focusScale=baseScale*.86;
+      const narrow=innerWidth<700;
+      const focusScale=narrow?innerWidth*.96/s.width:baseScale*.86;
       const scale=mix(mix(approach*baseScale,focusScale,entering),s.small/s.width,settling);
       const entry=entrances[s.id];
       const [bendX,bendY]=bends[s.id];
@@ -363,6 +364,7 @@
       const departure=travel(arrival,{x:s.home[0]*innerWidth,y:s.home[1]*innerHeight},
         clamp((p-.7)/.3),{x:-bendX*.7,y:bendY*.5});
       let {x,y}=departure;
+      if(narrow){x=innerWidth*.5; y=mix(innerHeight*.22,s.home[1]*innerHeight,settling);}
       s.homeAt={x,y};
       const rotation=mix(s.turn*(1-entering),s.turn*.55,settling);
       // Earlier prints recede while another passage needs the reading space.
@@ -389,8 +391,8 @@
         s.quote.style.transform=`translate3d(${pose.x}px,calc(-50% + ${pose.y}px),0)`;
       }
       if(joined&&i<2){
-        const width=innerWidth*.47;
-        s.art.style.transform=`translate3d(${innerWidth*.23-s.width/2}px,${innerHeight*.53-s.width*9/32}px,0) scale(${width/s.width})`;
+        const width=innerWidth*(narrow?.96:.47);
+        s.art.style.transform=`translate3d(${innerWidth*(narrow?.5:.23)-s.width/2}px,${innerHeight*(narrow?.22:.53)-s.width*9/32}px,0) scale(${width/s.width})`;
         const fieldArrival=smooth((clock.t-START.burns)/6);
         s.art.style.opacity=String(i===0?.68*(1-fieldArrival*.75):fieldArrival*.68);
         s.figure.style.zIndex=i===0?'1':'2';
@@ -405,7 +407,7 @@
       }
     }
     const field=window.memoryTimeline.sceneTime('burns');
-    scenes[1].quote?.classList.toggle('is-cued',field>=14.1&&field<23);
+    scenes[1].quote?.classList.toggle('is-cued',field>=27&&field<30);
     if(stanzas.length){
       const active=[...stanzas].reverse().find(s=>clock.t>=Number(s.dataset.start))||stanzas[0];
       const activeStanza=stanzas.indexOf(active);
@@ -455,7 +457,7 @@
     target=Math.max(-.1,Math.min(requested,ceiling));
   }
   function atCeiling(){return !reduced.matches&&!opened&&clock.t<FINALE&&scrollY>=top+step*(frontier()+.64)-2}
-  addEventListener('wheel',event=>{if(event.deltaY>0&&atCeiling())event.preventDefault()},{passive:false});
+  addEventListener('wheel',event=>{if(event.deltaY>0&&atCeiling()&&!event.target.closest?.("blockquote"))event.preventDefault()},{passive:false});
   addEventListener('keydown',event=>{
     if(!['ArrowDown','PageDown','End',' '].includes(event.key)||event.target.closest?.('a,button,input,textarea,select,[role="button"]'))return;
     if(atCeiling())event.preventDefault();
@@ -464,11 +466,11 @@
   addEventListener('touchstart',event=>{touchY=event.touches[0]?.clientY||0},{passive:true});
   addEventListener('touchmove',event=>{
     const y=event.touches[0]?.clientY||0;
-    if(y<touchY&&atCeiling())event.preventDefault();
+    if(y<touchY&&atCeiling()&&!event.target.closest?.("blockquote"))event.preventDefault();
     touchY=y;
   },{passive:false});
   function resize(){
-    if(reduced.matches){journey.style.height='100svh';render();return}
+    if(reduced.matches){journey.style.height='auto';return}
     top=journey.getBoundingClientRect().top+scrollY;
     step=innerHeight*1.35;
     journey.style.height=`${step*scenes.length+innerHeight}px`;
@@ -484,13 +486,22 @@
       for(const s of scenes.slice(0,2))s.art.classList.remove('is-opening-duet');
       essay.classList.add('is-unfolding','is-static');
       current=target=scenes.length+.05;
-      for(const s of scenes){state(s,'set');s.beat.style.top='0'}
-      resize();render();return;
+      journey.style.height='auto';
+      for(const s of scenes){
+        atlas.append(s.figure);state(s,'set');s.beat.style.top='0';
+        s.figure.classList.add('is-reached');s.figure.setAttribute('aria-hidden','false');
+        s.art.removeAttribute('style');s.art.tabIndex=0;
+        if(s.quote){s.quote.removeAttribute('style');s.quote.inert=false;s.quote.removeAttribute('aria-hidden')}
+      }
+      lines.forEach(line=>line.style.setProperty('--reveal','1'));
+      stanzas.forEach(stanza=>{stanza.removeAttribute('style');stanza.removeAttribute('aria-hidden')});
+      return;
     }
     if(!butterflyFinished){
       essay.dataset.opening='joined';
       for(const s of scenes.slice(0,2))s.art.classList.add('is-opening-duet');
     }
+    for(const s of scenes)layer.append(s.figure);
     essay.classList.remove('is-static');
     essay.classList.add('is-unfolding');
     timeline.setRunning(true);

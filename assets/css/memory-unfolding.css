@@ -34,7 +34,7 @@
 .is-unfolding .memory-unfolding{margin:0 calc((min(1480px,100vw) - 100vw)/2 - 36px);}
 .is-unfolding .memory-stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate}
 .is-unfolding .memory-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:linear-gradient(var(--bg),transparent 12%,transparent 88%,var(--bg));opacity:.65}
-.is-unfolding .memory-stage .memory-growing-poem{position:absolute;left:50%;top:50%;width:min(38vw,610px);margin:0;transform:translate(-50%,-50%);z-index:4;pointer-events:none;text-shadow:0 2px 16px var(--bg),0 0 26px var(--bg)}
+.is-unfolding .memory-stage .memory-growing-poem{position:absolute;left:50%;top:50%;width:min(32vw,540px);margin:0;transform:translate(-50%,-50%);z-index:4;pointer-events:none;text-shadow:0 2px 16px var(--bg),0 0 26px var(--bg)}
 .is-unfolding .memory-stage .memory-poem-line{height:auto;max-height:calc(var(--reveal,0)*6em);opacity:var(--reveal,0);overflow:hidden;filter:blur(calc((1 - var(--reveal,0))*5px));transform:translateY(calc((1 - var(--reveal,0))*12px));margin-top:0}
 .is-unfolding .memory-stage .memory-poem-line:nth-child(2n+3){margin-top:calc(var(--reveal,0)*.8em)}
 .is-unfolding .memory-scene-layer{position:absolute;inset:0;z-index:2;}
@@ -213,3 +213,19 @@ html:has(.memory-page .is-unfolding)::-webkit-scrollbar{display:none}
 /* The railway comes forward with its passage, never over the previous quote. */
 .memory-train{opacity:0;transition:opacity 1.6s ease}
 body:has(.memory-essay[data-active-scene="thackeray"]) .memory-train{opacity:1}
+
+/* A phone has one reading lane: picture, poem, then a scrollable quotation. */
+@media(max-width:699px){
+ .is-unfolding:not(.is-static) .memory-stage .memory-growing-poem{top:46%;width:88vw}
+ .memory-post .is-unfolding:not(.is-static) .memory-scene-layer figure blockquote,
+ .memory-post .is-unfolding:not(.is-static)[data-opening="joined"] .memory-scene-layer :is(#nabokov-scene,#burns-scene) blockquote,
+ .memory-post .is-unfolding:not(.is-static) .memory-scene-layer #nalan-scene blockquote{left:7vw;width:86vw;top:66%;max-width:none;max-height:27svh;overflow:auto;transform:none!important;overscroll-behavior:contain}
+ .memory-post .is-unfolding:not(.is-static) .memory-scene-layer figure blockquote p{font-size:16px;line-height:1.75}
+ .memory-post .is-unfolding:not(.is-static) .memory-scene-layer #nalan-scene blockquote p{font-size:19px;line-height:1.8}
+}
+
+.is-unfolding.is-static .memory-stage{height:auto;min-height:0;overflow:visible;padding:70px 24px}
+.is-unfolding.is-static .memory-stage .memory-growing-poem{position:relative;left:auto;top:auto;width:min(670px,90vw);max-height:none;overflow:visible;margin:auto;transform:none;pointer-events:auto}
+.is-unfolding.is-static .memory-stage .memory-poem-line{max-height:none;opacity:1;filter:none;transform:none}
+.is-unfolding.is-static .memory-stage .memory-poem-stanza{position:relative;opacity:1;filter:none;transform:none}
+.is-unfolding.is-static .memory-scene-layer{display:none}

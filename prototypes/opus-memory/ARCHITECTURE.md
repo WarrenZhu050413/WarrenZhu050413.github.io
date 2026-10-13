@@ -23,7 +23,11 @@ story clock while a timeline exists. The score ends at 180.72 seconds.
 
 `memory-motion.js` provides easing, bent travel paths and pointer attention.
 Cursor influence is bounded and eased separately from story time: a leaf can
-bend in the breeze without postponing its arrival. Scene scripts report their
+bend in the breeze without postponing its arrival. Every live world has a
+continuous, small response: grass and rooks in Burns, dust and mist at Brideshead,
+leaves and tea steam at Nalan, paper dust at Pushkin, rain at Wong, and wires
+and steam at the railway. These offsets are calculated from the current pose,
+never accumulated, so moving the pointer cannot cause drift or change a cue. Scene scripts report their
 actual movement to `memoryGestures`; the sound layer reads that movement rather
 than maintaining its own choreography. The train retains its separate mix.
 

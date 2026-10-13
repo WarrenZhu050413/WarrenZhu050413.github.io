@@ -314,10 +314,10 @@ function brideshead(scene) {
       sanctuary.material.opacity = .55 + .25 * seg(s, 10, 24) + Math.sin(s * 2.3) * .04 + Math.sin(s * 5.1) * .02;
       fountain.tick(s, 1 - seg(s, 15, 22));
       swans.position.set(20 - s * .22, 0, 26 + Math.sin(s * .1) * .6);
-      for (const m of tufts) m.rotation.z = m.userData.base + Math.sin(s * .9 + m.userData.phase + m.position.x * .1) * .06;
+      for (const m of tufts) m.rotation.z = m.userData.base + Math.sin(s * .9 + m.userData.phase + m.position.x * .1) * .06 + attention.x * .035;
       water_.material.uniforms.uTime.value = t;
       for (const w of windows) w.material.opacity = .45 + .35 * Math.sin(t * w.userData.speed + w.userData.phase) ** 2;
-      for (const m of fog) m.position.x = m.userData.x0 + Math.sin(t * .05 * m.userData.speed + m.userData.phase) * 12;
+      for (const m of fog) m.position.x = m.userData.x0 + Math.sin(t * .05 * m.userData.speed + m.userData.phase) * 12 + attention.x * 2;
       for (const r of reeds) r.rotation.z = r.userData.base + Math.sin(t * r.userData.speed + r.userData.phase) * r.userData.amp;
       for (const b of birds) {
         const u = b.userData, a = t * u.speed + u.phase;
@@ -664,7 +664,7 @@ function thackeray(scene) {
     target: new Vector3(-14, 4, -4), radius: 70, height: 2.6, fov: 32, yaw: 24, pitch: [2, 12], still: 20,
     tick(t, s, dt, attention = {x:0,y:0}) {
       // Only the wires move a little; the train has gone out of this picture.
-      wires.forEach((w, i) => { w.position.y = Math.sin(s * .8 + i * .7) * .03; });
+      wires.forEach((w, i) => { w.position.y = Math.sin(s * .8 + i * .7) * .03 + attention.y * .035; w.position.z = attention.x * .06; });
       const climb = seg(s, 1.5, 16), off = 15 - climb * 14.4, walking = climb > 0 && climb < 1;
       watcher.position.copy(wp).addScaledVector(wn, off).setY(bank(off) + (walking ? Math.abs(Math.sin(s * 3.6)) * .06 : 0));
       watcher.rotation.z = walking && off > 2.2 ? -.18 : 0;
@@ -795,9 +795,9 @@ function burns(scene) {
   return {
     target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6, traveller: mouse.root, motion,
     tick(t, s, dt, attention = {x:0,y:0}) {
-      breeze.value=s;
+      breeze.value=s + attention.x * .7;
       // The cat: walk in, stop, lower the head, take her, turn, walk away.
-      const walkIn = clamp01((s - 2.2) / 9), walkOut = clamp01((s - 17.4) / 11);
+      const walkIn = clamp01((s - 2.2) / 19.8), walkOut = clamp01((s - 31) / 13);
       const eIn = walkIn * (2 - walkIn), eOut = walkOut * walkOut;
       const inPos = walkIn < 1 ? eIn : 1;
       const turn = seg(s, 29, 31.5);
@@ -832,7 +832,7 @@ function burns(scene) {
       mouse.root.visible = !document.querySelector('.memory-mouse[data-transfer="true"]');
       for (const b of birds) {
         const u = b.userData, a = s * u.speed * 4 + u.phase;
-        b.position.set(u.centre.x + Math.cos(a) * u.r * .5, u.h, u.centre.z + Math.sin(a) * u.r * .3);
+        b.position.set(u.centre.x + Math.cos(a) * u.r * .5 + attention.x * .35, u.h - attention.y * .16, u.centre.z + Math.sin(a) * u.r * .3);
         b.scale.y = 1 + Math.sin(s * 9 + u.phase) * .8;
       }
     },
@@ -925,7 +925,7 @@ function pushkin(scene) {
       bend(lift * (1 - float * .55)+Math.max(0,attention.y)*.12, air * (1 - rest), s);
       sheet.position.set(1.2 + rest * .34 + float * .3+attention.x*.12, top + float * .55 + Math.sin(s * 1.3) * .04 * float, .3 + rest * .16 + float * .1);
       sheet.rotation.set(Math.sin(s * 1.1) * .03 * float, .02 + rest * .09 + float * .07 * Math.sin(s * .8), Math.sin(s * .9) * .025 * float);
-      motes.forEach((m, i) => { m.position.y = 2 + ((s * .09 + i * .37) % 6); m.position.x += Math.sin(s * .4 + i) * .002 + air * .006; });
+      motes.forEach((m, i) => { m.position.y = 2 + ((s * .09 + i * .37) % 6); m.position.x = m.userData.x0 + Math.sin(s * .4 + i) * .22 + air * .2 + attention.x * .35; m.position.z = Math.sin(s * .23 + i) * .2 + attention.y * .2; });
     },
   };
 }
@@ -1047,7 +1047,7 @@ function nalan(scene) {
     tick(t, s, dt, attention = {x:0,y:0}) {
       const gust = .15 + .1 * Math.sin(s * .4);
       // The open casement only stirs.
-      right.rotation.y = .95 + Math.sin(s * .5) * .025 + Math.sin(s * 1.3) * .008;
+      right.rotation.y = .95 + Math.sin(s * .5) * .025 + Math.sin(s * 1.3) * .008 + attention.x * .035;
       left.rotation.y = 0;
       // The sun goes down a little over the whole scene.
       const low = seg(s, 4, 26);
@@ -1078,7 +1078,8 @@ function nalan(scene) {
       for (const m of motes) {
         const u = m.userData;
         m.position.y = u.y0 + Math.sin(s * .21 + u.phase) * .6 - gust * .5;
-        m.position.z = u.z0 + Math.sin(s * .13 + u.phase) * .7 + gust * 2.2 * Math.sin(u.phase + s);
+        m.position.z = u.z0 + Math.sin(s * .13 + u.phase) * .7 + gust * 2.2 * Math.sin(u.phase + s) + attention.y * .3;
+        m.position.x = u.x0 + attention.x * .45 + Math.sin(s * .3 + u.phase) * .15;
         m.material.opacity = .5 * (1 - low * .5);
       }
       // Tea steam, thinning as the light goes.
@@ -1090,7 +1091,7 @@ function nalan(scene) {
       for (const p of steam) {
         const a = p.userData.age = s - p.userData.born;
         if (!(a >= 0 && a < 5)) { p.material.opacity = 0; continue; }
-        p.position.y = 2.6 + a * .32; p.position.x = 6.9 + Math.sin(a * 1.3 + s * .4) * .18 * a + gust * a * .3;
+        p.position.y = 2.6 + a * .32; p.position.x = 6.9 + Math.sin(a * 1.3 + s * .4) * .18 * a + gust * a * .3 + attention.x * a * .14;
         p.scale.setScalar(.35 + a * .22); p.material.opacity = .22 * (1 - a / 5) * (1 - seg(s, 14, 24) * .7);
       }
     },
