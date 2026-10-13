@@ -368,7 +368,7 @@ function tourer() {
     w.position.set(x, .36, z); g.add(w); wheels.push(w);
     add(g, new CylinderGeometry(.42, .42, .16, 12, 1, true, 0, Math.PI), paint, x, .4, z).rotation.set(Math.PI / 2, 0, 0);
   }
-  g.scale.setScalar(1.25);
+  g.scale.setScalar(1.5);
   return { group: g, wheels };
 }
 
@@ -427,7 +427,7 @@ function wong(scene) {
   scene.background = new Color('#1d2423');
   scene.fog = new Fog('#1d2423', 12, 70);
   scene.add(new HemisphereLight(new Color('#5d6b67'), new Color('#121716'), .7));
-  const lampColour = new Color('#e8c08a');
+  const lampColour = new Color('#ddc8a6');
   const lamp = new PointLight(lampColour, 120, 26, 1.6); lamp.position.set(3.2, 6.6, -14); scene.add(lamp);
   const water_ = water(scene, 300, '#2a3231'); // the wet street
   water_.material.uniforms.uFog.value.set('#1d2423');
@@ -438,11 +438,11 @@ function wong(scene) {
     add(scene, box, wall, -8.5, 10, z, 5, 20 + (i % 3) * 3, 11.6);
     add(scene, box, wall, 8.5, 10, z - 5, 5, 20 + ((i + 1) % 3) * 3, 11.6);
   }
-  const windows = lights(scene, [[-5.95, 7.5, -8], [5.95, 10.5, -25], [-5.95, 4.6, -33], [5.95, 6, -52], [-5.95, 9, -61]], '#c9a36d', [1.1, 1.6]);
+  const windows = lights(scene, [[-5.95, 7.5, -8], [5.95, 10.5, -25], [-5.95, 4.6, -33], [5.95, 6, -52], [-5.95, 9, -61]], '#bdae94', [1.1, 1.6]);
   windows.forEach((w, i) => { w.rotation.y = i % 2 ? -Math.PI / 2 : Math.PI / 2; w.material.opacity = .32; });
   // The lamp on its bracket, and its glow.
   add(scene, box, lambert('#1f2625'), 5.4, 7.1, -14, 1.6, .12, .12);
-  const glow = new Sprite(new SpriteMaterial({ map: softSprite('#f2d29f'), transparent: true, opacity: .75, depthWrite: false }));
+  const glow = new Sprite(new SpriteMaterial({ map: softSprite('#e9d9bd'), transparent: true, opacity: .7, depthWrite: false }));
   glow.position.copy(lamp.position); glow.scale.set(2.6, 2.6, 1); scene.add(glow);
   // Rain, seen only where the lamp catches it.
   const drops = 300, seeds = [];
@@ -460,7 +460,7 @@ function wong(scene) {
     m.userData = { x: rand(-2, 5.5), z: rand(-18, -9), phase: i / 14 }; return m;
   });
   // Signboards hung out over the lane, their colours gone soft in the wet.
-  for (const [x, y, z, c] of [[-5.3, 8.5, -11, '#8d4a43'], [5.3, 11, -30, '#4f7a66'], [-5.3, 9.5, -46, '#8b6c45']]) {
+  for (const [x, y, z, c] of [[-5.3, 8.5, -11, '#7b625d'], [5.3, 11, -30, '#5f6f68'], [-5.3, 9.5, -46, '#7d705f']]) {
     add(scene, box, lambert('#1d2322'), x, y, z, .3, 4.2, 1.3);
     add(scene, box, new MeshBasicMaterial({ color: new Color(c), transparent: true, opacity: .42 }), x + (x < 0 ? .17 : -.17), y, z, .02, 3.8, 1.1);
   }
@@ -958,14 +958,14 @@ function nalan(scene) {
   scene.add(new HemisphereLight(new Color('#a3aaa3'), new Color('#383c38'), 1.7));
   // Light thrown back from the floor, so the wall is plaster and not a void.
   const bounce = new DirectionalLight(new Color('#cdbfa5'), .3); bounce.position.set(6, 6, 30); scene.add(bounce);
-  const sunWarm = new Color('#f1d3a6'), sunLow = new Color('#e7b98c');
+  const sunWarm = new Color('#e8d8c0'), sunLow = new Color('#ddc9b0');
   const sun = new DirectionalLight(sunWarm.clone(), 3.6);
   sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 3; sun.shadow.bias = -.0004;
   Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 150 });
   sun.target.position.set(2, 0, 0); scene.add(sun, sun.target);
   const plaster = lambert('#939891'), wood = lambert('#575249'), floorMat = lambert('#7a776c');
   shade(add(scene, new PlaneGeometry(80, 50), floorMat, 0, 0, 15), false, true).rotation.x = -Math.PI / 2;
-  add(scene, new PlaneGeometry(160, 60), lambert('#a49d89', { fog: false }), 0, -.05, -40).rotation.x = -Math.PI / 2;
+  add(scene, new PlaneGeometry(160, 60), lambert('#a29f94', { fog: false }), 0, -.05, -40).rotation.x = -Math.PI / 2;
   // The west wall, facing us, with one opening.
   const box = new BoxGeometry(1, 1, 1), wall = new Group();
   add(wall, box, plaster, -18, 11, 0, 26, 22, .8); add(wall, box, plaster, 18, 11, 0, 26, 22, .8);
@@ -973,12 +973,12 @@ function nalan(scene) {
   add(wall, box, wood, 0, 2.95, .45, 10.6, .25, .5); // sill
   wall.position.z = -10; scene.add(shade(wall));
   // Outside: pale air, and the branch the leaves come from.
-  add(scene, new PlaneGeometry(140, 70), new MeshBasicMaterial({ map: airTexture(['#b9b5a6', '#d3c6ab', '#dcc8a6']), fog: false }), 0, 12, -46);
+  add(scene, new PlaneGeometry(140, 70), new MeshBasicMaterial({ map: airTexture(['#bdbcb4', '#cfcabd', '#d5cdbe']), fog: false }), 0, 12, -46);
   const branch = new Group(), bark = lambert('#3e3a33');
   const limb = (x1, y1, x2, y2, r) => { const l = Math.hypot(x2 - x1, y2 - y1); const m = add(branch, new CylinderGeometry(r * .7, r, l, 6), bark, (x1 + x2) / 2, (y1 + y2) / 2, 0); m.rotation.z = Math.atan2(x1 - x2, y2 - y1); };
   limb(-17, 3, -11, 6.5, .5); limb(-11, 6.5, -6, 8.6, .36); limb(-6, 8.6, -1.5, 10.8, .26); limb(-1.5, 10.8, 3.5, 12.2, .17);
   limb(-6, 8.6, -3, 7.2, .14); limb(-3, 7.2, .5, 7.6, .09); limb(-1.5, 10.8, .5, 14.5, .11);
-  const leafGeo = leafGeometry(.36), leafMat = new MeshLambertMaterial({ color: new Color('#b0914f'), side: DoubleSide });
+  const leafGeo = leafGeometry(.36), leafMat = new MeshLambertMaterial({ color: new Color('#a09577'), side: DoubleSide });
   const crown = [];
   for (let i = 0; i < 60; i++) {
     const u = rng(), m = add(branch, leafGeo, leafMat, -7 + u * 11 + rand(-1.4, 1.4), 7.6 + u * 4.6 + rand(-1.4, 1.4), rand(-1.5, 1.5));
@@ -1008,7 +1008,7 @@ function nalan(scene) {
     return l;
   });
   const from = new Vector3(.3, 10.3, -9.2), rest = new Vector3(3.55, 2.07, -3.3);
-  const hero = shade(add(scene, leafGeometry(.62), new MeshLambertMaterial({ color: new Color('#c3a15c'), side: DoubleSide }), 0, 0, 0), true, false);
+  const hero = shade(add(scene, leafGeometry(.62), new MeshLambertMaterial({ color: new Color('#b5a37e'), side: DoubleSide }), 0, 0, 0), true, false);
   const motes = mist(scene, Array.from({ length: 22 }, () => [rand(-4, 6), rand(2, 9), rand(-9, 3), .09, .09]), .55);
   motes.forEach(m => { m.userData.y0 = m.position.y; m.userData.z0 = m.position.z; });
   let lastPuff = 0;
@@ -1308,6 +1308,8 @@ function mountTrain() {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let state = 'waiting', host, renderer, frameId = null, covered = false;
   let story = 0, prev = 0, duration = 42;
+  // What the train is doing, for whatever listens to it (its sound).
+  const heard = { running: false, progress: 0, front: 0, speed: 0, pace: 0, x: 0, depth: 1, steaming: false };
   const finished = () => dispatchEvent(new Event('memory-train-finished'));
 
   function start(seconds) {
@@ -1428,6 +1430,15 @@ function mountTrain() {
       sp.position.y += dt * .9; sp.position.x += dt * sp.userData.drift;
       sp.scale.setScalar(.6 + a * 1.2); sp.material.opacity = .42 * Math.min(1, a * 3) * (1 - a / 5);
     }
+    const was = heard.front;
+    heard.running = true; heard.progress = p; heard.front = front;
+    heard.speed = dt ? (front - was) / dt : heard.speed;
+    heard.pace = Math.min(1, heard.speed / ((length + train.length_ + 4) * 1.5 / (duration * .88)));
+    heard.steaming = moving && engine.group.visible;
+    if (engine.group.visible) {
+      const at = engine.group.position.clone().project(camera);
+      heard.x = at.x; heard.depth = Math.min(1.6, Math.max(.2, 1 - at.z * 0 + (engine.group.position.z + 20) / 60));
+    }
     renderer.render(scene, camera);
     if (p >= 1) { finish(); return; }
     frameId = requestAnimationFrame(frame);
@@ -1435,7 +1446,7 @@ function mountTrain() {
   function resume() { prev = 0; if (state === 'running' && frameId === null) frameId = requestAnimationFrame(frame); }
   function finish() {
     if (state !== 'running') return;
-    state = 'done';
+    state = 'done'; heard.running = false; heard.speed = heard.pace = 0; heard.steaming = false;
     if (frameId !== null) cancelAnimationFrame(frameId); frameId = null;
     const leaving = host;
     leaving.animate([{ opacity: getComputedStyle(leaving).opacity }, { opacity: 0 }], { duration: 900, fill: 'forwards' }).finished
@@ -1449,7 +1460,7 @@ function mountTrain() {
   reduced.addEventListener('change', () => { if (reduced.matches && state === 'running') finish(); });
   addEventListener('resize', () => { if (state !== 'running') return; camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight, false); });
   // Studies can start the train directly.
-  window.memoryTrain = { start, seek(sec) { story = sec; prev = 0; } };
+  window.memoryTrain = { start, seek(sec) { story = sec; prev = 0; }, state: () => ({ ...heard }) };
 }
 mountTrain();
 

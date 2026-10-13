@@ -42,11 +42,14 @@
     if(!s.quote)continue;
     const walker=document.createTreeWalker(s.quote,NodeFilter.SHOW_TEXT);
     const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
-    for(const node of nodes){
+    for(const [n,node] of nodes.entries()){
       const fragment=document.createDocumentFragment();
       for(const token of node.textContent.match(/\p{Script=Han}|[^\s\p{Script=Han}]+|\s+/gu)||[]){
         if(/^\s+$/.test(token)){fragment.append(token);continue}
-        const word=document.createElement('span');word.className='memory-quote-word';word.textContent=token;fragment.append(word);
+        const word=document.createElement('span');word.className='memory-quote-word';word.textContent=token;
+        // "But Mousie, thou art no thy lane" comes forward when the cat takes her.
+        if(s.id==='burns'&&n===0)word.classList.add('memory-cue-word');
+        fragment.append(word);
       }
       node.replaceWith(fragment);
     }
@@ -103,8 +106,10 @@
   stage.append(previousCue);
   // The figures leave the static atlas for the stage, where they are composed.
   stage.append(poem);for(const s of scenes)layer.append(s.figure);
-  const abyss=document.createElement('div');abyss.className='memory-abyss';abyss.setAttribute('aria-hidden','true');
-  layer.append(abyss);
+  // At the centre of the end, a small braided cross in faded blue: eight points,
+  // the slanted foot of the Orthodox cross, each bar two strands woven over and under.
+  const cross=document.createElement('div');cross.className='memory-cross';cross.setAttribute('aria-hidden','true');
+  layer.append(cross);
   const nextBeat=()=>BEATS.find(b=>b>clock.t+.05);
   // Behind the music, the reader may go forward freely; at its edge, the cue skips ahead.
   function canContinue(){return !reduced.matches&&!opened&&current<frontier()-.02}
@@ -260,7 +265,29 @@
   }
 
   // ---------------------------------------------------------------- the ring at the end
-  // The passages and the poem turn one way, the prints the other, around the small light.
+  function braidedCross(){
+    const bars=[[0,-56,0,64],[-12,-38,12,-38],[-31,-20,31,-20],[-17,33,17,44]];
+    const amp=3.3,wave=10;let under='',over='',ends='';
+    for(const [x1,y1,x2,y2] of bars){
+      const len=Math.hypot(x2-x1,y2-y1),ux=(x2-x1)/len,uy=(y2-y1)/len,nx=-uy,ny=ux;
+      const pieces=Math.max(2,Math.round(len/(wave/2)));
+      for(const strand of [1,-1])for(let k=0;k<pieces;k++){
+        let d='';
+        for(let j=0;j<=8;j++){
+          const t=(k+j/8)/pieces*len,off=strand*amp*Math.sin(t/len*pieces*Math.PI);
+          d+=`${j?'L':'M'}${(x1+ux*t+nx*off).toFixed(2)} ${(y1+uy*t+ny*off).toFixed(2)}`;
+        }
+        // Strands take turns lying on top at each crossing.
+        const piece=`<path d="${d}"/>`;
+        if((k+(strand>0?0:1))%2)over+=piece;else under+=piece;
+      }
+      ends+=`<circle cx="${x1}" cy="${y1}" r="2.6"/><circle cx="${x2}" cy="${y2}" r="2.6"/>`;
+    }
+    return `<svg viewBox="-42 -66 84 140" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke-linecap="round">`+
+      `<g class="strand">${under}</g><g class="gap">${over}</g><g class="strand">${over}</g></g><g class="ends">${ends}</g></svg>`;
+  }
+  cross.innerHTML=braidedCross();
+  // The passages and the poem turn one way, the prints the other, around the small cross.
   const rings=[...scenes.filter(s=>s.quote).map(s=>({el:s.quote,focus:0,hover:false})),{el:poem,focus:0,hover:false,poem:true}];
   for(const item of rings){
     item.el.addEventListener('pointerenter',()=>{item.hover=true});
@@ -274,7 +301,7 @@
       for(const p of ['left','top','width','max-height','z-index','transform','opacity','pointer-events'])item.el.style.removeProperty(p);
       item.el.classList.remove('is-orbiting');
     }
-    abyss.style.opacity='0';
+    cross.style.opacity='0';
   }
   function finale(dt){
     const e=smooth((clock.t-FINALE)/(SETTLED-FINALE));
@@ -283,10 +310,10 @@
     const W=innerWidth,H=innerHeight,cx=W/2,cy=H/2;
     const spin=(clock.t-FINALE)*Math.PI*2/300;
     const swirl=(1-e)**2*1.6;
-    // Prints on the outer ellipse; the light of the present at the centre.
-    const outer=scenes.slice(0,7);
+    // Every print on the outer ellipse, the present's among them; the cross at the centre.
+    const outer=scenes;
     outer.forEach((s,i)=>{
-      const home=s.homeAt,angle=-Math.PI/2+i/7*Math.PI*2+spin+swirl;
+      const home=s.homeAt,angle=-Math.PI/2+i/outer.length*Math.PI*2+spin+swirl;
       const rx=W*.42,ry=H*.405;
       const hr=Math.hypot(home.x-cx,(home.y-cy)*rx/ry),ha=Math.atan2((home.y-cy)*rx/ry,home.x-cx);
       let da=angle-ha;da=Math.atan2(Math.sin(da),Math.cos(da));
@@ -296,12 +323,8 @@
       s.art.style.transform=`translate3d(${x-s.width/2}px,${y-s.width*9/32}px,0) rotate(${s.turn*.55*(1-e)}deg) scale(${scale})`;
       s.art.style.opacity=String(mix(.44,.62,e));
     });
-    const p=scenes[7];
-    const centreScale=mix(p.small/p.width,.2,e);
-    p.art.style.transform=`translate3d(${cx-p.width/2}px,${cy-p.width*9/32}px,0) scale(${centreScale})`;
-    p.art.style.opacity=String(mix(.44,.95,e));
-    abyss.style.opacity=String(e*.9);
-    abyss.style.transform=`translate(-50%,-50%) scale(${mix(.3,1,e)})`;
+    cross.style.opacity=String(smooth((e-.15)/.6));
+    cross.style.transform=`translate(-50%,-50%) scale(${mix(.9,1,e)})`;
     // The passages, and the poem drawn in to become one of them.
     const n=rings.length,rx=W*.265,ry=H*.29;
     rings.forEach((item,k)=>{
@@ -309,13 +332,10 @@
       const angle=-Math.PI/2+(k+.5)/n*Math.PI*2-spin*1.3-swirl*.6;
       let x=cx+Math.cos(angle)*rx,y=cy+Math.sin(angle)*ry,scale=mix(.38,.95,item.focus),opacity=mix(.5,.97,item.focus);
       if(item.poem){
-        // It goes in towards the centre first, turning, and then out to its place.
-        const out=smooth((e-.42)/.58),turn=(1-e)*Math.PI*1.4;
-        const a=angle-turn,r=out;
-        x=mix(cx,cx+Math.cos(a)*rx,r);y=mix(cy,cy+Math.sin(a)*ry,r);
-        scale=mix(mix(1,.3,smooth(e/.5)),mix(.3,.85,item.focus),out);
-        opacity=mix(mix(1,.55,smooth(e/.5)),mix(.66,1,item.focus),out);
-        item.el.style.transform=`translate(calc(${x-cx}px - 50%),calc(${y-cy}px - 50%)) scale(${scale}) rotate(${-(1-e)*e*40}deg)`;
+        // The poem leaves the centre and comes back as one of the passages, fading in as they do.
+        if(e<.3){x=cx;y=cy;scale=1;opacity=1-smooth(e/.3)}
+        else{scale=mix(.3,.85,item.focus);opacity=mix(.62,1,item.focus)*smooth((e-.2-k*.04)/.4)}
+        item.el.style.transform=`translate(calc(${x-cx}px - 50%),calc(${y-cy}px - 50%)) scale(${scale})`;
         item.el.style.opacity=String(opacity);
         item.el.style.pointerEvents=e>.9?'auto':'none';
         item.el.style.zIndex=item.focus>.05?'8':'';
@@ -348,8 +368,7 @@
       s.figure.setAttribute('aria-hidden',String(!reached));
       if(!reached)continue;
       if(opened?.s===s)continue;
-      // The present is never developed into a print; it stays alive to the end.
-      if(joined&&i<2||p<.87||s.id==='present')state(s,'present');else state(s,'set');
+      if(joined&&i<2||p<.87)state(s,'present');else state(s,'set');
       const entering=smooth(p/.28),settling=smooth((p-.7)/.3);
       // A broad translucent arrival crosses the page, then becomes a small print.
       const approach=s.id==='wong'?1.7:1.35;
@@ -396,6 +415,8 @@
         }
       }
     }
+    const field=window.memoryTimeline.sceneTime('burns');
+    scenes[1].quote?.classList.toggle('is-cued',field>=14.1&&field<23);
     for(let i=0;i<lines.length;i++)lines[i].style.setProperty('--reveal',String(clamp(count-i)));
     essay.dataset.poemLines=String(Math.floor(count));
     poem.style.setProperty('--visible-lines',String(Math.max(2,Math.ceil(count))));
