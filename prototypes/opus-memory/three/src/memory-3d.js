@@ -281,13 +281,18 @@ function brideshead(scene) {
 
   return {
     target, radius: 165, height: 4.2, fov: 23, water: water_, still: 28, motion,
-    tick(t, s) {
+    tick(t, s, dt, attention = {x:0,y:0}) {
       // The car pulls away from the door, goes once round the fountain, and leaves.
       const along = progressAt(s);
       const pace = (progressAt(s + .025) - progressAt(Math.max(0, s - .025))) / .05;
-      wake.tick(s, along, pace);
+      wake.tick(s, along, pace, attention);
       Object.assign(motion, {distance: along * leaving.getLength(), speed: pace * leaving.getLength(), x: car.group.position.x / 70, moving: along > 0 && along < .995});
-      car.group.position.copy(leaving.getPointAt(along)).setY(.24);
+      const roadDistance=along*leaving.getLength();
+      // Suspension responds to distance over the road, not an idle vibration.
+      const roughness=(Math.sin(roadDistance*3.7)+.4*Math.sin(roadDistance*8.3))*.012*Math.min(1,pace*28);
+      car.group.position.copy(leaving.getPointAt(along)).setY(.24+roughness);
+      car.group.rotation.x=Math.sin(roadDistance*2.1)*.009*Math.min(1,pace*28);
+      car.group.position.z+=attention.x*.15*Math.sin(along*Math.PI);
       const d = leaving.getTangentAt(along);
       car.group.rotation.y = Math.atan2(-d.z, d.x);
       car.group.visible = along < .995;
@@ -403,10 +408,10 @@ function roadWake(scene, path, progressAt) {
   const uniforms={head:{value:0}};
   const mat=new ShaderMaterial({transparent:true,depthWrite:false,side:DoubleSide,uniforms,
     vertexShader:'attribute float along; varying float progress; void main(){progress=along;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-    fragmentShader:'uniform float head; varying float progress; void main(){float age=head-progress; float a=smoothstep(0.,.008,age)*(1.-smoothstep(.08,.2,age));gl_FragColor=vec4(.16,.18,.16,a*.14);}' });
+    fragmentShader:'uniform float head; varying float progress; void main(){float age=head-progress; float a=smoothstep(0.,.008,age)*(1.-smoothstep(.08,.2,age));gl_FragColor=vec4(.16,.18,.16,a*.23);}' });
   scene.add(new Mesh(geo,mat));
   const dust=smoke(scene,12,'#b1aea0');
-  return {tick(s,along,pace){
+  return {tick(s,along,pace,attention){
     uniforms.head.value=Math.max(0,along-.002);
     for(let i=0;i<dust.length;i++){
       const age=(s+i*.31)%3.7,born=s-age,u=progressAt(Math.max(0,born));
@@ -414,8 +419,9 @@ function roadWake(scene, path, progressAt) {
       const p=path.getPointAt(u),direction=path.getTangentAt(u);
       particle.position.copy(p).addScaledVector(direction,-1.5-age*.18);
       particle.position.x+=Math.sin(i*2.4)*age*.22;particle.position.z+=Math.cos(i*1.7)*age*.16;
+      particle.position.x+=(attention?.x||0)*age*.3;
       particle.position.y=.36+age*.22;particle.scale.setScalar(.25+age*.7);
-      particle.material.opacity=active?Math.sin(age/3.7*Math.PI)*.075*Math.min(1,pace*25):0;
+      particle.material.opacity=active?Math.sin(age/3.7*Math.PI)*.12*Math.min(1,pace*25):0;
     }
   }};
 }
@@ -520,14 +526,16 @@ function wong(scene) {
   scene.add(run);
   const fog = mist(scene, [[1, 1.2, -20, 26, 3], [0, 2, -40, 34, 5]], .12);
   const camLocal = new Vector3(), motion = {};
+  let paneTime=0;
   return {
     target: new Vector3(.8, 4, -22), radius: 30, height: 3.4, fov: 34, yaw: 12, pitch: [2, 7], water: water_, still: 16, motion,
-    tick(t, s) {
+    tick(t, s, dt, attention = {x:0,y:0}) {
+      paneTime=s;
       water_.material.uniforms.uTime.value = t * .6 + s * .25;
       lamp.intensity = 120 + Math.sin(s * 13.1) * 2 + Math.sin(s * 3.7) * 3;
       for (let i = 0; i < drops; i++) {
         const [x, y0, z, v] = seeds[i], y = 9 - ((9 - y0 + s * 7 * v) % 9);
-        rain.set([x, y, z, x - .02, y - .32, z], i * 6);
+        rain.set([x+attention.x*.2, y, z, x - .02+attention.x*.3, y - .32, z], i * 6);
       }
       rainGeo.attributes.position.needsUpdate = true;
       for (const r of rings) {
@@ -554,7 +562,7 @@ function wong(scene) {
       pane.position.copy(p).lerp(new Vector3(.8, 4, -22), .055);
       pane.lookAt(p); const d = pane.position.distanceTo(p);
       pane.scale.set(d * 1.6, d * .95, 1);
-      run.position.copy(pane.position).add(new Vector3(.3 * d * .1, (.12 - ((performance.now() / 1000 * .02) % .3)) * d, 0));
+      run.position.copy(pane.position).add(new Vector3(.3 * d * .1, (.12 - ((paneTime * .02) % .3)) * d, 0));
       run.scale.set(d * .012, d * .02, 1);
       water_.material.uniforms.uCam.value.copy(p);
     } } },
@@ -654,7 +662,7 @@ function thackeray(scene) {
   scene.rotation.y = .62;
   return {
     target: new Vector3(-14, 4, -4), radius: 70, height: 2.6, fov: 32, yaw: 24, pitch: [2, 12], still: 20,
-    tick(t, s) {
+    tick(t, s, dt, attention = {x:0,y:0}) {
       // Only the wires move a little; the train has gone out of this picture.
       wires.forEach((w, i) => { w.position.y = Math.sin(s * .8 + i * .7) * .03; });
       const climb = seg(s, 1.5, 16), off = 15 - climb * 14.4, walking = climb > 0 && climb < 1;
@@ -681,12 +689,12 @@ function gaitFoot(leg, phase, stride, lift, stance, moving) {
   return [leg.x + stride * (e - .5) * moving, Math.sin(Math.PI * k) * lift * moving];
 }
 
-function fieldMouse(colour = '#7d837b') {
+function fieldMouse(colour = '#7c8880') {
   const root = new Group(), pivot = new Group(), inner = new Group();
   pivot.position.set(-.6, .1, 0); inner.position.set(.6, -.1, 0);
   root.add(pivot); pivot.add(inner);
-  const fur = lambert(colour), pale = lambert('#979d93'), dark = lambert('#1d2523');
-  const sphere = new SphereGeometry(1, 18, 12);
+  const fur = lambert(colour), pale = lambert('#8c958a'), dark = lambert('#263332');
+  const sphere = new SphereGeometry(1, 20, 14);
   add(inner, sphere, fur, -.22, .62, 0, .91, .48, .43);
   const head = new Group(); head.position.set(.46, .65, 0); inner.add(head);
   add(head, sphere, fur, 0, 0, 0, .51, .37, .34);
@@ -696,6 +704,7 @@ function fieldMouse(colour = '#7d837b') {
     add(head, sphere, fur, -.14, .34, side * .22, .22, .28, .085);
     add(head, sphere, pale, -.12, .355, side * .265, .155, .21, .026);
     add(head, sphere, dark, .27, .1, side * .285, .065, .07, .038);
+    add(head, sphere, lambert('#cedbd4'), .29, .125, side * .313, .018, .019, .014);
   }
   const tail = new Group(); tail.position.set(-.98, .43, 0); inner.add(tail);
   tail.add(new Mesh(new TubeGeometry(new CatmullRomCurve3([new Vector3(0, 0, 0), new Vector3(-.42, -.15, .07),
@@ -732,7 +741,7 @@ function fieldMouse(colour = '#7d837b') {
     }
     tail.rotation.z = Math.sin(s * 1.3) * .05 * moving - hang * .9;
   }
-  return { root, head, inner, pose };
+  return { root, head, inner, pose, tail, legs };
 }
 
 // ---------------------------------------------------------------- Burns: the field, the nest, a mouse and a cat
@@ -785,32 +794,32 @@ function burns(scene) {
   const motion = {};
   return {
     target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6, traveller: mouse.root, motion,
-    tick(t, s) {
+    tick(t, s, dt, attention = {x:0,y:0}) {
       breeze.value=s;
       // The cat: walk in, stop, lower the head, take her, turn, walk away.
       const walkIn = clamp01((s - 2.2) / 9), walkOut = clamp01((s - 17.4) / 11);
       const eIn = walkIn * (2 - walkIn), eOut = walkOut * walkOut;
       const inPos = walkIn < 1 ? eIn : 1;
-      const turn = seg(s, 15.3, 17.8);
+      const turn = seg(s, 29, 31.5);
       const heading = heading1 + (heading2 - heading1) * turn;
       puss.root.position.copy(P0).lerp(P1, inPos).lerp(P2, eOut);
       puss.root.rotation.y = heading;
       const travelled = inPos * approach + eOut * leave + Math.abs(heading2 - heading1) * turn * .5;
       const moving = Math.min(1, (walkIn > 0 && walkIn < 1 ? 1 - walkIn ** 3 : 0) + (walkOut > 0 ? Math.min(1, walkOut * 6) : 0) + (turn > 0 && turn < 1 ? .45 : 0));
-      const lower = seg(s, 11.2, 12.9) - seg(s, 14.4, 15.5) * .82;
+      const lower = seg(s, 22, 25) - seg(s, 28, 30) * .82;
       const phase = travelled / .9 / .72;
-      puss.pose({ phase, moving, lower, s, tailUp: seg(s, 15, 17.5), attention: (1-seg(s,2,4))*.5 });
+      puss.pose({ phase, moving, lower, s, tailUp: seg(s, 29, 31), attention: (1-seg(s,2,4))*.5 });
       Object.assign(motion,{phase,moving,x:puss.root.position.x/12});
       puss.root.updateMatrixWorld(true);
       puss.head.localToWorld(mouth.copy(puss.mouth));
       // The mouse: washes, goes a few steps, sees the cat, sits up; then is carried.
       const go = seg(s, 3.8, 6.4);
       const ground = M0.clone().lerp(M1, go);
-      const lift = seg(s, 14.2, 14.9);
+      const lift = seg(s, 27, 28);
       if (lift <= 0) {
         mouse.root.position.copy(ground);
         mouse.root.rotation.set(0, Math.PI + Math.sin(s * .6) * .15 * (1 - go), 0);
-        const sit = (1 - seg(s, 3.1, 3.7)) + seg(s, 7.2, 8.2) * (1 - seg(s, 13.3, 14));
+        const sit = (1 - seg(s, 3.1, 3.7)) + seg(s, 7.2, 8.2) * (1 - seg(s, 26, 27));
         mouse.pose({ phase: go * (M0.distanceTo(M1) / .3) / .3, moving: go > 0 && go < 1 ? 1 : 0, sit, paws: s < 3.4 ? 'groom' : 'hold', s,
           look: sit > .5 ? Math.sin(s * 3.1) * .04 : Math.max(0, Math.sin(s * 2.3)) ** 8 * .2 });
       } else {
@@ -906,15 +915,15 @@ function pushkin(scene) {
   const motes = mist(scene, Array.from({ length: 10 }, () => [rand(-5, 2), rand(2, 7), rand(-3, 2), .1, .1]), .45);
   return {
     target: new Vector3(1.3, 1.3, .3), radius: 14.5, height: 3.6, fov: 34, yaw: 36, pitch: [12, 26], shadows: true, still: 24, motion,
-    tick(t, s) {
+    tick(t, s, dt, attention = {x:0,y:0}) {
       lamp.intensity = 300 + Math.sin(s * 5.3) * 5 + Math.sin(s * 1.7) * 9;
       const lift = seg(s, 4, 9) * (1 - seg(s, 12.5, 16.5));      // the corner rises, then lets go
       const float = seg(s, 8, 12) * (1 - seg(s, 13, 19));        // the whole sheet leaves the pile
       const rest = seg(s, 13, 19.5);
       const air = lift * .5 + float;
       Object.assign(motion,{paper:air*(1-rest),settle:rest,x:.3});
-      bend(lift * (1 - float * .55), air * (1 - rest), s);
-      sheet.position.set(1.2 + rest * .34 + float * .3, top + float * .55 + Math.sin(s * 1.3) * .04 * float, .3 + rest * .16 + float * .1);
+      bend(lift * (1 - float * .55)+Math.max(0,attention.y)*.12, air * (1 - rest), s);
+      sheet.position.set(1.2 + rest * .34 + float * .3+attention.x*.12, top + float * .55 + Math.sin(s * 1.3) * .04 * float, .3 + rest * .16 + float * .1);
       sheet.rotation.set(Math.sin(s * 1.1) * .03 * float, .02 + rest * .09 + float * .07 * Math.sin(s * .8), Math.sin(s * .9) * .025 * float);
       motes.forEach((m, i) => { m.position.y = 2 + ((s * .09 + i * .37) % 6); m.position.x += Math.sin(s * .4 + i) * .002 + air * .006; });
     },
@@ -997,10 +1006,17 @@ function nalan(scene) {
   }
   branch.position.set(0, 0, -17); scene.add(shade(branch, true, false));
   // Two lattice casements: the left already closed, the right open to the wind.
-  const frameMat = lambert('#423e36');
+  const frameMat = lambert('#45584e');
   const left = latticePanel(frameMat, 5, 8, 1), right = latticePanel(frameMat, 5, 8, -1);
   left.position.set(-5, 3, -9.5); right.position.set(5, 3, -9.5);
   scene.add(left, right);
+  const glassCanvas=document.createElement('canvas');glassCanvas.width=128;glassCanvas.height=128;
+  const glassInk=glassCanvas.getContext('2d');glassInk.fillStyle='#9b9e86';glassInk.fillRect(0,0,128,128);
+  glassInk.strokeStyle='rgba(224,216,179,.2)';glassInk.lineWidth=2;
+  for(let x=0;x<144;x+=16)for(let y=0;y<144;y+=16){glassInk.beginPath();glassInk.ellipse(x,y,6,6,0,0,Math.PI*2);glassInk.stroke()}
+  const glassMap=new CanvasTexture(glassCanvas);glassMap.colorSpace=SRGBColorSpace;
+  const pressedGlass=new MeshLambertMaterial({map:glassMap,transparent:true,opacity:.32,side:DoubleSide,depthWrite:false});
+  for(const [panel,side] of [[left,1],[right,-1]])add(panel,new PlaneGeometry(4.5,1.1),pressedGlass,side*2.5,7.25,-.02);
   // A low table in the light: an open book, a cup.
   const table = new Group();
   add(table, box, wood, 0, 1.75, 0, 7.4, .28, 3.8);
@@ -1008,7 +1024,9 @@ function nalan(scene) {
   const page = new MeshLambertMaterial({ map: pageTexture() });
   for (const s of [-1, 1]) { const p = add(table, new BoxGeometry(1.7, .05, 2.3), page, s * .86, 1.96 + .04, .1); p.rotation.z = -s * .07; }
   add(table, box, lambert('#57524a'), 0, 1.92, .1, 3.6, .06, 2.4);
-  const cup = add(table, new CylinderGeometry(.34, .25, .52, 18), lambert('#b8bba9'), 2.7, 2.15, .7);
+  const cup = add(table, new CylinderGeometry(.34, .3, .52, 18), lambert('#b9bdb0'), 2.7, 2.15, .7);
+  const cupRim=add(table,new CylinderGeometry(.35,.35,.025,24),lambert('#43584f'),2.7,2.42,.7);
+  add(table,new CylinderGeometry(.28,.28,.012,20),lambert('#554737'),2.7,2.438,.7);
   add(table, new CylinderGeometry(.5, .5, .04, 18), lambert('#a9ac9b'), 2.7, 1.91, .7);
   table.position.set(4.2, 0, -3.6); table.rotation.y = -.1; scene.add(shade(table));
   const steam = smoke(scene, 9, '#e6dfcf');
@@ -1026,7 +1044,7 @@ function nalan(scene) {
   let lastPuff = 0;
   return {
     target: new Vector3(1.8, 3.8, -3.6), radius: 18.5, height: 4.6, fov: 38, yaw: 18, pitch: [12, 21], shadows: true, still: 22, motion,
-    tick(t, s) {
+    tick(t, s, dt, attention = {x:0,y:0}) {
       const gust = .15 + .1 * Math.sin(s * .4);
       // The open casement only stirs.
       right.rotation.y = .95 + Math.sin(s * .5) * .025 + Math.sin(s * 1.3) * .008;
@@ -1052,6 +1070,7 @@ function nalan(scene) {
       hero.position.x = from.x + (rest.x - from.x) * fall ** 1.8 + swing * .8 * amp;
       hero.position.y += (1 - Math.abs(swing)) * .12 * amp;
       hero.position.z += Math.cos((s - 2.5) * .55) * .5 * amp;
+      hero.position.x+=attention.x*.55*amp;hero.position.z+=attention.y*.3*amp;
       // It shows us its face as it swings, and lies flat only when it lands.
       const flat = seg(s, 17.5, 20);
       Object.assign(motion,{leaf:hero.visible?(1-flat)*(.45+.25*Math.abs(swing)):0,x:hero.position.x/10});
@@ -1076,18 +1095,6 @@ function nalan(scene) {
       }
     },
   };
-}
-
-// ---------------------------------------------------------------- Present: the book, and a light to read it by
-// I wish it were not dark. In the dark there is an open book; a small flame
-// takes, steadies, and the pages come up out of the dark around it.
-function printTexture() {
-  const c = document.createElement('canvas'); c.width = 256; c.height = 340;
-  const g = c.getContext('2d'), r = (seed => () => (seed = seed * 16807 % 2147483647) / 2147483647)(3);
-  g.fillStyle = '#d8d2c2'; g.fillRect(0, 0, 256, 340);
-  g.fillStyle = 'rgba(58,60,58,.34)';
-  for (let y = 36; y < 310; y += 13) { const w = y > 290 ? 90 : 176 - r() * 12; g.fillRect(40, y, w, 3.2); }
-  const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; t.anisotropy = 4; return t;
 }
 
 const WORLDS = { 'art-waugh2': brideshead, 'art-burns': burns, 'art-nalan': nalan, 'art-pushkin': pushkin,
@@ -1123,6 +1130,7 @@ function mount(art, build) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let running = false, animation = null, held = false, printed = false;
   let ambient = 0, story = 0, prev = 0, frames = 0, fpsT = performance.now();
+  const attention = {x:0,y:0};
   const maxYaw = MathUtils.degToRad(world.yaw ?? 24);
   const [pMin, pMax] = world.pitch ?? [1.5, 11];
   const middle = MathUtils.degToRad((pMin + pMax) / 2);
@@ -1150,7 +1158,7 @@ function mount(art, build) {
   }
   function draw(dt) {
     view(dt);
-    world.tick(ambient * .12, story, dt);
+    world.tick(ambient * .12, story, dt, attention);
     if(id)window.memoryGestures?.set(id,world.motion||{});
     const light = Number(art.style.getPropertyValue('--candle-light')) || 0;
     candle.intensity = light * Math.min(90, world.radius * 1.4);
@@ -1163,10 +1171,16 @@ function mount(art, build) {
   }
   function frame(now) {
     const dt = prev ? Math.min(.1, (now - prev) / 1000) : 0; prev = now;
+    const pointer=window.memoryMotion?.pointer?.();
+    const pull=pointer?.present&&!reduced.matches?1:0;
+    const ease=1-Math.exp(-dt/1.6);
+    attention.x+=((pointer?.x||0)*pull-attention.x)*ease;
+    attention.y+=((pointer?.y||0)*pull-attention.y)*ease;
     const owned = window.memoryTimeline?.sceneTime?.(id);
+    const storyStep = owned === null || owned === undefined ? dt : Math.max(0, Math.min(.1, owned - story));
     story = owned ?? story + dt;
     ambient = owned ?? ambient + dt;
-    draw(dt);
+    draw(storyStep);
     frames++;
     if (now - fpsT > 2000) { art.dataset.fps = (frames * 1000 / (now - fpsT)).toFixed(1); frames = 0; fpsT = now; }
   }
@@ -1385,7 +1399,9 @@ function mountTrain() {
     frameId = null;
     if (state !== 'running') return;
     const dt = prev ? Math.min(.1, (now - prev) / 1000) : 0; prev = now;
+    const previousStory = story;
     if (!covered && !document.hidden) story = window.memoryTimeline?.sceneTime?.('thackeray') ?? story + dt;
+    const storyStep = Math.max(0, Math.min(.1, story - previousStory));
     const p = Math.min(1, story / duration);
     host.dataset.progress = p.toFixed(3);
     // The layer goes ahead; the train starts once there is line to run on.
@@ -1417,7 +1433,7 @@ function mountTrain() {
     for (const sp of puffs) {
       const a = sp.userData.age = story - (sp.userData.born ?? -99);
       if (!(a >= 0 && a < 5)) { sp.material.opacity = 0; continue; }
-      sp.position.y += dt * .9; sp.position.x += dt * sp.userData.drift;
+      sp.position.y += storyStep * .9; sp.position.x += storyStep * (sp.userData.drift+(window.memoryMotion?.pointer?.().x||0)*.3);
       sp.scale.setScalar(.6 + a * 1.2); sp.material.opacity = .42 * Math.min(1, a * 3) * (1 - a / 5);
     }
     const was = heard.front;
@@ -1474,31 +1490,10 @@ function mountWanderingMouse() {
   scene.add(new HemisphereLight('#d4ded7', '#39464a', 1.5));
   const key = new DirectionalLight('#d1e0db', 2.1);
   key.position.set(-3, 5, 4); scene.add(key);
-  const mouse = new Group(); scene.add(mouse);
-  const fur = lambert('#7c8880'), ear = lambert('#8c958a'), dark = lambert('#263332');
-  const sphere = new SphereGeometry(1, 20, 14);
-  add(mouse, sphere, fur, -.22, .62, 0, .91, .48, .43);
-  add(mouse, sphere, fur, .46, .65, 0, .51, .37, .34);
-  add(mouse, sphere, fur, .85, .53, 0, .37, .19, .23);
-  add(mouse, sphere, dark, 1.17, .53, 0, .065, .045, .07);
-  for (const side of [-1, 1]) {
-    add(mouse, sphere, fur, .32, .99, side * .22, .22, .28, .085);
-    add(mouse, sphere, ear, .34, 1.005, side * .265, .155, .21, .026);
-    add(mouse, sphere, dark, .73, .75, side * .285, .065, .07, .038);
-    add(mouse, sphere, lambert('#cedbd4'), .75, .775, side * .313, .018, .019, .014);
-  }
-  const tail = new Mesh(new TubeGeometry(new CatmullRomCurve3([
-    new Vector3(-.98,.43,0), new Vector3(-1.4,.28,.07),
-    new Vector3(-1.8,.25,.25), new Vector3(-2.05,.32,.22)
-  ]), 20, .026, 5, false), fur);
-  mouse.add(tail);
-  const legs = [];
-  for (const [x, z, phase] of [[-.58,-.24,.5],[.58,-.23,.75],[-.58,.28,0],[.58,.27,.25]]) {
-    const upper = add(mouse, new CylinderGeometry(.06,.075,1,8), fur, x,.3,z);
-    const lower = add(mouse, new CylinderGeometry(.035,.05,1,8), fur, x,.15,z);
-    const paw = add(mouse, sphere, ear, x,.055,z,.14,.05,.085);
-    legs.push({upper,lower,paw,x,z,phase,planted:null,lift:null,wasStance:false});
-  }
+  // One mesh factory for both sides of the handover. Only the camera differs.
+  const creature = fieldMouse();
+  const mouse = creature.root, {tail, legs} = creature;
+  scene.add(mouse);
   host.append(canvas);
   host.dataset.dimension = '3d';
   let last = -Infinity, heading = 0, disposed = false, lastGround=null;

@@ -141,8 +141,9 @@
       drift.x+=(aimX-drift.x)*ease;drift.y+=(aimY-drift.y)*ease;
       const bank=dt?clamp((drift.x-oldX)/dt*.18,-12,12):0;
       // Reserve clear air over the mouse, including room for a reaching jump.
-      const flightY=Math.min(baseY+drift.y,cradle.top+mousePosition.y*h-118);
-      butterfly.style.transform=`translate3d(${baseX+drift.x}px,${flightY}px,0) translate(-50%,-50%) rotate(${angle+bank}deg)`;
+      const departure=smooth((flutter-26)/5);
+      const flightY=Math.min(baseY+drift.y,cradle.top+mousePosition.y*h-118)-departure*innerHeight*.5;
+      butterfly.style.transform=`translate3d(${baseX+drift.x+departure*innerWidth*.12}px,${flightY}px,0) translate(-50%,-50%) rotate(${angle+bank}deg)`;
       // SVG transforms hinge at the shared body origin, not a wing bounding box.
       const flap=.22+.78*(.5+.5*Math.cos(flutter*12.4+.24*Math.sin(flutter*1.7)));
       const fold=flap+(1-flap)*smooth((p-.96)/.04);
@@ -150,7 +151,7 @@
       rightWing.setAttribute('transform',`scale(${Math.min(1,fold+.035*Math.sin(flutter*2))},1)`);
       window.memoryGestures?.set('butterfly',{phase:(flutter*12.4+.24*Math.sin(flutter*1.7))/(Math.PI*2),strength:.7,x:(baseX+drift.x)/innerWidth*2-1});
       const distanceVeil=.54+.05*Math.sin(flutter*.27);
-      butterfly.style.opacity=String(distanceVeil);
+      butterfly.style.opacity=String(distanceVeil*(1-departure));
       butterfly.dataset.progress=p.toFixed(3);
       const seconds=elapsed/1000;
       if(seconds>=26&&!transferring)startTransfer();
@@ -220,8 +221,8 @@
       mouseShadow.style.transform=`translate3d(${mx-2}px,${my+10}px,0) translate(-50%,-50%) scale(${depthScale*(1+jump*.25)},.16)`;
       mouseShadow.style.opacity=String(visible*.065*(1-jump*.5));
       }
-      if(p>=.5&&!halfway){halfway=true;dispatchEvent(new Event('memory-butterfly-halfway'))}
-      if(p===1){settle();return;}
+      if(seconds>=26&&!halfway){halfway=true;dispatchEvent(new Event('memory-butterfly-halfway'))}
+      if(seconds>=31){settle();return;}
 
     }
     previous=now;
@@ -241,6 +242,7 @@
       parent.append(element);element.classList.add('is-inhabitant');
       Object.assign(element.style,{position:'absolute',left,top,width,height:'auto',aspectRatio:ratio,transform:'translate(-50%,-50%)'});
     }
+    butterfly.style.opacity='0';
     shadow.remove();mouseShadow.remove();
     dispatchEvent(new Event('memory-butterfly-finished'));
     if(!transferring)startTransfer();

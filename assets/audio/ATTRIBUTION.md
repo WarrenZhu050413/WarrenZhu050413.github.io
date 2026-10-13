@@ -27,4 +27,5 @@ Work identification: https://www.laphil.com/works/seven-preludes-from-op-23 asso
 - Duration: 180.720907 seconds.
 - Changes: audio downloaded as AAC/M4A; no tempo changes, cuts, or added effects. Playback volume is lowered in the browser.
 - No Creative Commons or other republication licence was found in the retrieved upload metadata. The CC BY-SA licence above applies only to the Latso recordings, not this file.
-- Selected for the local blog preview at Warren's explicit request. Music and visual timing remain independent.
+- Selected for the local blog preview at Warren's explicit request. The reading follows the recording clock.
+- Browser playback uses `rachmaninoff-op23-no6-ashkenazy.mp3`, an MP3 conversion of the selected AAC source (`libmp3lame -q:a 2`). The performance, tempo and cuts are unchanged.

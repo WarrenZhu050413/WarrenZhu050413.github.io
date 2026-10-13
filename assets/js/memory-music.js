@@ -9,7 +9,7 @@
       <span>Vladimir Ashkenazy · <a href="https://www.youtube.com/watch?v=G0EBMHFsEwY" target="_blank" rel="noopener">source recording</a></span>
     </div>
     <button type="button" class="memory-music-toggle" aria-label="Play Rachmaninoff, Prelude in E-flat major" aria-describedby="memory-music-credit" aria-pressed="false">
-      <svg viewBox="0 0 20 20" aria-hidden="true"><path class="music-play" d="m7 5 8 5-8 5Z"/><path class="music-pause" d="M7 5v10m6-10v10"/></svg>
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path class="music-play" d="m7 5 8 5-8 5Z"/><path class="music-pause" d="M7 5v10m6-10v10"/></svg><span class="memory-music-label">Listen</span>
     </button>`;
   document.body.append(player);
   const credit=player.querySelector('.memory-music-credit');
@@ -21,7 +21,7 @@
   audio.preload = 'auto';
   audio.autoplay = true;
   audio.volume = .28;
-  audio.src = '/assets/audio/rachmaninoff-op23-no6-ashkenazy.m4a';
+  audio.src = '/assets/audio/rachmaninoff-op23-no6-ashkenazy.mp3';
   player.append(audio);
   let pending = false, pausedByUser = false;
   const gestures = ['pointerdown','click','keydown'];
@@ -31,14 +31,14 @@
   function reflect() {
     button.setAttribute('aria-pressed', String(!audio.paused));
     button.setAttribute('aria-label', audio.paused ? 'Play Rachmaninoff, Prelude in E-flat major' : 'Pause Rachmaninoff');
-    player.dataset.state = audio.paused ? 'paused' : 'playing';
+    if(!audio.error)player.dataset.state = audio.paused ? 'paused' : 'playing';
     if (!audio.paused) stopWaitingForGesture();
   }
   async function start() {
     if (pending || pausedByUser || !audio.paused) return;
     pending = true;
     button.setAttribute('aria-busy', 'true');
-    try { await audio.play(); }
+    try { if(audio.error)audio.load();await audio.play(); }
     catch (error) {
       if (error.name === 'NotAllowedError') player.dataset.state = 'waiting-for-interaction';
       else if (error.name !== 'AbortError') {

@@ -12,14 +12,28 @@
       y:direction*y*distance-(leaving?departure*distance:0)+Math.sin(time*.73+x)*.8*distance,
       blur:distance*2.2};
   }
+  // A bent path, not a slide: the middle of the journey drifts away from its chord.
+  function travel(from,to,t,bend){
+    const e=smooth(t),arc=Math.sin(e*Math.PI);
+    return {x:mix(from.x,to.x,e)+bend.x*arc,y:mix(from.y,to.y,e)+bend.y*arc};
+  }
+  const attention={x:0,y:0,present:false};
+  addEventListener('pointermove',event=>{
+    if(event.pointerType==='touch')return;
+    attention.x=clamp(event.clientX/innerWidth*2-1,-1,1);
+    attention.y=clamp(event.clientY/innerHeight*2-1,-1,1);attention.present=true;
+  },{passive:true});
+  addEventListener('blur',()=>{attention.present=false});
+  document.documentElement.addEventListener('pointerleave',()=>{attention.present=false});
+  const pointer=()=>attention;
   const span=(time,start,end)=>smooth((time-start)/(end-start));
-  window.memoryMotion=Object.freeze({clamp,smooth,mix,damp,cubic,drift,span});
+  window.memoryMotion=Object.freeze({clamp,smooth,mix,damp,cubic,drift,travel,pointer,span});
   // Renderers publish the motion they actually drew. Foley follows these values,
   // so a frozen print, a paused reading, or a seek cannot leave a sound behind.
   const gestures=new Map();
   window.memoryGestures=Object.freeze({
     set(id,gesture){gestures.set(id,{...gesture,at:performance.now()})},
     get(id){const value=gestures.get(id);return value&&performance.now()-value.at<250?value:null},
-    clear(id){gestures.delete(id)}
+    clear(id){if(id===undefined)gestures.clear();else gestures.delete(id)}
   });
 })();

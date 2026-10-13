@@ -202,3 +202,14 @@ html:has(.memory-page .is-unfolding)::-webkit-scrollbar{display:none}
 .is-unfolding:not(.is-static) .memory-growing-poem[data-draft="filler"] p{position:relative;min-height:6em;margin:0}
 .is-unfolding:not(.is-static) .memory-poem-stanza{position:absolute;left:0;top:50%;width:100%;will-change:transform,opacity}
 .is-unfolding:not(.is-static) .memory-poem-stanza .memory-poem-line{max-height:none;overflow:visible}
+
+/* The unobtrusive audio affordance remains readable when a gesture is needed. */
+.memory-music-label{font-family:inherit;font-size:12px;line-height:1.2;letter-spacing:.03em;display:none}
+.memory-music[data-state="paused"] .memory-music-label,.memory-music[data-state="waiting-for-interaction"] .memory-music-label,.memory-music[data-state="unavailable"] .memory-music-label{display:inline}
+.memory-music:not([data-state="playing"]) .memory-music-toggle{width:auto;display:flex;align-items:center;gap:6px;opacity:.8}
+.memory-music-toggle svg{width:16px;height:16px;flex:none}
+.memory-post .is-unfolding .memory-scene-layer #nalan-scene blockquote p{font-size:clamp(18px,1.65vw,24px);color:color-mix(in srgb,var(--ink) 76%,var(--ink-muted));}
+
+/* The railway comes forward with its passage, never over the previous quote. */
+.memory-train{opacity:0;transition:opacity 1.6s ease}
+body:has(.memory-essay[data-active-scene="thackeray"]) .memory-train{opacity:1}

@@ -26,12 +26,11 @@
   ];
   // Seconds into the recording at which each passage arrives. The quiet places
   // in the music carry Brideshead and Nalan; the last rise carries the train.
-  const START={nabokov:0,burns:26,brideshead:70,nalan:92,pushkin:108,wong:126,thackeray:140,coda:160};
-  const SEPARATE=52,FINALE=168,SETTLED=178,END=180.72;
-  // The cat enters with Burns, while the butterfly's first world is still present.
-  const STORY={burns:START.burns};
-  const BEATS=[START.burns,SEPARATE,START.brideshead,START.nalan,START.pushkin,START.wong,START.thackeray,START.coda,FINALE];
+  const timeline=window.memoryTimeline;
+  const {starts:START,finale:FINALE,settled:SETTLED,end:END}=timeline.score;
+  const BEATS=[START.burns,START.brideshead,START.nalan,START.pushkin,START.wong,START.thackeray,START.coda,FINALE];
   const scenes=specs.map(s=>({...s,start:START[s.id],figure:atlas.querySelector(`[data-scene="${s.id}"]`),beat:essay.querySelector(`[data-for="${s.id}"]`)}));
+  const bends={nabokov:[-28,-45],burns:[32,-60],brideshead:[-40,32],nalan:[24,-48],pushkin:[-32,-36],wong:[38,42],thackeray:[-24,54]};
   const entrances={nabokov:[.42,.6],burns:[.7,.78],brideshead:[.5,.56],nalan:[.78,.3],wong:[.5,.5],pushkin:[.66,.8],thackeray:[.7,.5]};
   for(const s of scenes){
     s.art=s.figure.querySelector('.memory-art');s.quote=s.figure.querySelector('blockquote');
@@ -54,37 +53,12 @@
       node.replaceWith(fragment);
     }
   }
-  const {clamp,smooth,mix,damp,drift}=window.memoryMotion;
+  const {clamp,smooth,mix,damp,drift,travel}=window.memoryMotion;
 
   // ---------------------------------------------------------------- the clock
-  const clock={t:0,last:0,running:false};
-  let musicStarted=false;
-  const soundtrack=document.getElementById('memory-soundtrack');
-  function advanceClock(now){
-    const dt=clock.last?Math.min(.25,(now-clock.last)/1000):0;clock.last=now;
-    if(soundtrack&&!soundtrack.paused&&!soundtrack.seeking&&soundtrack.currentTime>0&&clock.t<END-.5)clock.t=soundtrack.currentTime;
-    else if(clock.running&&!musicStarted&&!document.hidden)clock.t+=dt;
-  }
-  function setTime(t){
-    clock.t=t;
-    if(soundtrack&&!soundtrack.paused&&t<END-.5)soundtrack.currentTime=t;
-  }
-  // When the music starts late (a first click, or after a pause) it joins the reading where it is.
-  soundtrack?.addEventListener('play',()=>{
-    musicStarted=true;
-    if(clock.t<END-1&&Math.abs(soundtrack.currentTime-clock.t)>.3)soundtrack.currentTime=clock.t;
-  });
-  let pausedWhileHidden=false;
-  document.addEventListener('visibilitychange',()=>{
-    clock.last=0;
-    if(!soundtrack)return;
-    if(document.hidden&&!soundtrack.paused){pausedWhileHidden=true;soundtrack.pause()}
-    else if(!document.hidden&&pausedWhileHidden){pausedWhileHidden=false;soundtrack.play().catch(()=>{})}
-  });
-  window.memoryTimeline={
-    time:()=>clock.t,
-    sceneTime(id){const start=STORY[id]??START[id];return start===undefined?null:Math.max(0,clock.t-start)}
-  };
+  const clock={get t(){return timeline.time()}};
+  timeline.connect(document.getElementById('memory-soundtrack'));
+  const setTime=t=>timeline.seek(t);
   function frontier(){let f=0;for(let i=0;i<scenes.length;i++)if(clock.t>=scenes[i].start)f=i;return f}
 
   // ---------------------------------------------------------------- cues
@@ -145,28 +119,14 @@
   });
 
   // ---------------------------------------------------------------- beats
-  function separateOpening(){
-    if(essay.dataset.opening!=='joined')return;
-    essay.dataset.opening='separated';
-    for(const s of scenes.slice(0,2)){
-      s.figure.dataset.side=s.side;
-      setTimeout(()=>s.art.classList.remove('is-opening-duet'),6000);
-    }
-    // The field is now its own picture, with its own small story.
-    if(current<2)goTo(1.4);
-  }
   addEventListener('memory-butterfly-halfway',()=>{
     if(essay.dataset.opening!=='joined'&&essay.dataset.opening)return;
     essay.dataset.opening='joined';
     for(const s of scenes.slice(0,2))s.art.classList.add('is-opening-duet');
     if(current<1.4)goTo(1.4);
   });
-  addEventListener('memory-butterfly-finished',()=>{butterflyFinished=true;separateOpening()});
+  addEventListener('memory-butterfly-finished',()=>{butterflyFinished=true});
   function onBeat(beat){
-    if(beat===SEPARATE){
-      if(!butterflyFinished)dispatchEvent(new CustomEvent('memory-scene-skip',{detail:{id:'burns'}}));
-      return;
-    }
     if(beat===FINALE){
       dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:'finale',duration:(END-FINALE)*1000}}));
       if(!opened&&current>=scenes.length-1.1)goTo(scenes.length);
@@ -176,6 +136,10 @@
       dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:'coda',duration:8000}}));
       if(!opened)goTo(scenes.length);
       return;
+    }
+    if(beat===START.brideshead){
+      essay.dataset.opening='separated';
+      for(const s of scenes.slice(0,2))s.art.classList.remove('is-opening-duet');
     }
     const i=scenes.findIndex(s=>s.start===beat);
     const after=BEATS.find(b=>b>beat)??END;
@@ -204,7 +168,6 @@
   }
   function openWorld(s){
     if(opened||!s.figure.classList.contains('is-reached'))return;
-    state(s,'set');
     const origin=s.art.getBoundingClientRect();
     opened={s,origin,parent:s.figure.parentNode,next:s.figure.nextSibling,artStyle:s.art.getAttribute('style'),quoteStyle:s.quote?.getAttribute('style'),overflow:document.documentElement.style.overflow};
     s.art.getAnimations().forEach(a=>a.cancel());
@@ -243,6 +206,9 @@
     opened=null;closing=false;
     s.art.focus({preventScroll:true});
     requestScroll();
+    // The music and world continued in the dialog; return to the current beat.
+    if(clock.t>=FINALE)goTo(scenes.length);
+    else if(frontier()>Math.floor(current))goTo(frontier()+.4);
   }
   closeButton.addEventListener('click',closeWorld);
   dialog.addEventListener('cancel',event=>{event.preventDefault();closeWorld()});
@@ -371,8 +337,7 @@
     presentationTime+=dt;
     atEnd=current>=scenes.length-.05;
     const joined=essay.dataset.opening==='joined';
-    const flight=Number(document.querySelector('.memory-butterfly')?.dataset.progress||0);
-    const blend=smooth((flight-.5)/.22);
+    const blend=smooth((clock.t-START.burns)/5);
     let count=2;
     for(let i=0;i<scenes.length;i++){
       const s=scenes[i],p=current-i;
@@ -392,10 +357,12 @@
       const focusScale=baseScale*.86;
       const scale=mix(mix(approach*baseScale,focusScale,entering),s.small/s.width,settling);
       const entry=entrances[s.id];
-      let x=mix(mix(entry[0],s.focus[0],entering),s.home[0],settling)*innerWidth;
-      let y=mix(mix(entry[1],s.focus[1],entering),s.home[1],settling)*innerHeight;
-      const arc=Math.sin(clamp(p)*Math.PI*2)*(s.id==='wong'?45:18)*baseScale*(1-settling);
-      y+=arc;
+      const [bendX,bendY]=bends[s.id];
+      const arrival=travel({x:entry[0]*innerWidth,y:entry[1]*innerHeight},
+        {x:s.focus[0]*innerWidth,y:s.focus[1]*innerHeight},clamp(p/.28),{x:bendX,y:bendY});
+      const departure=travel(arrival,{x:s.home[0]*innerWidth,y:s.home[1]*innerHeight},
+        clamp((p-.7)/.3),{x:-bendX*.7,y:bendY*.5});
+      let {x,y}=departure;
       s.homeAt={x,y};
       const rotation=mix(s.turn*(1-entering),s.turn*.55,settling);
       // Earlier prints recede while another passage needs the reading space.
@@ -470,15 +437,15 @@
     loopId=null;
     if(reduced.matches)return;
     const dt=last?Math.min(.1,(now-last)/1000):.016;last=now;
-    advanceClock(now);
+    timeline.tick(now);
     beats();
-    current+=(target-current)*(1-Math.exp(-dt/.32));
+    current+=(target-current)*(1-Math.exp(-dt/.72));
     if(Math.abs(target-current)<.0005)current=target;
     if(!opened)render(dt);
     loopId=requestAnimationFrame(loop);
   }
   let last=0;
-  function start(){if(loopId===null&&!reduced.matches){last=0;clock.last=0;loopId=requestAnimationFrame(loop)}}
+  function start(){if(loopId===null&&!reduced.matches){last=0;loopId=requestAnimationFrame(loop)}}
   // The reader cannot scroll past the passage the music has reached.
   function requestScroll(){
     if(reduced.matches||opened)return;
@@ -512,7 +479,7 @@
     if(opened)await closeWorld();
     if(reduced.matches){
       if(loopId!==null)cancelAnimationFrame(loopId);loopId=null;
-      clock.running=false;clearFinale();
+      timeline.setRunning(false);clearFinale();
       delete essay.dataset.opening;
       for(const s of scenes.slice(0,2))s.art.classList.remove('is-opening-duet');
       essay.classList.add('is-unfolding','is-static');
@@ -526,7 +493,7 @@
     }
     essay.classList.remove('is-static');
     essay.classList.add('is-unfolding');
-    clock.running=true;
+    timeline.setRunning(true);
     resize();start();
   }
   addEventListener('scroll',requestScroll,{passive:true});
