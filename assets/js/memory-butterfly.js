@@ -230,11 +230,10 @@
     openWings();
     ended=true;openingLine?.style.setProperty('--opening-ink','1');
     if(frameId!==null)cancelAnimationFrame(frameId);frameId=null;
-    // The encounter stays where it happened, in the cradle's print. The field
-    // that follows has its own mouse and its own small story.
+    const from=mouse.getBoundingClientRect();
+    // The butterfly remains in the print; the mouse walks into the field.
     for(const [element,parent,left,top,width,ratio] of [
-      [butterfly,art,'55%','35%','10%','92/78'],
-      [mouse,art,`${mousePosition.x*100}%`,`${mousePosition.y*100}%`,'6.1%','80/60']
+      [butterfly,art,'55%','35%','10%','92/78']
     ]){
       if(!parent){element.remove();continue}
       parent.append(element);element.classList.add('is-inhabitant');
@@ -242,7 +241,45 @@
     }
     shadow.remove();mouseShadow.remove();
     dispatchEvent(new Event('memory-butterfly-finished'));
+    mouse.dataset.transfer='true';
+    let lastTime=performance.now(),lastX=from.left+from.width/2,lastY=from.top+from.height/2;
+    function transfer(now){
+      const t=window.memoryTimeline?.time?.()??57;
+      const target=document.querySelector('.art-burns')?._world?.travellerPosition?.();
+      const progress=smooth((t-52)/5);
+      if(target){
+        const x=(from.left+from.width/2)*(1-progress)+target.x*progress;
+        const y=(from.top+from.height/2)*(1-progress)+target.y*progress;
+        const distance=Math.hypot(x-lastX,y-lastY),dt=Math.max(.001,(now-lastTime)/1000);
+        gait+=distance*.15;
+        mouse.style.transform=`translate3d(${x}px,${y}px,0) translate(-50%,-50%)`;
+        const moving=clamp(distance/dt/8,0,1);
+        dispatchEvent(new CustomEvent('memory-mouse-frame',{detail:{phase:gait,moving,heading:Math.atan2(-(y-lastY)*2.5,x-lastX),groundX:x,groundY:y,depthScale:1,seconds:t}}));
+        lastX=x;lastY=y;lastTime=now;
+      }
+      if(progress<1&&!reduced.matches){requestAnimationFrame(transfer);return}
+      mouse.remove();
+      dispatchEvent(new Event('memory-mouse-transferred'));
+    }
+    requestAnimationFrame(transfer);
   }
+  // The same butterfly returns to lift the pendant by its cord in the coda.
+  let returnFrom=null;
+  addEventListener('memory-pendant-frame',event=>{
+    if(reduced.matches)return;
+    if(!returnFrom){
+      const r=butterfly.getBoundingClientRect();returnFrom={x:r.left+r.width/2,y:r.top+r.height/2};
+      document.body.append(butterfly);
+      Object.assign(butterfly.style,{position:'fixed',left:'0',top:'0',width:'48px',height:'41px',aspectRatio:'92/78'});
+      butterfly.classList.remove('is-inhabitant');
+    }
+    const {x,y,seconds}=event.detail;
+    const p=smooth((seconds-168)/3),arc=Math.sin(p*Math.PI)*innerHeight*.12;
+    butterfly.style.transform=`translate3d(${returnFrom.x+(x-returnFrom.x)*p}px,${returnFrom.y+(y-returnFrom.y)*p-arc}px,0) translate(-50%,-50%) rotate(${-8+Math.sin(seconds*1.2)*4}deg)`;
+    const wing=.3+.7*(.5+.5*Math.cos(seconds*11));
+    leftWing.setAttribute('transform',`scale(${wing},1)`);rightWing.setAttribute('transform',`scale(${wing},1)`);
+    butterfly.style.opacity='.58';
+  });
   function schedule() {
     if (!ended && frameId===null) frameId=requestAnimationFrame(frame);
   }

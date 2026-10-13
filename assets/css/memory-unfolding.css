@@ -159,7 +159,7 @@ html:has(.memory-page .is-unfolding)::-webkit-scrollbar{display:none}
 .memory-essay:is([data-active-scene="collected"],[data-active-scene="finale"]) .memory-stage > .memory-music-credit{opacity:.65;visibility:visible;pointer-events:auto}
 
 /* The second line develops into ink while the first is already present. */
-.is-unfolding:not(.is-static) .memory-growing-poem .memory-poem-line:nth-child(2){opacity:calc(var(--reveal,0)*var(--opening-ink,0));filter:blur(calc((1 - var(--opening-ink,0))*3px))}
+.is-unfolding:not(.is-static) .memory-growing-poem:not([data-draft="filler"]) .memory-poem-line:nth-child(2){opacity:calc(var(--reveal,0)*var(--opening-ink,0));filter:blur(calc((1 - var(--opening-ink,0))*3px))}
 
 /* The opening is already there. Only the eventual separation travels. */
 .memory-post .is-unfolding[data-opening="joined"] .memory-scene-layer .memory-art.is-opening-duet{transition:none}
@@ -168,9 +168,11 @@ html:has(.memory-page .is-unfolding)::-webkit-scrollbar{display:none}
 .memory-cross{position:absolute;left:50%;top:50%;z-index:0;width:clamp(46px,4.2vw,64px);pointer-events:none;opacity:0;transform:translate(-50%,-50%)}
 .memory-cross::before{content:"";position:absolute;inset:-70% -120%;border-radius:50%;background:radial-gradient(closest-side,rgba(205,219,232,.32),transparent);z-index:-1}
 .memory-cross svg{display:block;width:100%;height:auto;overflow:visible}
-.memory-cross .strand path{stroke:#5f7f9d;stroke-width:2.5;opacity:.82}
-.memory-cross .gap path{stroke:var(--bg,#efede6);stroke-width:4.8}
-.memory-cross .ends circle{fill:#6d8aa6;opacity:.85}
+.memory-pendant{transform-origin:30% 4%;transition:transform 2.4s cubic-bezier(.2,.65,.3,1);filter:drop-shadow(2px 3px 3px rgba(0,0,0,.2))}
+.memory-poem-stanza[hidden]{display:none}
+.is-static .memory-growing-poem{max-height:80vh;overflow:auto;pointer-events:auto!important}
+.is-static .memory-poem-stanza{display:block;margin:1em 0}
+.is-unfolding .memory-stage .memory-poem-stanza .memory-poem-line:nth-child(n){margin-top:0}
 .memory-post .is-unfolding .memory-scene-layer figure blockquote.is-orbiting{max-width:none;overflow:hidden;-webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent);transform-origin:50% 50%;cursor:default}
 .is-unfolding[data-active-scene="finale"] .memory-stage .memory-growing-poem{transform-origin:50% 50%}
 /* Short screens: long passages keep within the page without losing their lane. */
@@ -182,3 +184,16 @@ html:has(.memory-page .is-unfolding)::-webkit-scrollbar{display:none}
 .memory-post #pushkin-scene blockquote p+p{font-style:italic}
 .memory-cue-word{transition:transform 1.8s ease,color 1.8s ease,text-shadow 1.8s ease}
 .memory-post blockquote.is-cued .memory-cue-word{color:var(--ink);transform:translateY(-1.5px);text-shadow:0 0 18px rgba(214,190,146,.5)}
+
+/* The candle follows without inertia. Its light reaches several words at once. */
+.memory-candle-glow{position:fixed;left:0;top:0;width:0;height:0;z-index:9;pointer-events:none;opacity:0;transition:opacity .65s ease}
+.memory-candle-glow::before{content:"";position:absolute;left:-175px;top:-175px;width:350px;height:350px;border-radius:50%;background:radial-gradient(closest-side,rgba(227,198,147,.075),rgba(213,190,152,.025) 42%,transparent 100%)}
+.memory-candle-glow.is-visible{opacity:1}
+@media(hover:hover) and (pointer:fine){
+ .memory-stage,.memory-post .is-unfolding .memory-scene-layer .memory-art,.memory-post .memory-world-dialog,.memory-post .memory-world-dialog .memory-art,.memory-quote-word,.memory-poem-line{cursor:url('/assets/images/memory/cursor-candle.svg') 14 37,default}
+ .memory-quote-word{color:color-mix(in srgb,currentColor, var(--ink) calc(var(--candle-light,0) * 65%));text-shadow:0 0 15px rgba(208,178,128,calc(var(--candle-light,0) * .24));}
+ .memory-poem-line{text-shadow:0 0 18px rgba(219,195,154,calc(var(--candle-light,0) * .34));transition:text-shadow .8s ease}
+}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ .memory-quote-word{transform:translateY(calc(var(--candle-light,0) * -1.2px))}
+}

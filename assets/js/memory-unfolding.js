@@ -12,6 +12,7 @@
   const poem=essay.querySelector('.memory-growing-poem');
   const atlas=essay.querySelector('.memory-atlas');
   const lines=[...poem.querySelectorAll('.memory-poem-line')];
+  const stanzas=[...poem.querySelectorAll('.memory-poem-stanza')];
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   // Width, resting place, reading side and reveal count belong to each scene.
   const specs=[
@@ -106,8 +107,7 @@
   stage.append(previousCue);
   // The figures leave the static atlas for the stage, where they are composed.
   stage.append(poem);for(const s of scenes)layer.append(s.figure);
-  // At the centre of the end, a small braided cross in faded blue: eight points,
-  // the slanted foot of the Orthodox cross, each bar two strands woven over and under.
+  // A small blue pendant hangs on its cord at the centre of the ending.
   const cross=document.createElement('div');cross.className='memory-cross';cross.setAttribute('aria-hidden','true');
   layer.append(cross);
   const nextBeat=()=>BEATS.find(b=>b>clock.t+.05);
@@ -265,28 +265,19 @@
   }
 
   // ---------------------------------------------------------------- the ring at the end
-  function braidedCross(){
-    const bars=[[0,-56,0,64],[-12,-38,12,-38],[-31,-20,31,-20],[-17,33,17,44]];
-    const amp=3.3,wave=10;let under='',over='',ends='';
-    for(const [x1,y1,x2,y2] of bars){
-      const len=Math.hypot(x2-x1,y2-y1),ux=(x2-x1)/len,uy=(y2-y1)/len,nx=-uy,ny=ux;
-      const pieces=Math.max(2,Math.round(len/(wave/2)));
-      for(const strand of [1,-1])for(let k=0;k<pieces;k++){
-        let d='';
-        for(let j=0;j<=8;j++){
-          const t=(k+j/8)/pieces*len,off=strand*amp*Math.sin(t/len*pieces*Math.PI);
-          d+=`${j?'L':'M'}${(x1+ux*t+nx*off).toFixed(2)} ${(y1+uy*t+ny*off).toFixed(2)}`;
-        }
-        // Strands take turns lying on top at each crossing.
-        const piece=`<path d="${d}"/>`;
-        if((k+(strand>0?0:1))%2)over+=piece;else under+=piece;
-      }
-      ends+=`<circle cx="${x1}" cy="${y1}" r="2.6"/><circle cx="${x2}" cy="${y2}" r="2.6"/>`;
-    }
-    return `<svg viewBox="-42 -66 84 140" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke-linecap="round">`+
-      `<g class="strand">${under}</g><g class="gap">${over}</g><g class="strand">${over}</g></g><g class="ends">${ends}</g></svg>`;
-  }
-  cross.innerHTML=braidedCross();
+  cross.innerHTML=`<div class="memory-pendant"><svg viewBox="-44 -108 88 174" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="pendant-metal" x1="0" y1="0" x2="1" y2=".7"><stop stop-color="#99aebb"/><stop offset=".4" stop-color="#6b8b9e"/><stop offset="1" stop-color="#3d576c"/></linearGradient></defs>
+    <path d="M-18-102C-39-84-21-49-3-42M-18-102C5-101 23-69 0-42" fill="none" stroke="#9a9487" stroke-width="1.05" opacity=".75"/>
+    <ellipse cx="-1.5" cy="-39" rx="3" ry="4.5" fill="none" stroke="#8195a0" stroke-width="1.5"/>
+    <path d="M-4-35H2V-23H14V-18H2V-5H27V1H2V30L15 34V40L2 36V61H-4V34L-17 30V24L-4 28V1H-29V-5H-4V-18H-16V-23H-4Z" fill="#273c4b" transform="translate(1.2 1.1)"/>
+    <path d="M-4-35H2V-23H14V-18H2V-5H27V1H2V30L15 34V40L2 36V61H-4V34L-17 30V24L-4 28V1H-29V-5H-4V-18H-16V-23H-4Z" fill="url(#pendant-metal)"/>
+    <path d="M-3-34V-22H13M-28-4H-3V29L-16 25M-3 35V60" fill="none" stroke="#d0d6d0" stroke-width=".55" opacity=".45"/>
+  </svg></div>`;
+  let crossX=0,crossY=0;
+  addEventListener('pointermove',event=>{
+    crossX=(event.clientX/innerWidth-.5)*2;
+    crossY=(event.clientY/innerHeight-.5)*2;
+  },{passive:true});
   // The passages and the poem turn one way, the prints the other, around the small cross.
   const rings=[...scenes.filter(s=>s.quote).map(s=>({el:s.quote,focus:0,hover:false})),{el:poem,focus:0,hover:false,poem:true}];
   for(const item of rings){
@@ -324,7 +315,12 @@
       s.art.style.opacity=String(mix(.44,.62,e));
     });
     cross.style.opacity=String(smooth((e-.15)/.6));
-    cross.style.transform=`translate(-50%,-50%) scale(${mix(.9,1,e)})`;
+    const lift=smooth((clock.t-172)/8.72),liftX=Math.sin(lift*Math.PI*.8)*W*.055,liftY=-lift*H*.65;
+    cross.style.transform=`translate(calc(-50% + ${liftX}px),calc(-50% + ${liftY}px)) scale(${mix(.9,1,e)})`;
+    const sway=reduced.matches?0:Math.sin((clock.t-FINALE)*.82)*1.4;
+    cross.firstElementChild.style.transform=`perspective(450px) rotateX(${-crossY*5}deg) rotateY(${crossX*12}deg) rotateZ(${-7+crossX*3+sway}deg)`;
+    const pendantBounds=cross.getBoundingClientRect();
+    dispatchEvent(new CustomEvent('memory-pendant-frame',{detail:{x:pendantBounds.left+pendantBounds.width*.31,y:pendantBounds.top+pendantBounds.height*.035,seconds:clock.t}}));
     // The passages, and the poem drawn in to become one of them.
     const n=rings.length,rx=W*.265,ry=H*.29;
     rings.forEach((item,k)=>{
@@ -417,7 +413,16 @@
     }
     const field=window.memoryTimeline.sceneTime('burns');
     scenes[1].quote?.classList.toggle('is-cued',field>=14.1&&field<23);
-    for(let i=0;i<lines.length;i++)lines[i].style.setProperty('--reveal',String(clamp(count-i)));
+    if(stanzas.length){
+      const active=[...stanzas].reverse().find(s=>clock.t>=Number(s.dataset.start))||stanzas[0];
+      for(const stanza of stanzas){
+        stanza.hidden=!reduced.matches&&stanza!==active;
+        if(stanza.hidden)continue;
+        const ownLines=[...stanza.querySelectorAll('.memory-poem-line')];
+        ownLines.forEach((line,i)=>line.style.setProperty('--reveal',reduced.matches?'1':String(smooth((clock.t-Number(stanza.dataset.start)-i*1.1)/2.8))));
+        count=ownLines.length;
+      }
+    }else for(let i=0;i<lines.length;i++)lines[i].style.setProperty('--reveal',String(clamp(count-i)));
     essay.dataset.poemLines=String(Math.floor(count));
     poem.style.setProperty('--visible-lines',String(Math.max(2,Math.ceil(count))));
     const ending=atEnd&&finale(dt);

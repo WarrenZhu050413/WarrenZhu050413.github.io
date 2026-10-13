@@ -279,12 +279,12 @@ function brideshead(scene) {
     target, radius: 165, height: 4.2, fov: 23, water: water_, still: 28,
     tick(t, s) {
       // The car pulls away from the door, goes once round the fountain, and leaves.
-      const k = clamp01((s - 2) / 22), along = k * k * (3 - 2 * k) * .55 + k * k * .45;
+      const along = .12 * seg(s, 2, 8) + .22 * seg(s, 4, 16) + .66 * seg(s, 13, 22);
       car.group.position.copy(leaving.getPointAt(along)).setY(.24);
       const d = leaving.getTangentAt(along);
       car.group.rotation.y = Math.atan2(-d.z, d.x);
       car.group.visible = along < .995;
-      for (const w of car.wheels) w.rotation.z = -along * 180;
+      for (const w of car.wheels) w.rotation.z = -along * leaving.getLength() / (.36 * 1.5);
       // Meanwhile the house goes: stacks and statues fall, the lantern goes in,
       // ivy takes the walls, the windows go dark and the fountain stops.
       for (const m of falls) {
@@ -686,53 +686,100 @@ function fieldMouse(colour = '#7d837b') {
   return { root, head, inner, pose };
 }
 
-function cat(colour = '#5b5952') {
-  // Drawn for its profile: long back, small head, hind legs that fold at the hock.
+function cat(colour = '#353d39') {
   const root = new Group(), fur = lambert(colour), sphere = new SphereGeometry(1, 20, 14);
-  add(root, sphere, fur, -.05, 1.42, 0, 1.3, .44, .38);
-  add(root, sphere, fur, .85, 1.42, 0, .52, .5, .38);
-  add(root, sphere, fur, -.95, 1.42, 0, .55, .52, .4);
-  const neck = add(root, new CylinderGeometry(.2, .3, 1, 10), fur, 0, 0, 0);
-  const head = new Group(); root.add(head);
-  add(head, sphere, fur, 0, 0, 0, .38, .33, .34);
-  add(head, sphere, fur, .3, -.09, 0, .18, .13, .16);
-  add(head, sphere, lambert('#1d2120'), .46, -.06, 0, .03, .028, .04);
-  for (const side of [-1, 1]) {
-    const ear = add(head, new ConeGeometry(.12, .3, 4), fur, -.04, .34, side * .17); ear.rotation.set(side * .2, 0, -.15);
-    add(head, sphere, lambert('#282d2b'), .24, .07, side * .15, .045, .035, .03);
+  // A single continuous coat: fuller over the hips and shoulder, tucked at the flank.
+  const coat = new BufferGeometry(), vertices = [], indices = [], rows = 48, around = 20;
+  for (let i = 0; i <= rows; i++) {
+    const u = i / rows, x = -1.47 + u * 2.78;
+    const radius = Math.sin(Math.PI * u) ** .42 * (.33 + .13 * Math.exp(-(((u - .2) / .2) ** 2)) + .11 * Math.exp(-(((u - .86) / .16) ** 2)));
+    for (let j = 0; j <= around; j++) {
+      const a = j / around * Math.PI * 2;
+      vertices.push(x, 1.44 + Math.cos(a) * radius, Math.sin(a) * radius * .83);
+      if (i < rows && j < around) { const n = i * (around + 1) + j; indices.push(n, n + 1, n + around + 1, n + 1, n + around + 2, n + around + 1); }
+    }
   }
-  const bones = (n, r0, r1) => Array.from({ length: n }, (_, i) => add(root, new CylinderGeometry(r1 - i * .01, r0 - i * .01, 1, 8), fur, 0, 0, 0));
-  const legs = [[-1.0, -.24, 0, 1], [.9, -.24, .25, 0], [-1.0, .24, .5, 1], [.9, .24, .75, 0]].map(([x, z, phase, hind]) => ({
-    x, z, phase, hind, b: bones(hind ? 3 : 2, .1, .075), paw: add(root, sphere, fur, 0, 0, 0, .11, .055, .09),
-    joints: Array.from({ length: hind ? 2 : 1 }, () => add(root, sphere, fur, 0, 0, 0, .085, .085, .085)),
+  coat.setAttribute('position', new Float32BufferAttribute(vertices, 3)); coat.setIndex(indices); coat.computeVertexNormals();
+  const body = new Mesh(coat, fur); root.add(body);
+  const neck = add(root, new CylinderGeometry(.21, .28, 1, 14), fur, 0, 0, 0);
+  const head = new Group(); root.add(head);
+  // A broad, irregular ruff catches the backlight without drawing individual hairs.
+  const ruffGeometry = new SphereGeometry(1, 32, 20);
+  const ruffPoints = ruffGeometry.attributes.position;
+  for (let i = 0; i < ruffPoints.count; i++) {
+    const x = ruffPoints.getX(i), y = ruffPoints.getY(i), z = ruffPoints.getZ(i);
+    const fringe = 1 + .024 * Math.sin(Math.atan2(z, x) * 17 + y * 21);
+    ruffPoints.setXYZ(i, x * .33 * fringe, y * .42 * fringe, z * .35 * fringe);
+  }
+  ruffGeometry.computeVertexNormals();
+  add(head, ruffGeometry, fur, -.13, -.18, 0);
+  const skull = new SphereGeometry(1, 24, 18), p = skull.attributes.position;
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i); p.setXYZ(i, x * .36, y * .31, z * .29 * (1 - Math.max(0, x) * .24)); }
+  skull.computeVertexNormals(); head.add(new Mesh(skull, fur));
+  for (const side of [-1, 1]) {
+    add(head, sphere, fur, .22, -.11, side * .085, .19, .12, .14);
+    const earShape = new Shape(); earShape.moveTo(-.14, 0); earShape.quadraticCurveTo(-.12, .15, .015, .27); earShape.quadraticCurveTo(.13, .13, .15, -.015); earShape.closePath();
+    const ear = add(head, new ExtrudeGeometry(earShape, { depth: .065, bevelEnabled: true, bevelThickness: .025, bevelSize: .02, bevelSegments: 2, steps: 1 }), fur, -.08, .22, side * .18);
+    ear.rotation.set(side * .15, side * .25, -.16);
+    const eye = add(head, sphere, lambert('#91a998'), .19, .035, side * .24, .064, .035, .016);
+    add(head, sphere, lambert('#101b18'), .205, .035, side * .254, .013, .033, .006);
+    add(head, sphere, lambert('#d5ddcc'), .218, .05, side * .259, .009, .008, .004);
+    for (let j = 0; j < 3; j++) {
+      const whisker = new CatmullRomCurve3([new Vector3(.27, -.10, side * .13), new Vector3(.37, -.09 - j * .025, side * .28), new Vector3(.4, -.055 - j * .07, side * .48)]);
+      head.add(line(whisker.getPoints(8), '#a8afa1', .22));
+    }
+    eye.userData.ear = ear;
+  }
+  add(head, sphere, lambert('#292c29'), .392, -.088, 0, .042, .029, .059);
+  const eyes = head.children.filter(o => o.userData.ear);
+  const legs = [[-1.0, -.24, 0, 1], [.86, -.24, .22, 0], [-1.0, .24, .5, 1], [.86, .24, .72, 0]].map(([x, z, phase, hind]) => ({
+    x, z, phase, hind,
+    b: Array.from({ length: hind ? 3 : 2 }, (_, i) => {
+      const geo = new SphereGeometry(1, 16, 12); geo.scale((i === 0 ? .14 : .082), .58, (i === 0 ? .12 : .068));
+      return add(root, geo, fur, 0, 0, 0);
+    }),
+    thigh: hind ? add(root, sphere, fur, x, 1.15, z, .24, .43, .21) : null,
+    shoulder: !hind ? add(root, sphere, fur, x, 1.47, z * .6, .24, .37, .23) : null,
+    paw: add(root, sphere, fur, 0, 0, 0, .16, .085, .11),
   }));
-  const tail = Array.from({ length: 24 }, (_, i) => add(root, sphere, fur, 0, 0, 0, .085 - i * .0012, .085 - i * .0012, .085 - i * .0012));
+  // One tapered skin for the tail, with no chain of beads at its bends.
+  const tailCurve = new CatmullRomCurve3([new Vector3(-1.3,1.5,0),new Vector3(-1.8,1.4,0),new Vector3(-2.4,1.3,.1),new Vector3(-2.8,1.7,.12)]);
+  const tailGeometry = new TubeGeometry(tailCurve, 36, .075, 8, false);
+  const tail = new Mesh(tailGeometry, fur); root.add(tail);
+  const point = new Vector3(), tangent = new Vector3();
   const mouth = new Vector3(.38, -.19, 0);
   function pose({ phase = 0, moving = 0, lower = 0, s = 0, tailUp = 0 }) {
-    // The neck reaches forward and down; the head tips to look at the ground.
-    head.position.set(1.4 + lower * .5, 1.92 - lower * 1.35, 0);
-    head.rotation.z = -lower * .45 + Math.sin(s * .9) * .03 * (1 - lower);
-    bone(neck, new Vector3(1.0, 1.62, 0), head.position.clone().add(new Vector3(-.16, -.04, 0)));
+    const breath = Math.sin(s * 2.1) * .006;
+    body.scale.y = 1 + breath;
+    head.position.set(1.36 + lower * .43, 1.88 - lower * 1.3, 0);
+    head.rotation.set(Math.sin(s * .65) * .025, Math.sin(s * .8) * .018, -lower * .38 + Math.sin(phase * Math.PI * 2) * .018 * moving);
+    bone(neck, new Vector3(.96, 1.6, 0), head.position.clone().add(new Vector3(-.15, -.08, 0)));
+    const blink = Math.max(0, 1 - Math.abs((s % 7.7) - 4.9) / .13);
+    for (const eye of eyes) { eye.scale.y = .035 * (1 - blink * .9); eye.userData.ear.rotation.z = -.16 + Math.sin(s * .7) * .04; }
     for (const leg of legs) {
-      const [fx, fy] = gaitFoot(leg, phase, .9, .22, .6, moving);
-      const hip = new Vector3(leg.x, 1.25, leg.z), foot = new Vector3(fx, .06 + fy, leg.z);
+      const [fx, fy] = gaitFoot(leg, phase, .82, .17, .67, moving);
+      const hip = new Vector3(leg.x, 1.25, leg.z), foot = new Vector3(fx, .08 + fy, leg.z);
       if (leg.hind) {
-        const hock = foot.clone().add(new Vector3(-.13, .36, 0)), stifle = hip.clone().lerp(hock, .5).add(new Vector3(.17, -.02, 0));
+        const hock = foot.clone().add(new Vector3(-.14, .36, 0)), stifle = hip.clone().lerp(hock, .5).add(new Vector3(.17, -.02, 0));
         bone(leg.b[0], hip, stifle); bone(leg.b[1], stifle, hock); bone(leg.b[2], hock, foot);
-        leg.joints[0].position.copy(stifle); leg.joints[1].position.copy(hock);
+        leg.thigh.rotation.z = Math.sin((phase + leg.phase) * Math.PI * 2) * .1 * moving;
       } else {
-        const elbow = hip.clone().lerp(foot, .45).add(new Vector3(-.07, 0, 0));
-        bone(leg.b[0], hip, elbow); bone(leg.b[1], elbow, foot); leg.joints[0].position.copy(elbow);
+        const elbow = hip.clone().lerp(foot, .45).add(new Vector3(-.08, 0, 0));
+        bone(leg.b[0], hip, elbow); bone(leg.b[1], elbow, foot);
+        leg.shoulder.position.y = 1.47 + Math.sin((phase + leg.phase) * Math.PI * 2) * .045 * moving;
       }
-      leg.paw.position.copy(foot).add(new Vector3(.05, 0, 0));
+      leg.paw.position.copy(foot).add(new Vector3(.065, 0, 0));
     }
-    // The tail is carried low and easy, then higher with what she has found.
-    let x = -1.45, y = 1.55, a = 3.6 - tailUp * 1.5;
-    tail.forEach((b, i) => {
-      a += (-.035 + tailUp * .07) + Math.sin(s * 1.3 - i * .25) * .02 * (1 + moving);
-      x += Math.cos(a) * .085; y += Math.sin(a) * .085;
-      b.position.set(x, y, Math.sin(s * 1.1 - i * .2) * .012 * i);
-    });
+    tailCurve.points[1].set(-1.85, 1.35 + tailUp * .6, Math.sin(s * .7) * .08);
+    tailCurve.points[2].set(-2.4, 1.12 + tailUp * 1.18, .12 + Math.sin(s * .7 - .4) * .12);
+    tailCurve.points[3].set(-2.77, 1.43 + tailUp * 1.15, .15 + Math.sin(s * .7 - .7) * .16);
+    const positions = tailGeometry.attributes.position;
+    for (let i = 0; i <= 36; i++) {
+      const u = i / 36; tailCurve.getPoint(u, point); tailCurve.getTangent(u, tangent);
+      const radius = .078 * (1 - u * .8);
+      for (let j = 0; j <= 8; j++) { const a = j / 8 * Math.PI * 2, c = Math.cos(a) * radius; positions.setXYZ(i * 9 + j, point.x - tangent.y * c, point.y + tangent.x * c, point.z + Math.sin(a) * radius); }
+    }
+    positions.needsUpdate = true; tailGeometry.computeVertexNormals();
   }
   return { root, head, mouth, pose };
 }
@@ -777,7 +824,7 @@ function burns(scene) {
   const mouth = new Vector3();
   const birds = rooks(scene, new Vector3(-4, 7, -22));
   return {
-    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6,
+    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6, traveller: mouse.root,
     tick(t, s) {
       const gust = Math.sin(s * .3) * .5 + .5;
       for (const st of stalks) st.rotation.z = st.userData.base + Math.sin(s * 1.4 + st.position.x * .4 + st.userData.phase * .3) * .09 * (.4 + gust);
@@ -812,6 +859,7 @@ function burns(scene) {
         mouse.root.rotation.set(0, Math.PI + lift * (heading + Math.PI / 2 - Math.PI), 0);
         mouse.pose({ s, hang: lift, sit: 0 });
       }
+      mouse.root.visible = !document.querySelector('.memory-mouse[data-transfer="true"]');
       for (const b of birds) {
         const u = b.userData, a = s * u.speed * 4 + u.phase;
         b.position.set(u.centre.x + Math.cos(a) * u.r * .5, u.h, u.centre.z + Math.sin(a) * u.r * .3);
@@ -1137,6 +1185,9 @@ function mount(art, build) {
   renderer.outputColorSpace = SRGBColorSpace;
   const scene = new Scene();
   const world = build(scene);
+  const candle = new PointLight('#dec7a1', 0, Math.max(12, world.radius * .7), 2);
+  scene.add(candle);
+  const candleRay = new Vector3(), candleDirection = new Vector3();
   if (world.shadows) { renderer.shadowMap.enabled = true; renderer.shadowMap.type = PCFShadowMap; }
   const camera = new PerspectiveCamera(world.fov, 16 / 9, .5, 2000);
   art.insertBefore(canvas, svg);
@@ -1176,6 +1227,13 @@ function mount(art, build) {
   function draw(dt) {
     view(dt);
     world.tick(ambient * .12, story, dt);
+    const light = Number(art.style.getPropertyValue('--candle-light')) || 0;
+    candle.intensity = light * Math.min(90, world.radius * 1.4);
+    if (light) {
+      candleRay.set(Number(art.style.getPropertyValue('--candle-x')) || 0, Number(art.style.getPropertyValue('--candle-y')) || 0, .5).unproject(camera).sub(camera.position).normalize();
+      camera.getWorldDirection(candleDirection);
+      candle.position.copy(camera.position).addScaledVector(candleRay, world.radius * .78 / Math.max(.3, candleRay.dot(candleDirection)));
+    }
     renderer.render(scene, camera);
   }
   function frame(now) {
@@ -1219,6 +1277,12 @@ function mount(art, build) {
   // Studies and checks can hold a world at any moment of its story.
   art._world = {
     camera, world,
+    travellerPosition() {
+      if (!world.traveller) return null;
+      world.traveller.updateWorldMatrix(true, false);
+      const p = world.traveller.getWorldPosition(new Vector3()).project(camera), r = art.getBoundingClientRect();
+      return { x: r.left + (p.x + 1) * r.width / 2, y: r.top + (1 - p.y) * r.height / 2 - 9 };
+    },
     seek(seconds) { held = true; apply(); story = seconds; ambient = seconds; prev = 0; draw(0); },
     resume() { held = false; apply(); },
   };
@@ -1570,7 +1634,7 @@ function mountWanderingMouse() {
     last = performance.now(); draw(event.detail);
   };
   addEventListener('memory-mouse-frame', onFrame);
-  addEventListener('memory-butterfly-finished', () => {
+  addEventListener('memory-mouse-transferred', () => {
     if (disposed) return;
     renderer.render(scene, camera);
     const print = new Image(); print.className = canvas.className; print.alt = '';

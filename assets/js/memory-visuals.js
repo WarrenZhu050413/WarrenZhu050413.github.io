@@ -83,4 +83,70 @@
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule);
   schedule();
+
+  // One small light, shared by the page and its open world. Only nearby text
+  // is measured, and only while the pointer or the composition changes.
+  const fine = matchMedia('(hover: hover) and (pointer: fine)');
+  const glow = document.createElement('div');
+  glow.className = 'memory-candle-glow';
+  glow.setAttribute('aria-hidden', 'true');
+  essay.append(glow);
+  let lightFrame = null, pointer = null;
+  let lit = new Set();
+  function clearLight() {
+    glow.classList.remove('is-visible');
+    for (const element of lit) element.style.removeProperty('--candle-light');
+    lit.clear();
+    for (const { art } of scenes) art.style.setProperty('--candle-light', '0');
+  }
+  function light() {
+    lightFrame = null;
+    if (!pointer || !fine.matches || document.hidden) { clearLight(); return; }
+    // The pointer is the hand at the base; the flame is held above it.
+    const x = pointer.x, y = pointer.y - 25;
+    const dialog = essay.querySelector('.memory-world-dialog[open]');
+    const surface = dialog || essay;
+    const bounds = surface.getBoundingClientRect();
+    if (x < bounds.left || x > bounds.right || y < bounds.top || y > bounds.bottom) { clearLight(); return; }
+    if (glow.parentNode !== surface) surface.append(glow);
+    glow.style.transform = `translate3d(${x}px,${y}px,0)`;
+    glow.classList.add('is-visible');
+    const radius = 175, next = new Set(), changes = [];
+    for (const group of surface.querySelectorAll('blockquote:not([aria-hidden="true"]), .memory-growing-poem')) {
+      const r = group.getBoundingClientRect();
+      if (r.right < x - radius || r.left > x + radius || r.bottom < y - radius || r.top > y + radius) continue;
+      for (const word of group.querySelectorAll('.memory-quote-word, .memory-poem-line')) {
+        const r = word.getBoundingClientRect();
+        const dx = Math.max(r.left - x, 0, x - r.right), dy = Math.max(r.top - y, 0, y - r.bottom);
+        const near = Math.max(0, 1 - Math.hypot(dx, dy) / radius);
+        if (near > 0) { next.add(word); changes.push([word, near * near]); }
+      }
+    }
+    for (const element of lit) if (!next.has(element)) element.style.removeProperty('--candle-light');
+    for (const [element, amount] of changes) element.style.setProperty('--candle-light', amount.toFixed(3));
+    lit = next;
+    for (const { art } of scenes) {
+      const r = art.getBoundingClientRect();
+      const inside = r.width > 0 && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      art.style.setProperty('--candle-light', inside ? '1' : '0');
+      if (inside) {
+        art.style.setProperty('--candle-x', String((x - r.left) / r.width * 2 - 1));
+        art.style.setProperty('--candle-y', String(1 - (y - r.top) / r.height * 2));
+      }
+    }
+  }
+  function scheduleLight() {
+    if (lightFrame === null) lightFrame = requestAnimationFrame(light);
+  }
+  addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch') return;
+    pointer = { x: event.clientX, y: event.clientY };
+    scheduleLight();
+  }, { passive: true });
+  addEventListener('scroll', scheduleLight, { passive: true });
+  addEventListener('resize', scheduleLight);
+  document.addEventListener('toggle', scheduleLight, true);
+  document.documentElement.addEventListener('pointerleave', () => { pointer = null; clearLight(); });
+  addEventListener('blur', () => { pointer = null; clearLight(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) clearLight(); });
 })();
