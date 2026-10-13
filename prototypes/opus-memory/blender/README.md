@@ -19,7 +19,7 @@ Its Cycles preview is `/tmp/memory-cat-blender.png`; `preview.png` is the
 reviewed black-coat checkpoint.
 
 With Jekyll running, open `/prototypes/opus-memory/blender-cat/`. The page offers
-Replay, a time scrubber, and scene-scale/close inspection. Pointer motion turns
+Replay, a twelve-second time scrubber, and scene-scale/close inspection. Pointer motion turns
 the camera. `window.catStudy` exposes clip metadata and measured frame rate.
 
 The coat is one remeshed surface, with separate tapered fur ribbons weighted
@@ -29,8 +29,9 @@ demonstrates Look and Walk only. Foot planting and the muzzle socket still need
 verification in the final scene before integration.
 
 Checked with Blender 5.2.2 LTS and Three.js 0.186.1. The compressed GLB is about
-1.1 MB. The local narrow Chrome study measured 120 fps; this is not a mobile or
-whole-poem performance claim.
+1.6 MB. The browser study renders shadows for the body and tail only; individual
+fur ribbons and small facial details do not need separate shadow passes.
+Performance of this isolated study does not establish whole-poem performance.
 
 The Draco glTF decoder in `assets/vendor/draco/` is copied from the pinned
 Three.js distribution and licensed under Apache 2.0 (license beside decoder).

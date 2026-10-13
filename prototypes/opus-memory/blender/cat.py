@@ -26,10 +26,11 @@ def ell(name,at,size,mat=fur,merge=True,rot=0):
 # short muzzle, cheek ruff. Limb volumes overlap before voxel union.
 ell('Rib cage',(-.20,0,1.22),(.82,.24,.27));ell('Pelvis',(-.94,0,1.18),(.38,.245,.30))
 ell('Withers',(.51,0,1.38),(.30,.23,.31));ell('Chest',(.64,0,1.12),(.17,.19,.25))
-ell('Ruff',(.79,0,1.48),(.255,.24,.33),rot=-.25)
-ell('Skull',(1.04,0,1.93),(.275,.22,.27));ell('Forehead',(1.18,0,2.01),(.205,.19,.19))
-for side in [-1,1]:ell('Cheek',(1.16,side*.17,1.80),(.205,.115,.17))
-ell('Muzzle',(1.36,0,1.83),(.185,.135,.11));ell('Chin',(1.32,0,1.73),(.18,.13,.07))
+ell('Ruff',(.79,0,1.45),(.255,.24,.31),rot=-.25)
+ell('Skull',(1.02,0,1.90),(.285,.245,.265));ell('Forehead',(1.14,0,1.98),(.205,.205,.18))
+for side in [-1,1]:ell('Cheek',(1.14,side*.17,1.78),(.195,.12,.17))
+for side in [-1,1]:ell('Brow',(1.16,side*.155,2.005),(.155,.125,.060),rot=.08)
+ell('Muzzle',(1.29,0,1.80),(.13,.145,.09));ell('Chin',(1.27,0,1.73),(.13,.13,.065))
 legs={}
 for side in [-1,1]:
     z=side*.255
@@ -42,18 +43,18 @@ for side in [-1,1]:
 # The pointed ears are actual thin volumes, not cones.
 for side in [-1,1]:
     y=side*.18
-    verts=[(.89,y-.13,2.10),(1.16,y-.10,2.12),(1.04,y+.10,2.14),(.91,y+side*.07,2.49)]
+    verts=[(.86,y-.13,2.08),(1.12,y-.10,2.09),(1.02,y+.10,2.11),(.85,y+side*.11,2.38)]
     mesh=bpy.data.meshes.new('Ear');mesh.from_pydata(verts,[],[(0,1,3),(1,2,3),(2,0,3),(0,2,1)]);mesh.update()
     ob=bpy.data.objects.new('Ear',mesh);bpy.context.collection.objects.link(ob);ob.data.materials.append(fur);parts.append(ob)
 HEAD_DROP=.22
 for ob in parts:
-    if ob.name.startswith(('Skull','Forehead','Cheek','Muzzle','Chin','Ear')):ob.location.z-=HEAD_DROP
+    if ob.name.startswith(('Skull','Forehead','Cheek','Brow','Muzzle','Chin','Ear')):ob.location.z-=HEAD_DROP
 # Join and remesh the anatomy so lighting reads one animal rather than components.
 bpy.ops.object.select_all(action='DESELECT')
 for o in parts:o.select_set(True)
 bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();coat=bpy.context.object;coat.name='Cat continuous coat'
 bpy.ops.object.transform_apply(location=True,rotation=True,scale=True)
-mod=coat.modifiers.new('Sculpt union','REMESH');mod.mode='VOXEL';mod.voxel_size=.045;bpy.ops.object.modifier_apply(modifier=mod.name)
+mod=coat.modifiers.new('Sculpt union','REMESH');mod.mode='VOXEL';mod.voxel_size=.032;bpy.ops.object.modifier_apply(modifier=mod.name)
 mod=coat.modifiers.new('Relax silhouette','SMOOTH');mod.factor=.65;mod.iterations=4;bpy.ops.object.modifier_apply(modifier=mod.name)
 mod=coat.modifiers.new('Export surface','DECIMATE');mod.ratio=.48;bpy.ops.object.modifier_apply(modifier=mod.name)
 for p in coat.data.polygons:p.use_smooth=True
@@ -68,9 +69,9 @@ def bone(name,a,b,parent=None):
 bone('body',(-.9,0,1.25),(.6,0,1.36));bone('neck',(.6,0,1.36),(.93,0,1.58),'body');bone('head',(.93,0,1.58),(1.40,0,1.66),'neck')
 for key,(h,k,a,t,_) in legs.items():
     bone(key+'_upper',h,k,'body');bone(key+'_lower',k,a,key+'_upper');bone(key+'_paw',a,t,key+'_lower')
-tailpts=[(-1.27,0,1.32),(-1.65,0,1.45),(-1.93,.03,1.85),(-2.02,.08,2.25),(-1.87,.10,2.48)]
+tailpts=[(-1.27,0,1.32),(-1.64,.03,1.55),(-1.89,.07,1.96),(-1.83,.08,2.27),(-1.62,.08,2.36)]
 for i in range(4):bone('tail'+str(i),tailpts[i],tailpts[i+1],'body' if i==0 else 'tail'+str(i-1))
-bone('ear_L',(.99,-.18,1.90),(.91,-.25,2.27),'head');bone('ear_R',(.99,.18,1.90),(.91,.25,2.27),'head')
+bone('ear_L',(.99,-.18,1.90),(.85,-.29,2.16),'head');bone('ear_R',(.99,.18,1.90),(.85,.29,2.16),'head')
 bpy.ops.object.mode_set(mode='OBJECT')
 # Tail is a tapered, curved skin. Sparse guard hairs keep the shadow edge organic.
 def tube(name,pts,radii):
@@ -91,17 +92,60 @@ def tube(name,pts,radii):
     mesh=bpy.data.meshes.new(name);mesh.from_pydata(vs,[],fs);mesh.update();ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob);ob.data.materials.append(fur)
     for p in mesh.polygons:p.use_smooth=True
     return ob
-tail=tube('Plumed tail',tailpts,[.09,.10,.085,.055,.009])
+tail=tube('Plumed tail',tailpts,[.105,.115,.105,.075,.013])
 extras=[]
+eye_centres=[]
+def almond_eye(side):
+    # A low almond opening with a heavy upper lid; the eye sits into the head,
+    # rather than a round eyeball applied to the side of the face.
+    centre=Vector((1.20,side*.216,1.965-HEAD_DROP))
+    outward=Vector((.35,side*.94,0));horizontal=Vector((.94,-side*.35,0))
+    hit,point,normal,_=coat.ray_cast(centre+outward,-outward)
+    if hit:
+        outward=Vector((normal.x,normal.y,0)).normalized()
+        horizontal=Vector((abs(outward.y),-side*outward.x,0)).normalized()
+        centre=point+outward*.009
+    eye_centres.append(centre.copy())
+    centre.z+=HEAD_DROP
+    vertices=[centre+outward*.010];faces=[];colours=[(.10,.145,.085,1)]
+    for ring in range(1,5):
+        radius=ring/4
+        for i in range(48):
+            a=math.tau*i/48;u=math.cos(a)*.074*radius
+            z=math.sin(a)*(.030 if math.sin(a)>0 else .027)*radius-u*.10
+            vertices.append(centre+horizontal*u+Vector((0,0,z))+outward*(.010*(1-radius*radius)))
+            variation=.86+.14*math.sin(i*13)
+            colour=(.013,.022,.012,1) if ring==4 else (.10*variation,.145*variation,.085*variation,1)
+            colours.append(colour)
+    for i in range(48):faces.append((0,1+i,1+(i+1)%48))
+    for ring in range(3):
+        for i in range(48):
+            a=1+ring*48+i;b=1+ring*48+(i+1)%48;faces.append((a,a+48,b+48,b))
+    mesh=bpy.data.meshes.new('Almond cornea');mesh.from_pydata(vertices,[],faces);mesh.update()
+    colour_attribute=mesh.color_attributes.new(name='Iris fibres',type='FLOAT_COLOR',domain='POINT')
+    for i,c in enumerate(colours):colour_attribute.data[i].color=c
+    eye_material=material('Moss green iris',(.10,.145,.085),.65)
+    colour_node=eye_material.node_tree.nodes.new('ShaderNodeVertexColor');colour_node.layer_name='Iris fibres'
+    eye_material.node_tree.links.new(colour_node.outputs['Color'],eye_material.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+    ob=bpy.data.objects.new('Half-lidded eye',mesh);bpy.context.collection.objects.link(ob);ob.data.materials.append(eye_material);extras.append((ob,'head'))
+    # The slit and glint lie inside the lid opening, close to the eye surface.
+    def feature(name,points,mat):
+        m=bpy.data.meshes.new(name);m.from_pydata([centre+outward*.012+horizontal*u+Vector((0,0,z)) for u,z in points],[],[tuple(range(len(points)))]);m.update()
+        o=bpy.data.objects.new(name,m);bpy.context.collection.objects.link(o);o.data.materials.append(mat);extras.append((o,'head'))
+    feature('Quiet vertical pupil',[(-.010,0),(0,.028),(.010,0),(0,-.025)],pupil)
+    feature('Eye catchlight',[(-.026,.006),(-.022,.010),(-.018,.006),(-.022,.002)],glint)
+    # Dark lid rims follow the opening, with a little weight above it.
+    lid=tube('Upper eyelid',[tuple(centre+horizontal*(math.cos(i*math.pi/12)*.076)+Vector((0,0,math.sin(i*math.pi/12)*.032-math.cos(i*math.pi/12)*.0076))) for i in range(13)],[.008]*13)
+    extras.append((lid,'head'))
 for side in [-1,1]:
-    eye=ell('Eye',(1.263,side*.190,1.973),(.058,.017,.041),iris,False,rot=-.12);extras.append((eye,'head'))
-    ob=ell('Vertical pupil',(1.275,side*.207,1.973),(.014,.008,.036),pupil,False);extras.append((ob,'head'))
-    ob=ell('Catchlight',(1.286,side*.212,1.99),(.007,.004,.007),glint,False);extras.append((ob,'head'))
-extras.append((ell('Nose',(1.53,0,1.866),(.036,.065,.036),nose,False),'head'))
+    almond_eye(side)
+# Small flattened triangle: a cat nose has a plane and a lower point.
+mesh=bpy.data.meshes.new('Nose plane');mesh.from_pydata([(1.409,-.044,1.829),(1.409,.044,1.829),(1.425,0,1.793),(1.395,0,1.825)],[],[(0,1,2),(0,3,1),(0,2,3),(1,3,2)]);mesh.update()
+ob=bpy.data.objects.new('Cat nose',mesh);bpy.context.collection.objects.link(ob);ob.data.materials.append(nose);extras.append((ob,'head'))
 # Fine whiskers, combined into one lightweight mesh, follow the head bone.
 for side in [-1,1]:
     for j in range(4):
-        ob=tube('Whisker',[(1.4,side*.11,1.81),(1.47,side*.30,1.80+j*.012),(1.42-j*.018,side*.49,1.76+j*.025)],[.004,.003,.0005]);ob.data.materials.clear();ob.data.materials.append(rim);extras.append((ob,'head'))
+        ob=tube('Whisker',[(1.31,side*.11,1.79),(1.38,side*.30,1.78+j*.012),(1.33-j*.018,side*.49,1.74+j*.025)],[.0025,.0017,.0003]);ob.data.materials.clear();ob.data.materials.append(rim);extras.append((ob,'head'))
 for ob,_ in extras:ob.location.z-=HEAD_DROP
 # Fine curved ribbons flow down the coat. They are exported geometry, so the
 # silhouette keeps its fur in glTF without a Blender-only particle shader.
@@ -115,21 +159,26 @@ def groom(source, count, tail_coat=False):
         if u+v>1:u=1-u;v=1-v
         p=a+(b-a)*u+(c-a)*v;n=face.normal.normalized()
         if not tail_coat and p.z<.32:continue
+        if not tail_coat and any(abs(p.x-e.x)<.085 and abs(p.z-e.z)<.045 and abs(p.y-e.y)<.055 for e in eye_centres):continue
         ruff=p.x>.48 and p.z>1.05
-        length=random.uniform(.055,.105) if ruff or tail_coat else random.uniform(.025,.065)
-        flow=Vector((-.3,0,-1)) if not tail_coat else Vector((-.2,0,.65))
+        face_coat=not tail_coat and p.x>1.0 and p.z>1.40
+        length=random.uniform(.022,.055) if face_coat else random.uniform(.13,.24) if ruff or tail_coat else random.uniform(.04,.10)
+        flow=Vector((-.35,math.sin(p.x*11+p.z*7)*.15,-1))
+        if tail_coat:
+            k=min(range(len(tailpts)),key=lambda i:(p-Vector(tailpts[i])).length_squared)
+            flow=Vector(tailpts[min(k+1,len(tailpts)-1)])-Vector(tailpts[max(0,k-1)])
         flow=(flow-n*flow.dot(n)).normalized()
         side=n.cross(flow).normalized()*random.uniform(.0006,.0012)
         base=len(vs)
         for j in range(4):
-            t=j/3;centre=p+n*(math.sin(t*math.pi*.75)*length*.50)+flow*(length*t)
+            t=j/3;centre=p+n*(math.sin(t*math.pi*.75)*length*.48)+flow*(length*t)
             width=side*(1-t*.94);vs.extend([centre-width,centre+width])
         for j in range(3):i=base+j*2;fs.append((i,i+1,i+3,i+2))
     mesh=bpy.data.meshes.new('Groomed fur');mesh.from_pydata(vs,[],fs);mesh.update()
     ob=bpy.data.objects.new('Tail fur' if tail_coat else 'Layered coat fur',mesh);bpy.context.collection.objects.link(ob);ob.data.materials.append(rim)
     for p in mesh.polygons:p.use_smooth=True
     return ob
-tufts=groom(coat,19000);tailfur=groom(tail,4500,True)
+tufts=groom(coat,28000);tailfur=groom(tail,6000,True)
 
 def segmentdist(p,a,b):
     d=b-a;return (p-(a+d*max(0,min(1,(p-a).dot(d)/d.length_squared)))).length
@@ -177,7 +226,7 @@ def pose(t,walk=0,lower=0,look=0):
         a,b=rest[name];a=a.copy();b=b.copy();a.z+=bob;b.z+=bob
         if name=='head':
             a.z-=lower*.80;b.z-=lower*.90;a.x+=lower*.20;b.x+=lower*.25
-            b.y+=look*.16;b.z+=look*.13
+            b.y+=look*.10;b.z+=look*.055-.045
         elif name=='neck':b.z-=lower*.80;b.x+=lower*.20
         setbone(name,a,b)
     for idx,(key,(hip,knee,ankle,toe,hind)) in enumerate(legs.items()):
