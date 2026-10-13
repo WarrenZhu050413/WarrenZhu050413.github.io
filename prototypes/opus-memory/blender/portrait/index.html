@@ -1,0 +1,26 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cat sculpt comparison</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;background:#151918;color:#c7cdc7;font:17px/1.6 Georgia,serif}
+  main{max-width:1400px;margin:auto;padding:28px}h1{font-size:25px;font-weight:400;margin:0 0 8px}
+  p{max-width:780px;color:#a6afa8;margin:0 0 28px}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  figure{margin:0}figcaption{padding:10px 0}.frame{height:65vh;min-height:420px;overflow:hidden;background:#101412}
+  img{display:block;width:100%;height:100%;object-fit:contain}.reference{width:auto;max-width:none;height:100%}
+  a{color:inherit}footer{margin-top:25px;font-size:15px} @media(max-width:700px){.comparison{grid-template-columns:1fr}.frame{height:70vh}main{padding:18px}}
+</style>
+<main>
+  <h1>Cat sculpt comparison</h1>
+  <p>A new seated proportion study. The earlier animated model remains separate. This pass tests the face, chest, paws and coat before another rig.</p>
+  <div class="comparison">
+    <figure><div class="frame"><img class="reference" src="reference.png" alt="Approved reference: a long-haired black cat seated and looking upward"></div><figcaption>Your reference</figcaption></figure>
+    <figure><div class="frame"><img src="portrait.png" alt="New Blender seated black cat sculpt with a full chest and resting tail"></div><figcaption>New Blender still study</figcaption></figure>
+  </div>
+  <footer><a href="portrait.blend">Blender source</a> · <a href="../../blender-cat/">Earlier walking study</a></footer>
+</main>
+</html>
