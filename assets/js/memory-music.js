@@ -1,4 +1,4 @@
-// Piano starts with the experience and remains independent of the scene clock.
+// Piano starts with the experience; the reading follows its current time.
 (() => {
   if (!document.querySelector('.memory-essay')) return;
   const player = document.createElement('div');

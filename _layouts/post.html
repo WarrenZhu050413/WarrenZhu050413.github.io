@@ -46,10 +46,12 @@ layout: default
 <script src="{{ '/assets/js/memory-essay.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% endif %}
 {% if page.memory_visuals %}
+<script src="{{ '/assets/js/memory-motion.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 <template id="memory-butterfly-template">{% include memory-art/butterfly.svg %}</template>
 <script src="{{ '/assets/js/memory-butterfly.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 <script src="{{ '/assets/js/memory-music.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 <script src="{{ '/assets/js/memory-train-sound.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
+<script src="{{ '/assets/js/memory-scene-sound.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 <script src="{{ '/assets/js/memory-visuals.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 {% if page.memory_unfolding %}
 <script src="{{ '/assets/js/memory-unfolding.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>

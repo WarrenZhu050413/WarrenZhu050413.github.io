@@ -36,7 +36,7 @@
   const pointer={x:0,y:0,present:false};
   const drift={x:0,y:0};
   let orbit=0,curious=false,covered=false;
-  let halfway=false;
+  let halfway=false,transferring=false;
   const mouseTail=mouse.querySelector('.memory-mouse-tail');
   const mouseHead=mouse.querySelector('.memory-mouse-head');
   const mouseBody=mouse.querySelector('.memory-mouse-body');
@@ -44,8 +44,7 @@
   const frontFoot=mouse.querySelector('.memory-mouse-front-foot');
   const farBack=mouse.querySelector('.memory-mouse-back-far');
   const farFront=mouse.querySelector('.memory-mouse-front-far');
-  const smooth=v=>{v=clamp(v,0,1);return v*v*(3-2*v)};
-  const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+  const {smooth,clamp,cubic}=window.memoryMotion;
   addEventListener('pointermove',event=>{
     if(event.pointerType==='touch')return;
     pointer.x=event.clientX;pointer.y=event.clientY;pointer.present=true;
@@ -58,7 +57,6 @@
   },true);
   // The opening keeps the essay's clock (the music's time), so it lasts as long as its phrases.
   const duration = 52000;
-  const cubic = (a,b,c,d,t) => (1-t)**3*a+3*(1-t)**2*t*b+3*(1-t)*t*t*c+t**3*d;
   // Quick flights alternate with drifting hovers, giving the mouse time to
   // close the distance. The whole encounter still occupies the same minute.
   const flightBeats=[
@@ -150,10 +148,13 @@
       const fold=flap+(1-flap)*smooth((p-.96)/.04);
       leftWing.setAttribute('transform',`scale(${fold},1)`);
       rightWing.setAttribute('transform',`scale(${Math.min(1,fold+.035*Math.sin(flutter*2))},1)`);
+      window.memoryGestures?.set('butterfly',{phase:(flutter*12.4+.24*Math.sin(flutter*1.7))/(Math.PI*2),strength:.7,x:(baseX+drift.x)/innerWidth*2-1});
       const distanceVeil=.54+.05*Math.sin(flutter*.27);
       butterfly.style.opacity=String(distanceVeil);
       butterfly.dataset.progress=p.toFixed(3);
       const seconds=elapsed/1000;
+      if(seconds>=26&&!transferring)startTransfer();
+      if(!transferring){
       // Chase the butterfly's ground projection, gathering speed then braking.
       // Its flight can leave the painting; the mouse's world ends at the cradle.
       const flightX=baseX+drift.x;
@@ -218,6 +219,7 @@
       shadow.style.opacity=String(visible*.12*(1-Math.min(1,Math.abs(y-.65))));
       mouseShadow.style.transform=`translate3d(${mx-2}px,${my+10}px,0) translate(-50%,-50%) scale(${depthScale*(1+jump*.25)},.16)`;
       mouseShadow.style.opacity=String(visible*.065*(1-jump*.5));
+      }
       if(p>=.5&&!halfway){halfway=true;dispatchEvent(new Event('memory-butterfly-halfway'))}
       if(p===1){settle();return;}
 
@@ -227,10 +229,10 @@
   }
   function settle(){
     if(ended)return;
+    window.memoryGestures?.clear('butterfly');
     openWings();
     ended=true;openingLine?.style.setProperty('--opening-ink','1');
     if(frameId!==null)cancelAnimationFrame(frameId);frameId=null;
-    const from=mouse.getBoundingClientRect();
     // The butterfly remains in the print; the mouse walks into the field.
     for(const [element,parent,left,top,width,ratio] of [
       [butterfly,art,'55%','35%','10%','92/78']
@@ -241,12 +243,19 @@
     }
     shadow.remove();mouseShadow.remove();
     dispatchEvent(new Event('memory-butterfly-finished'));
+    if(!transferring)startTransfer();
+  }
+  function startTransfer(){
+    if(transferring)return;
+    transferring=true;
+    const from=mouse.getBoundingClientRect();
+    mouseShadow.remove();
     mouse.dataset.transfer='true';
     let lastTime=performance.now(),lastX=from.left+from.width/2,lastY=from.top+from.height/2;
     function transfer(now){
-      const t=window.memoryTimeline?.time?.()??57;
+      const t=window.memoryTimeline?.time?.()??31;
       const target=document.querySelector('.art-burns')?._world?.travellerPosition?.();
-      const progress=smooth((t-52)/5);
+      const progress=smooth((t-26)/5);
       if(target){
         const x=(from.left+from.width/2)*(1-progress)+target.x*progress;
         const y=(from.top+from.height/2)*(1-progress)+target.y*progress;
@@ -276,6 +285,7 @@
     const {x,y,seconds}=event.detail;
     const p=smooth((seconds-168)/3),arc=Math.sin(p*Math.PI)*innerHeight*.12;
     butterfly.style.transform=`translate3d(${returnFrom.x+(x-returnFrom.x)*p}px,${returnFrom.y+(y-returnFrom.y)*p-arc}px,0) translate(-50%,-50%) rotate(${-8+Math.sin(seconds*1.2)*4}deg)`;
+    window.memoryGestures?.set('butterfly',{phase:seconds*11/(Math.PI*2),strength:.5,x:x/innerWidth*2-1});
     const wing=.3+.7*(.5+.5*Math.cos(seconds*11));
     leftWing.setAttribute('transform',`scale(${wing},1)`);rightWing.setAttribute('transform',`scale(${wing},1)`);
     butterfly.style.opacity='.58';

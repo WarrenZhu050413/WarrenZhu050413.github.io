@@ -23,17 +23,16 @@
     {id:'pushkin',width:740,small:190,home:[.87,.87],focus:[.78,.53],side:'left',turn:5,lines:9},
     {id:'wong',width:1080,small:245,home:[.88,.66],focus:[.79,.54],side:'left',turn:4,lines:10},
     {id:'thackeray',width:1120,small:280,home:[.3,.1],focus:[.22,.5],side:'right',turn:-2,lines:10},
-    {id:'present',width:1000,small:210,home:[.72,.1],focus:[.5,.52],side:'right',turn:0,lines:11}
   ];
   // Seconds into the recording at which each passage arrives. The quiet places
   // in the music carry Brideshead and Nalan; the last rise carries the train.
-  const START={nabokov:0,burns:26,brideshead:70,nalan:92,pushkin:108,wong:126,thackeray:140,present:160};
+  const START={nabokov:0,burns:26,brideshead:70,nalan:92,pushkin:108,wong:126,thackeray:140,coda:160};
   const SEPARATE=52,FINALE=168,SETTLED=178,END=180.72;
-  // The field's own story begins once the opening has separated into two prints.
-  const STORY={burns:SEPARATE+1};
-  const BEATS=[START.burns,SEPARATE,START.brideshead,START.nalan,START.pushkin,START.wong,START.thackeray,START.present,FINALE];
+  // The cat enters with Burns, while the butterfly's first world is still present.
+  const STORY={burns:START.burns};
+  const BEATS=[START.burns,SEPARATE,START.brideshead,START.nalan,START.pushkin,START.wong,START.thackeray,START.coda,FINALE];
   const scenes=specs.map(s=>({...s,start:START[s.id],figure:atlas.querySelector(`[data-scene="${s.id}"]`),beat:essay.querySelector(`[data-for="${s.id}"]`)}));
-  const entrances={nabokov:[.42,.6],burns:[.7,.78],brideshead:[.5,.56],nalan:[.78,.3],wong:[.5,.5],pushkin:[.66,.8],thackeray:[.7,.5],present:[.5,.52]};
+  const entrances={nabokov:[.42,.6],burns:[.7,.78],brideshead:[.5,.56],nalan:[.78,.3],wong:[.5,.5],pushkin:[.66,.8],thackeray:[.7,.5]};
   for(const s of scenes){
     s.art=s.figure.querySelector('.memory-art');s.quote=s.figure.querySelector('blockquote');
     s.figure.style.setProperty('--scene-width',`${s.width}px`);
@@ -55,17 +54,16 @@
       node.replaceWith(fragment);
     }
   }
-  const clamp=x=>Math.max(0,Math.min(1,x));
-  const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
-  const mix=(a,b,t)=>a+(b-a)*t;
+  const {clamp,smooth,mix,damp,drift}=window.memoryMotion;
 
   // ---------------------------------------------------------------- the clock
   const clock={t:0,last:0,running:false};
+  let musicStarted=false;
   const soundtrack=document.getElementById('memory-soundtrack');
   function advanceClock(now){
     const dt=clock.last?Math.min(.25,(now-clock.last)/1000):0;clock.last=now;
     if(soundtrack&&!soundtrack.paused&&!soundtrack.seeking&&soundtrack.currentTime>0&&clock.t<END-.5)clock.t=soundtrack.currentTime;
-    else if(clock.running&&!document.hidden)clock.t+=dt;
+    else if(clock.running&&!musicStarted&&!document.hidden)clock.t+=dt;
   }
   function setTime(t){
     clock.t=t;
@@ -73,6 +71,7 @@
   }
   // When the music starts late (a first click, or after a pause) it joins the reading where it is.
   soundtrack?.addEventListener('play',()=>{
+    musicStarted=true;
     if(clock.t<END-1&&Math.abs(soundtrack.currentTime-clock.t)>.3)soundtrack.currentTime=clock.t;
   });
   let pausedWhileHidden=false;
@@ -173,6 +172,11 @@
       if(!opened&&current>=scenes.length-1.1)goTo(scenes.length);
       return;
     }
+    if(beat===START.coda){
+      dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:'coda',duration:8000}}));
+      if(!opened)goTo(scenes.length);
+      return;
+    }
     const i=scenes.findIndex(s=>s.start===beat);
     const after=BEATS.find(b=>b>beat)??END;
     dispatchEvent(new CustomEvent('memory-scene-start',{detail:{id:scenes[i].id,duration:(after-beat)*1000}}));
@@ -265,13 +269,23 @@
   }
 
   // ---------------------------------------------------------------- the ring at the end
+  function braid(x1,y1,x2,y2){
+    const length=Math.hypot(x2-x1,y2-y1),nx=-(y2-y1)/length,ny=(x2-x1)/length;
+    let paths=`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="#354e63" stroke-width="6" stroke-linecap="round"/>`;
+    const colours=['#8aa3b6','#597991','#adc0cb'];
+    for(let n=0;n<Math.ceil(length/2);n++){
+      const a=n*2/length,b=Math.min(1,(n+1)*2/length);
+      const strands=[0,1,2].sort((i,j)=>Math.cos(a*length*.6+i*2.094)-Math.cos(a*length*.6+j*2.094));
+      for(const k of strands){
+        const offset=t=>Math.sin(t*length*.6+k*2.094)*1.8;
+        paths+=`<path d="M${x1+(x2-x1)*a+nx*offset(a)} ${y1+(y2-y1)*a+ny*offset(a)}L${x1+(x2-x1)*b+nx*offset(b)} ${y1+(y2-y1)*b+ny*offset(b)}" stroke="${colours[k]}" stroke-width="1.75" stroke-linecap="round"/>`;
+      }
+    }
+    return paths;
+  }
   cross.innerHTML=`<div class="memory-pendant"><svg viewBox="-44 -108 88 174" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="pendant-metal" x1="0" y1="0" x2="1" y2=".7"><stop stop-color="#99aebb"/><stop offset=".4" stop-color="#6b8b9e"/><stop offset="1" stop-color="#3d576c"/></linearGradient></defs>
-    <path d="M-18-102C-39-84-21-49-3-42M-18-102C5-101 23-69 0-42" fill="none" stroke="#9a9487" stroke-width="1.05" opacity=".75"/>
-    <ellipse cx="-1.5" cy="-39" rx="3" ry="4.5" fill="none" stroke="#8195a0" stroke-width="1.5"/>
-    <path d="M-4-35H2V-23H14V-18H2V-5H27V1H2V30L15 34V40L2 36V61H-4V34L-17 30V24L-4 28V1H-29V-5H-4V-18H-16V-23H-4Z" fill="#273c4b" transform="translate(1.2 1.1)"/>
-    <path d="M-4-35H2V-23H14V-18H2V-5H27V1H2V30L15 34V40L2 36V61H-4V34L-17 30V24L-4 28V1H-29V-5H-4V-18H-16V-23H-4Z" fill="url(#pendant-metal)"/>
-    <path d="M-3-34V-22H13M-28-4H-3V29L-16 25M-3 35V60" fill="none" stroke="#d0d6d0" stroke-width=".55" opacity=".45"/>
+    <path d="M-18-102C-39-84-21-49-1-39M-18-102C5-101 23-69-1-39" fill="none" stroke="#929b9f" stroke-width=".85" opacity=".65"/>
+    <g fill="none">${braid(-1,-35,-1,60)}${braid(-28,-8,26,-8)}</g>
   </svg></div>`;
   let crossX=0,crossY=0;
   addEventListener('pointermove',event=>{
@@ -319,6 +333,7 @@
     cross.style.transform=`translate(calc(-50% + ${liftX}px),calc(-50% + ${liftY}px)) scale(${mix(.9,1,e)})`;
     const sway=reduced.matches?0:Math.sin((clock.t-FINALE)*.82)*1.4;
     cross.firstElementChild.style.transform=`perspective(450px) rotateX(${-crossY*5}deg) rotateY(${crossX*12}deg) rotateZ(${-7+crossX*3+sway}deg)`;
+    window.memoryGestures?.set('pendant',{moving:lift>0&&lift<1?Math.abs(Math.sin(clock.t*.82))*.5:0});
     const pendantBounds=cross.getBoundingClientRect();
     dispatchEvent(new CustomEvent('memory-pendant-frame',{detail:{x:pendantBounds.left+pendantBounds.width*.31,y:pendantBounds.top+pendantBounds.height*.035,seconds:clock.t}}));
     // The passages, and the poem drawn in to become one of them.
@@ -348,7 +363,12 @@
   }
 
   // ---------------------------------------------------------------- one frame
+  const stanzaMotion=stanzas.map(()=>({alpha:0,x:0,y:0}));
+  const passageMotion=scenes.map(()=>({alpha:0}));
+  const drifts=[[14,9],[-16,6],[10,-12],[-10,14],[15,-6],[-18,-4],[12,8],[-8,-9],[10,5],[-12,8]];
+  let presentationTime=0;
   function render(dt=0){
+    presentationTime+=dt;
     atEnd=current>=scenes.length-.05;
     const joined=essay.dataset.opening==='joined';
     const flight=Number(document.querySelector('.memory-butterfly')?.dataset.progress||0);
@@ -369,7 +389,7 @@
       // A broad translucent arrival crosses the page, then becomes a small print.
       const approach=s.id==='wong'?1.7:1.35;
       const baseScale=Math.min(1,innerWidth/1728);
-      const focusScale=baseScale*(s.id==='present'?.9:.86);
+      const focusScale=baseScale*.86;
       const scale=mix(mix(approach*baseScale,focusScale,entering),s.small/s.width,settling);
       const entry=entrances[s.id];
       let x=mix(mix(entry[0],s.focus[0],entering),s.home[0],settling)*innerWidth;
@@ -381,8 +401,8 @@
       // Earlier prints recede while another passage needs the reading space.
       const collected=current>=scenes.length-.1;
       const restingOpacity=collected?.44:.035;
-      // The present's dark room stays faint behind the poem until the end draws it in.
-      const opacity=mix(mix(0,s.id==='present'?.4:.68,smooth(p/.16)),restingOpacity,settling);
+      // Paintings settle to a quiet print behind the reading.
+      const opacity=mix(mix(0,.68,smooth(p/.16)),restingOpacity,settling);
       s.art.style.transform=`translate3d(${x-s.width/2}px,${y-s.width*9/32}px,0) rotate(${rotation}deg) scale(${scale})`;
       s.art.style.opacity=String(opacity);
       s.art.style.pointerEvents=p<.95||collected?'auto':'none';
@@ -390,16 +410,22 @@
       s.art.style.setProperty('--pass',String(clamp(p)));
       s.figure.style.zIndex=p<1?'2':'1';
       if(s.quote&&!(atEnd&&clock.t>=FINALE)){
-        const alpha=smooth((p-.16)/.15)*(1-smooth((p-.72)/.18));
+        const desired=smooth((p-.08)/.2)*(1-smooth((p-.82)/.24));
+        const motion=passageMotion[i];
+        motion.alpha=damp(motion.alpha,desired,dt,1.05);
+        const alpha=motion.alpha;
         s.quote.style.opacity=String(alpha);
         s.quote.setAttribute('aria-hidden',String(alpha<.05));
         s.quote.inert=alpha<.05;
-        s.quote.style.transform=`translate(${(1-entering)*(s.side==='right'?35:-35)}px,-50%)`;
+        const direction=s.side==='right'?1:-1;
+        const pose=drift(alpha,{x:22*direction,y:i%2?8:-8,arc:i%2?3:-3},p>.82,presentationTime);
+        s.quote.style.transform=`translate3d(${pose.x}px,calc(-50% + ${pose.y}px),0)`;
       }
       if(joined&&i<2){
         const width=innerWidth*.47;
         s.art.style.transform=`translate3d(${innerWidth*.23-s.width/2}px,${innerHeight*.53-s.width*9/32}px,0) scale(${width/s.width})`;
-        s.art.style.opacity=String(i===0?.68:0);
+        const fieldArrival=smooth((clock.t-START.burns)/6);
+        s.art.style.opacity=String(i===0?.68*(1-fieldArrival*.75):fieldArrival*.68);
         s.figure.style.zIndex=i===0?'1':'2';
         if(s.quote){
           // The image can overlap; the passages take turns remaining legible.
@@ -415,12 +441,22 @@
     scenes[1].quote?.classList.toggle('is-cued',field>=14.1&&field<23);
     if(stanzas.length){
       const active=[...stanzas].reverse().find(s=>clock.t>=Number(s.dataset.start))||stanzas[0];
-      for(const stanza of stanzas){
-        stanza.hidden=!reduced.matches&&stanza!==active;
+      const activeStanza=stanzas.indexOf(active);
+      for(const [index,stanza] of stanzas.entries()){
+        const motion=stanzaMotion[index],isActive=index===activeStanza;
+        const [dx,dy]=drifts[index%drifts.length];
+        motion.alpha=damp(motion.alpha,isActive?1:0,dt,1.25);
+        const departing=index<activeStanza;
+        stanza.hidden=!reduced.matches&&!isActive&&motion.alpha<.002;
         if(stanza.hidden)continue;
+        const pose=drift(motion.alpha,{x:dx,y:dy,arc:index%2?3:-3,departure:40},departing,presentationTime);
+        stanza.style.opacity=reduced.matches?'1':String(motion.alpha);
+        stanza.style.transform=reduced.matches?'none':`translate3d(${pose.x}px,calc(-50% + ${pose.y}px),0)`;
+        stanza.style.filter=reduced.matches?'none':`blur(${pose.blur}px)`;
+        stanza.setAttribute('aria-hidden',String(!isActive&&!reduced.matches));
         const ownLines=[...stanza.querySelectorAll('.memory-poem-line')];
-        ownLines.forEach((line,i)=>line.style.setProperty('--reveal',reduced.matches?'1':String(smooth((clock.t-Number(stanza.dataset.start)-i*1.1)/2.8))));
-        count=ownLines.length;
+        ownLines.forEach((line,i)=>line.style.setProperty('--reveal',reduced.matches||departing?'1':String(smooth((clock.t-Number(stanza.dataset.start)-i*.75)/2.8))));
+        if(isActive)count=ownLines.length;
       }
     }else for(let i=0;i<lines.length;i++)lines[i].style.setProperty('--reveal',String(clamp(count-i)));
     essay.dataset.poemLines=String(Math.floor(count));

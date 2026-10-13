@@ -9,9 +9,10 @@ import {
   MeshLambertMaterial, MeshBasicMaterial, ShaderMaterial, HemisphereLight, DirectionalLight,
   BackSide, DoubleSide, CanvasTexture, SpriteMaterial, Sprite, MathUtils, SRGBColorSpace, BufferGeometry,
   Float32BufferAttribute, LineSegments, LineBasicMaterial, Line, PointLight, PCFShadowMap, CatmullRomCurve3, TubeGeometry, Shape, ExtrudeGeometry,
-  ShapeGeometry, Raycaster, Plane, Vector2, AdditiveBlending,
+  ShapeGeometry, Raycaster, Plane, Vector2, AdditiveBlending, InstancedMesh, Object3D,
 } from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
+import { cat } from './memory-cat.js';
 
 const PAL = {
   skyTop: '#c3c7c1', skyLow: '#c9c6bd', fog: '#c9c6bd', mass: '#66706b', woods: '#68736d',
@@ -247,6 +248,9 @@ function brideshead(scene) {
     new Vector3(-5.6, 0, 19.4), new Vector3(.5, 0, 21), new Vector3(6.6, 0, 18.6), new Vector3(8.8, 0, 12.4), new Vector3(6.4, 0, 6.6),
     new Vector3(.5, 0, 4.2), new Vector3(-6.5, 0, 6.4), new Vector3(-11.5, 0, 13.6), new Vector3(-16, 0, 15.8), new Vector3(-28, 0, 17.5),
     new Vector3(-55, 0, 20), new Vector3(-95, 0, 20.5), new Vector3(-150, 0, 19)]);
+  const progressAt = time => .12 * seg(time, 2, 8) + .22 * seg(time, 4, 16) + .66 * seg(time, 13, 22);
+  const wake = roadWake(scene, leaving, progressAt);
+  const motion = {};
   const ruin = new Color(PAL.mass), stoneFresh = new Color(PAL.mass), stoneOld = new Color('#5c6560');
   // Our own bank, near: grass, and the bear someone has left sitting on it.
   const bank = new Shape();
@@ -276,10 +280,13 @@ function brideshead(scene) {
   const birds = rooks(scene, new Vector3(0, 14, -6));
 
   return {
-    target, radius: 165, height: 4.2, fov: 23, water: water_, still: 28,
+    target, radius: 165, height: 4.2, fov: 23, water: water_, still: 28, motion,
     tick(t, s) {
       // The car pulls away from the door, goes once round the fountain, and leaves.
-      const along = .12 * seg(s, 2, 8) + .22 * seg(s, 4, 16) + .66 * seg(s, 13, 22);
+      const along = progressAt(s);
+      const pace = (progressAt(s + .025) - progressAt(Math.max(0, s - .025))) / .05;
+      wake.tick(s, along, pace);
+      Object.assign(motion, {distance: along * leaving.getLength(), speed: pace * leaving.getLength(), x: car.group.position.x / 70, moving: along > 0 && along < .995});
       car.group.position.copy(leaving.getPointAt(along)).setY(.24);
       const d = leaving.getTangentAt(along);
       car.group.rotation.y = Math.atan2(-d.z, d.x);
@@ -353,13 +360,21 @@ function atlasFountain(scene, x, z) {
 function tourer() {
   // An open two-seater of the twenties: long bonnet, upright radiator, wire wheels.
   const g = new Group(), paint = lambert('#28302d'), trim = lambert('#47504b'), box = new BoxGeometry(1, 1, 1);
-  add(g, box, paint, .45, .62, 0, 1.6, .44, .8);
-  add(g, box, paint, -.62, .7, 0, 1.15, .6, .9);
-  add(g, box, trim, 1.28, .68, 0, .12, .6, .66);
-  add(g, box, lambert('#9aa29c'), -.04, 1.12, 0, .03, .34, .8);
-  const hood = add(g, new CylinderGeometry(.26, .26, .9, 10, 1, false, 0, Math.PI), paint, -1.16, .98, 0);
-  hood.rotation.set(Math.PI / 2, 0, Math.PI / 2);
-  for (const z of [-.2, .2]) add(g, new SphereGeometry(.15, 8, 6), lambert('#2f3633'), -.48, 1.2, z);
+  const profile=new Shape();
+  profile.moveTo(-1.42,.38);profile.lineTo(1.43,.38);profile.lineTo(1.43,.84);
+  profile.quadraticCurveTo(.7,.95,.11,.9);profile.lineTo(-.03,.59);
+  profile.lineTo(-.63,.59);profile.quadraticCurveTo(-.8,1.04,-1.29,.94);profile.closePath();
+  const coach=new ExtrudeGeometry(profile,{depth:.78,bevelEnabled:true,bevelThickness:.045,bevelSize:.045,bevelSegments:3,steps:1});
+  add(g,coach,paint,0,0,-.39);
+  add(g,box,trim,1.44,.65,0,.045,.46,.61);
+  for(const z of [-.41,.41]){
+    const frame=line([new Vector3(.05,.89,z),new Vector3(-.08,1.35,z)],'#66726b');g.add(frame);
+    const arch=[];for(let j=0;j<=18;j++){const a=j/18*Math.PI;arch.push(new Vector3(-.86+Math.cos(a)*.49,.4+Math.sin(a)*.48,z*1.25))}
+    g.add(new Mesh(new TubeGeometry(new CatmullRomCurve3(arch),18,.055,6,false),paint));
+  }
+  const windshield=add(g,new PlaneGeometry(.8,.43),new MeshBasicMaterial({color:'#a3b2aa',transparent:true,opacity:.17,side:DoubleSide}),-.015,1.12,0);
+  windshield.rotation.y=Math.PI/2;windshield.rotation.x=.2;
+  add(g,box,trim,-.68,.76,0,.14,.26,.67).rotation.z=-.1;
   const wheels = [];
   for (const [x, z] of [[.95, .5], [.95, -.5], [-.85, .5], [-.85, -.5]]) {
     const w = new Group();
@@ -370,6 +385,39 @@ function tourer() {
   }
   g.scale.setScalar(1.5);
   return { group: g, wheels };
+}
+
+function roadWake(scene, path, progressAt) {
+  // Two translucent wheel traces, revealed behind the rear axle. One mesh;
+  // neither particles nor track segments accumulate during a long visit.
+  const positions=[],progress=[],indices=[],n=180;
+  for(let i=0;i<=n;i++){
+    const u=i/n,p=path.getPointAt(u),d=path.getTangentAt(u),side=new Vector3(-d.z,0,d.x);
+    for(const offset of [-.73,.73])for(const width of [-.045,.045]){
+      const v=p.clone().addScaledVector(side,offset+width);positions.push(v.x,.285,v.z);progress.push(u);
+    }
+    if(i<n)for(const j of [0,2]){const a=i*4+j;indices.push(a,a+4,a+1,a+1,a+4,a+5)}
+  }
+  const geo=new BufferGeometry();geo.setAttribute('position',new Float32BufferAttribute(positions,3));
+  geo.setAttribute('along',new Float32BufferAttribute(progress,1));geo.setIndex(indices);
+  const uniforms={head:{value:0}};
+  const mat=new ShaderMaterial({transparent:true,depthWrite:false,side:DoubleSide,uniforms,
+    vertexShader:'attribute float along; varying float progress; void main(){progress=along;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'uniform float head; varying float progress; void main(){float age=head-progress; float a=smoothstep(0.,.008,age)*(1.-smoothstep(.08,.2,age));gl_FragColor=vec4(.16,.18,.16,a*.14);}' });
+  scene.add(new Mesh(geo,mat));
+  const dust=smoke(scene,12,'#b1aea0');
+  return {tick(s,along,pace){
+    uniforms.head.value=Math.max(0,along-.002);
+    for(let i=0;i<dust.length;i++){
+      const age=(s+i*.31)%3.7,born=s-age,u=progressAt(Math.max(0,born));
+      const active=born>2&&u<.995&&pace>.001,particle=dust[i];
+      const p=path.getPointAt(u),direction=path.getTangentAt(u);
+      particle.position.copy(p).addScaledVector(direction,-1.5-age*.18);
+      particle.position.x+=Math.sin(i*2.4)*age*.22;particle.position.z+=Math.cos(i*1.7)*age*.16;
+      particle.position.y=.36+age*.22;particle.scale.setScalar(.25+age*.7);
+      particle.material.opacity=active?Math.sin(age/3.7*Math.PI)*.075*Math.min(1,pace*25):0;
+    }
+  }};
 }
 
 function aloysius() {
@@ -471,9 +519,9 @@ function wong(scene) {
   const run = new Sprite(new SpriteMaterial({ map: softSprite('#e4ddc9'), transparent: true, opacity: .5, depthWrite: false, fog: false }));
   scene.add(run);
   const fog = mist(scene, [[1, 1.2, -20, 26, 3], [0, 2, -40, 34, 5]], .12);
-  const camLocal = new Vector3();
+  const camLocal = new Vector3(), motion = {};
   return {
-    target: new Vector3(.8, 4, -22), radius: 30, height: 3.4, fov: 34, yaw: 12, pitch: [2, 7], water: water_, still: 16,
+    target: new Vector3(.8, 4, -22), radius: 30, height: 3.4, fov: 34, yaw: 12, pitch: [2, 7], water: water_, still: 16, motion,
     tick(t, s) {
       water_.material.uniforms.uTime.value = t * .6 + s * .25;
       lamp.intensity = 120 + Math.sin(s * 13.1) * 2 + Math.sin(s * 3.7) * 3;
@@ -494,6 +542,7 @@ function wong(scene) {
       her.group.lookAt(her.group.position.x - 7.9, 0, her.group.position.z - 15);
       her.group.visible = s > 1.4 && k < 1;
       const stride = Math.sin(s * 5.2);
+      Object.assign(motion,{rain:.5,phase:s*5.2/(Math.PI*2),moving:her.group.visible?1:0,x:her.group.position.x/8});
       her.legs[0].position.x = stride * .06; her.legs[1].position.x = -stride * .06;
       her.dress.rotation.z = stride * .03;
       her.arm.rotation.z = Math.sin(s * 5.2 + 1) * .08;
@@ -686,104 +735,6 @@ function fieldMouse(colour = '#7d837b') {
   return { root, head, inner, pose };
 }
 
-function cat(colour = '#353d39') {
-  const root = new Group(), fur = lambert(colour), sphere = new SphereGeometry(1, 20, 14);
-  // A single continuous coat: fuller over the hips and shoulder, tucked at the flank.
-  const coat = new BufferGeometry(), vertices = [], indices = [], rows = 48, around = 20;
-  for (let i = 0; i <= rows; i++) {
-    const u = i / rows, x = -1.47 + u * 2.78;
-    const radius = Math.sin(Math.PI * u) ** .42 * (.33 + .13 * Math.exp(-(((u - .2) / .2) ** 2)) + .11 * Math.exp(-(((u - .86) / .16) ** 2)));
-    for (let j = 0; j <= around; j++) {
-      const a = j / around * Math.PI * 2;
-      vertices.push(x, 1.44 + Math.cos(a) * radius, Math.sin(a) * radius * .83);
-      if (i < rows && j < around) { const n = i * (around + 1) + j; indices.push(n, n + 1, n + around + 1, n + 1, n + around + 2, n + around + 1); }
-    }
-  }
-  coat.setAttribute('position', new Float32BufferAttribute(vertices, 3)); coat.setIndex(indices); coat.computeVertexNormals();
-  const body = new Mesh(coat, fur); root.add(body);
-  const neck = add(root, new CylinderGeometry(.21, .28, 1, 14), fur, 0, 0, 0);
-  const head = new Group(); root.add(head);
-  // A broad, irregular ruff catches the backlight without drawing individual hairs.
-  const ruffGeometry = new SphereGeometry(1, 32, 20);
-  const ruffPoints = ruffGeometry.attributes.position;
-  for (let i = 0; i < ruffPoints.count; i++) {
-    const x = ruffPoints.getX(i), y = ruffPoints.getY(i), z = ruffPoints.getZ(i);
-    const fringe = 1 + .024 * Math.sin(Math.atan2(z, x) * 17 + y * 21);
-    ruffPoints.setXYZ(i, x * .33 * fringe, y * .42 * fringe, z * .35 * fringe);
-  }
-  ruffGeometry.computeVertexNormals();
-  add(head, ruffGeometry, fur, -.13, -.18, 0);
-  const skull = new SphereGeometry(1, 24, 18), p = skull.attributes.position;
-  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i); p.setXYZ(i, x * .36, y * .31, z * .29 * (1 - Math.max(0, x) * .24)); }
-  skull.computeVertexNormals(); head.add(new Mesh(skull, fur));
-  for (const side of [-1, 1]) {
-    add(head, sphere, fur, .22, -.11, side * .085, .19, .12, .14);
-    const earShape = new Shape(); earShape.moveTo(-.14, 0); earShape.quadraticCurveTo(-.12, .15, .015, .27); earShape.quadraticCurveTo(.13, .13, .15, -.015); earShape.closePath();
-    const ear = add(head, new ExtrudeGeometry(earShape, { depth: .065, bevelEnabled: true, bevelThickness: .025, bevelSize: .02, bevelSegments: 2, steps: 1 }), fur, -.08, .22, side * .18);
-    ear.rotation.set(side * .15, side * .25, -.16);
-    const eye = add(head, sphere, lambert('#91a998'), .19, .035, side * .24, .064, .035, .016);
-    add(head, sphere, lambert('#101b18'), .205, .035, side * .254, .013, .033, .006);
-    add(head, sphere, lambert('#d5ddcc'), .218, .05, side * .259, .009, .008, .004);
-    for (let j = 0; j < 3; j++) {
-      const whisker = new CatmullRomCurve3([new Vector3(.27, -.10, side * .13), new Vector3(.37, -.09 - j * .025, side * .28), new Vector3(.4, -.055 - j * .07, side * .48)]);
-      head.add(line(whisker.getPoints(8), '#a8afa1', .22));
-    }
-    eye.userData.ear = ear;
-  }
-  add(head, sphere, lambert('#292c29'), .392, -.088, 0, .042, .029, .059);
-  const eyes = head.children.filter(o => o.userData.ear);
-  const legs = [[-1.0, -.24, 0, 1], [.86, -.24, .22, 0], [-1.0, .24, .5, 1], [.86, .24, .72, 0]].map(([x, z, phase, hind]) => ({
-    x, z, phase, hind,
-    b: Array.from({ length: hind ? 3 : 2 }, (_, i) => {
-      const geo = new SphereGeometry(1, 16, 12); geo.scale((i === 0 ? .14 : .082), .58, (i === 0 ? .12 : .068));
-      return add(root, geo, fur, 0, 0, 0);
-    }),
-    thigh: hind ? add(root, sphere, fur, x, 1.15, z, .24, .43, .21) : null,
-    shoulder: !hind ? add(root, sphere, fur, x, 1.47, z * .6, .24, .37, .23) : null,
-    paw: add(root, sphere, fur, 0, 0, 0, .16, .085, .11),
-  }));
-  // One tapered skin for the tail, with no chain of beads at its bends.
-  const tailCurve = new CatmullRomCurve3([new Vector3(-1.3,1.5,0),new Vector3(-1.8,1.4,0),new Vector3(-2.4,1.3,.1),new Vector3(-2.8,1.7,.12)]);
-  const tailGeometry = new TubeGeometry(tailCurve, 36, .075, 8, false);
-  const tail = new Mesh(tailGeometry, fur); root.add(tail);
-  const point = new Vector3(), tangent = new Vector3();
-  const mouth = new Vector3(.38, -.19, 0);
-  function pose({ phase = 0, moving = 0, lower = 0, s = 0, tailUp = 0 }) {
-    const breath = Math.sin(s * 2.1) * .006;
-    body.scale.y = 1 + breath;
-    head.position.set(1.36 + lower * .43, 1.88 - lower * 1.3, 0);
-    head.rotation.set(Math.sin(s * .65) * .025, Math.sin(s * .8) * .018, -lower * .38 + Math.sin(phase * Math.PI * 2) * .018 * moving);
-    bone(neck, new Vector3(.96, 1.6, 0), head.position.clone().add(new Vector3(-.15, -.08, 0)));
-    const blink = Math.max(0, 1 - Math.abs((s % 7.7) - 4.9) / .13);
-    for (const eye of eyes) { eye.scale.y = .035 * (1 - blink * .9); eye.userData.ear.rotation.z = -.16 + Math.sin(s * .7) * .04; }
-    for (const leg of legs) {
-      const [fx, fy] = gaitFoot(leg, phase, .82, .17, .67, moving);
-      const hip = new Vector3(leg.x, 1.25, leg.z), foot = new Vector3(fx, .08 + fy, leg.z);
-      if (leg.hind) {
-        const hock = foot.clone().add(new Vector3(-.14, .36, 0)), stifle = hip.clone().lerp(hock, .5).add(new Vector3(.17, -.02, 0));
-        bone(leg.b[0], hip, stifle); bone(leg.b[1], stifle, hock); bone(leg.b[2], hock, foot);
-        leg.thigh.rotation.z = Math.sin((phase + leg.phase) * Math.PI * 2) * .1 * moving;
-      } else {
-        const elbow = hip.clone().lerp(foot, .45).add(new Vector3(-.08, 0, 0));
-        bone(leg.b[0], hip, elbow); bone(leg.b[1], elbow, foot);
-        leg.shoulder.position.y = 1.47 + Math.sin((phase + leg.phase) * Math.PI * 2) * .045 * moving;
-      }
-      leg.paw.position.copy(foot).add(new Vector3(.065, 0, 0));
-    }
-    tailCurve.points[1].set(-1.85, 1.35 + tailUp * .6, Math.sin(s * .7) * .08);
-    tailCurve.points[2].set(-2.4, 1.12 + tailUp * 1.18, .12 + Math.sin(s * .7 - .4) * .12);
-    tailCurve.points[3].set(-2.77, 1.43 + tailUp * 1.15, .15 + Math.sin(s * .7 - .7) * .16);
-    const positions = tailGeometry.attributes.position;
-    for (let i = 0; i <= 36; i++) {
-      const u = i / 36; tailCurve.getPoint(u, point); tailCurve.getTangent(u, tangent);
-      const radius = .078 * (1 - u * .8);
-      for (let j = 0; j <= 8; j++) { const a = j / 8 * Math.PI * 2, c = Math.cos(a) * radius; positions.setXYZ(i * 9 + j, point.x - tangent.y * c, point.y + tangent.x * c, point.z + Math.sin(a) * radius); }
-    }
-    positions.needsUpdate = true; tailGeometry.computeVertexNormals();
-  }
-  return { root, head, mouth, pose };
-}
-
 // ---------------------------------------------------------------- Burns: the field, the nest, a mouse and a cat
 // The present only toucheth thee. A mouse washes at her turned nest; a cat
 // comes out of the haze, touches noses with her, and carries her off.
@@ -802,35 +753,43 @@ function burns(scene) {
   // Stubble, leaving a way clear for the cat and in front of the nest.
   const stalkGeo = new ConeGeometry(.018, .5, 3, 1, true); stalkGeo.translate(0, .25, 0);
   const stalkMat = new MeshBasicMaterial({ color: new Color('#6f6b5d'), side: DoubleSide });
-  const stalks = [];
-  for (let i = 0; i < 1100; i++) {
-    const x = rand(-16, 14), z = rand(-24, 6);
-    if (z > -3.2 && z < 1.4 && x > -11 && x < 4) continue;
-    if (z > 1.4 && Math.abs(x - .4) < 1 + (z - 1.4) * .6) continue;
-    const m = new Mesh(stalkGeo, stalkMat);
-    m.position.set(x, 0, z); m.scale.y = rand(.5, 1.5); m.userData = { phase: rand(0, 6), base: rand(-.12, .12) };
-    scene.add(m); stalks.push(m);
+  const breeze={value:0};
+  stalkMat.onBeforeCompile=shader=>{
+    shader.uniforms.uBreeze=breeze;
+    shader.vertexShader='uniform float uBreeze;\n'+shader.vertexShader;
+    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',
+      '#include <begin_vertex>\ntransformed.x += sin(uBreeze*1.4+instanceMatrix[3].x*.4+instanceMatrix[3].z)*position.y*.08;');
+  };
+  const stalks=new InstancedMesh(stalkGeo,stalkMat,1100),placement=new Object3D();let stalkCount=0;
+  for(let i=0;i<1100;i++){
+    const x=rand(-16,14),z=rand(-24,6);
+    if(z>-3.2&&z<1.4&&x>-11&&x<4)continue;
+    if(z>1.4&&Math.abs(x-.4)<1+(z-1.4)*.6)continue;
+    placement.position.set(x,0,z);placement.scale.set(1,rand(.5,1.5),1);placement.rotation.z=rand(-.12,.12);
+    placement.updateMatrix();stalks.setMatrixAt(stalkCount++,placement.matrix);
   }
+  stalks.count=stalkCount;scene.add(stalks);
   // The nest, turned up: a mound of grass with its door towards us.
   add(scene, new SphereGeometry(.62, 14, 8), lambert('#6a6352'), 2.6, .05, -.3, 1.2, .55, 1);
   add(scene, new SphereGeometry(.2, 10, 8), lambert('#2e2b25'), 2.05, .14, .05, .6, .7, .5);
   for (let i = 0; i < 26; i++) { const m = add(scene, stalkGeo, lambert('#7c745f'), 2.6 + rand(-.7, .7), .1, -.3 + rand(-.55, .55)); m.rotation.set(rand(-1.2, 1.2), 0, rand(-1.2, 1.2)); }
   const mouse = fieldMouse(); mouse.root.scale.setScalar(.3); scene.add(mouse.root);
   const puss = cat(); puss.root.scale.setScalar(.72); scene.add(puss.root);
+  const faceLight = new DirectionalLight('#aebbb4', .48); faceLight.position.set(4, 5, 12); scene.add(faceLight);
   const M0 = new Vector3(1.75, 0, .15), M1 = new Vector3(1.15, 0, .2);
-  const P0 = new Vector3(-10, 0, -2.6), P1 = new Vector3(-.75, 0, .1), P2 = new Vector3(-10, 0, -11);
+  const P0 = new Vector3(-5, 0, -2.6), P1 = new Vector3(-.75, 0, .1), P2 = new Vector3(-10, 0, -11);
   const heading1 = Math.atan2(-(P1.z - P0.z), P1.x - P0.x), heading2 = Math.atan2(-(P2.z - P1.z), P2.x - P1.x) - Math.PI * 2;
   const approach = P0.distanceTo(P1), leave = P1.distanceTo(P2);
   const mouth = new Vector3();
   const birds = rooks(scene, new Vector3(-4, 7, -22));
+  const motion = {};
   return {
-    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6, traveller: mouse.root,
+    target: new Vector3(.35, .62, -.4), radius: 9.6, height: .8, fov: 30, yaw: 16, pitch: [2, 6], still: 12.6, traveller: mouse.root, motion,
     tick(t, s) {
-      const gust = Math.sin(s * .3) * .5 + .5;
-      for (const st of stalks) st.rotation.z = st.userData.base + Math.sin(s * 1.4 + st.position.x * .4 + st.userData.phase * .3) * .09 * (.4 + gust);
+      breeze.value=s;
       // The cat: walk in, stop, lower the head, take her, turn, walk away.
       const walkIn = clamp01((s - 2.2) / 9), walkOut = clamp01((s - 17.4) / 11);
-      const eIn = walkIn * (2 - walkIn) * (walkIn < 1 ? 1 : 1), eOut = walkOut * walkOut;
+      const eIn = walkIn * (2 - walkIn), eOut = walkOut * walkOut;
       const inPos = walkIn < 1 ? eIn : 1;
       const turn = seg(s, 15.3, 17.8);
       const heading = heading1 + (heading2 - heading1) * turn;
@@ -839,7 +798,9 @@ function burns(scene) {
       const travelled = inPos * approach + eOut * leave + Math.abs(heading2 - heading1) * turn * .5;
       const moving = Math.min(1, (walkIn > 0 && walkIn < 1 ? 1 - walkIn ** 3 : 0) + (walkOut > 0 ? Math.min(1, walkOut * 6) : 0) + (turn > 0 && turn < 1 ? .45 : 0));
       const lower = seg(s, 11.2, 12.9) - seg(s, 14.4, 15.5) * .82;
-      puss.pose({ phase: travelled / .9 / .72, moving, lower, s, tailUp: seg(s, 15, 17.5) });
+      const phase = travelled / .9 / .72;
+      puss.pose({ phase, moving, lower, s, tailUp: seg(s, 15, 17.5), attention: (1-seg(s,2,4))*.5 });
+      Object.assign(motion,{phase,moving,x:puss.root.position.x/12});
       puss.root.updateMatrixWorld(true);
       puss.head.localToWorld(mouth.copy(puss.mouth));
       // The mouse: washes, goes a few steps, sees the cat, sits up; then is carried.
@@ -941,15 +902,17 @@ function pushkin(scene) {
     }
     p.needsUpdate = true; geo.computeVertexNormals();
   }
+  const motion = {};
   const motes = mist(scene, Array.from({ length: 10 }, () => [rand(-5, 2), rand(2, 7), rand(-3, 2), .1, .1]), .45);
   return {
-    target: new Vector3(1.3, 1.3, .3), radius: 14.5, height: 3.6, fov: 34, yaw: 36, pitch: [12, 26], shadows: true, still: 24,
+    target: new Vector3(1.3, 1.3, .3), radius: 14.5, height: 3.6, fov: 34, yaw: 36, pitch: [12, 26], shadows: true, still: 24, motion,
     tick(t, s) {
       lamp.intensity = 300 + Math.sin(s * 5.3) * 5 + Math.sin(s * 1.7) * 9;
       const lift = seg(s, 4, 9) * (1 - seg(s, 12.5, 16.5));      // the corner rises, then lets go
       const float = seg(s, 8, 12) * (1 - seg(s, 13, 19));        // the whole sheet leaves the pile
       const rest = seg(s, 13, 19.5);
       const air = lift * .5 + float;
+      Object.assign(motion,{paper:air*(1-rest),settle:rest,x:.3});
       bend(lift * (1 - float * .55), air * (1 - rest), s);
       sheet.position.set(1.2 + rest * .34 + float * .3, top + float * .55 + Math.sin(s * 1.3) * .04 * float, .3 + rest * .16 + float * .1);
       sheet.rotation.set(Math.sin(s * 1.1) * .03 * float, .02 + rest * .09 + float * .07 * Math.sin(s * .8), Math.sin(s * .9) * .025 * float);
@@ -1059,9 +1022,10 @@ function nalan(scene) {
   const hero = shade(add(scene, leafGeometry(.62), new MeshLambertMaterial({ color: new Color('#b5a37e'), side: DoubleSide }), 0, 0, 0), true, false);
   const motes = mist(scene, Array.from({ length: 22 }, () => [rand(-4, 6), rand(2, 9), rand(-9, 3), .09, .09]), .55);
   motes.forEach(m => { m.userData.y0 = m.position.y; m.userData.z0 = m.position.z; });
+  const motion = {};
   let lastPuff = 0;
   return {
-    target: new Vector3(1.8, 3.8, -3.6), radius: 18.5, height: 4.6, fov: 38, yaw: 18, pitch: [12, 21], shadows: true, still: 22,
+    target: new Vector3(1.8, 3.8, -3.6), radius: 18.5, height: 4.6, fov: 38, yaw: 18, pitch: [12, 21], shadows: true, still: 22, motion,
     tick(t, s) {
       const gust = .15 + .1 * Math.sin(s * .4);
       // The open casement only stirs.
@@ -1090,6 +1054,7 @@ function nalan(scene) {
       hero.position.z += Math.cos((s - 2.5) * .55) * .5 * amp;
       // It shows us its face as it swings, and lies flat only when it lands.
       const flat = seg(s, 17.5, 20);
+      Object.assign(motion,{leaf:hero.visible?(1-flat)*(.45+.25*Math.abs(swing)):0,x:hero.position.x/10});
       hero.rotation.set((-.35 + Math.cos((s - 2.5) * 1.15) * .45) * (1 - flat) - Math.PI / 2 * flat, .45 + Math.sin((s - 2.5) * .4) * .35 * amp, -swing * .55 * amp);
       for (const m of motes) {
         const u = m.userData;
@@ -1125,49 +1090,8 @@ function printTexture() {
   const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; t.anisotropy = 4; return t;
 }
 
-function present(scene) {
-  scene.background = new Color('#1d2321');
-  scene.fog = new Fog('#1d2321', 12, 30);
-  const ambient = new HemisphereLight(new Color('#5d625c'), new Color('#151917'), .25); scene.add(ambient);
-  const flame = new PointLight(new Color('#f2cf98'), 0, 22, 2); flame.position.set(2.95, 2.05, -.9);
-  flame.castShadow = true; flame.shadow.mapSize.set(1024, 1024); flame.shadow.radius = 6; flame.shadow.bias = -.003; scene.add(flame);
-  shade(add(scene, new PlaneGeometry(40, 40), lambert('#3b3d37'), 0, 0, 0), false, true).rotation.x = -Math.PI / 2;
-  // Two pages, each rising from the spine and falling to its edge.
-  const tex = printTexture();
-  for (const side of [-1, 1]) {
-    const geo = new PlaneGeometry(2.3, 3.1, 24, 2); geo.rotateX(-Math.PI / 2);
-    const p = geo.attributes.position;
-    for (let i = 0; i < p.count; i++) { const x = p.getX(i) + 1.15; p.setX(i, side * x); p.setY(i, .12 + Math.sin(Math.min(1, x / 2.3) * Math.PI * .85) * .32 * (1 - x / 3.2)); }
-    geo.computeVertexNormals();
-    const page = shade(new Mesh(geo, new MeshLambertMaterial({ map: tex, side: DoubleSide })));
-    page.position.set(0, 0, 0); scene.add(page);
-  }
-  shade(add(scene, new BoxGeometry(4.9, .12, 3.3), lambert('#3a2f28'), 0, .06, 0));
-  // The candle, a short one.
-  shade(add(scene, new CylinderGeometry(.2, .22, .95, 16), lambert('#d3cbb8', { emissive: new Color('#2c251c') }), 2.95, .48, -.9));
-  const glow = new Sprite(new SpriteMaterial({ map: softSprite('#f7dba8'), transparent: true, depthWrite: false, opacity: 0 }));
-  glow.position.set(2.95, 1.2, -.9); scene.add(glow);
-  const halo = new Sprite(new SpriteMaterial({ map: softSprite('#e8c48e'), transparent: true, depthWrite: false, opacity: 0 }));
-  halo.position.set(2.95, 1.2, -.9); halo.scale.set(3.2, 3.2, 1); scene.add(halo);
-  const motes = mist(scene, Array.from({ length: 10 }, () => [rand(-1, 4), rand(1, 4), rand(-2, 1.5), .05, .05]), 0);
-  return {
-    target: new Vector3(.6, .4, 0), radius: 9.5, height: 3.4, fov: 33, yaw: 16, pitch: [16, 28], shadows: true, still: 14,
-    tick(t, s) {
-      // It catches, falters once, then holds.
-      const take = seg(s, 2.6, 4.2) - .35 * seg(s, 4.2, 4.6) * (1 - seg(s, 4.6, 5.6));
-      const f = take * (1 + Math.sin(s * 9.3) * .05 + Math.sin(s * 14.1) * .03 + Math.sin(s * 2.1) * .05);
-      flame.intensity = 34 * f;
-      glow.scale.set(.32 * f, .62 * f, 1); glow.material.opacity = Math.min(1, take * 1.2);
-      glow.position.x = 2.95 + Math.sin(s * 3.3) * .015;
-      halo.material.opacity = .18 * take;
-      ambient.intensity = .25 + take * .15;
-      motes.forEach((m, i) => { m.material.opacity = .4 * take; m.position.y = 1 + ((s * .07 + i * .31) % 3); });
-    },
-  };
-}
-
 const WORLDS = { 'art-waugh2': brideshead, 'art-burns': burns, 'art-nalan': nalan, 'art-pushkin': pushkin,
-  'art-wong': wong, 'art-thackeray': thackeray, 'art-present': present };
+  'art-wong': wong, 'art-thackeray': thackeray };
 
 // ---------------------------------------------------------------- lifecycle
 // Each world has two clocks. `t` is the slow ambient time of water, reeds and
@@ -1227,6 +1151,7 @@ function mount(art, build) {
   function draw(dt) {
     view(dt);
     world.tick(ambient * .12, story, dt);
+    if(id)window.memoryGestures?.set(id,world.motion||{});
     const light = Number(art.style.getPropertyValue('--candle-light')) || 0;
     candle.intensity = light * Math.min(90, world.radius * 1.4);
     if (light) {
@@ -1238,9 +1163,9 @@ function mount(art, build) {
   }
   function frame(now) {
     const dt = prev ? Math.min(.1, (now - prev) / 1000) : 0; prev = now;
-    ambient += dt;
     const owned = window.memoryTimeline?.sceneTime?.(id);
     story = owned ?? story + dt;
+    ambient = owned ?? ambient + dt;
     draw(dt);
     frames++;
     if (now - fpsT > 2000) { art.dataset.fps = (frames * 1000 / (now - fpsT)).toFixed(1); frames = 0; fpsT = now; }
@@ -1265,6 +1190,7 @@ function mount(art, build) {
   function print() {
     if (printed) return;
     printed = true;
+    window.memoryGestures?.clear(id);
     renderer.render(scene, camera);
     const img = new Image();
     img.className = 'mv-world'; img.alt = ''; img.src = canvas.toDataURL('image/jpeg', .92);
